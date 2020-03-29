@@ -1,53 +1,117 @@
 import React, { Component } from "react";
 
+import LoginForm from "./LoginForm";
+import Nav from "./Nav";
+import SignupForm from "./SignupForm";
 import { render } from "react-dom";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
-      loaded: false,
-      placeholder: "Loading"
+      displayed_form: "",
+      logged_in: localStorage.getItem("token") ? true : false,
+      username: ""
     };
   }
 
   componentDidMount() {
-    fetch("api/lead")
-      .then(response => {
-        if (response.status > 400) {
-          return this.setState(() => {
-            return { placeholder: "Something went wrong!" };
-          });
+    if (this.state.logged_in) {
+      fetch("http://localhost:8000/core/current_user/", {
+        headers: {
+          Authorization: `JWT ${localStorage.getItem("token")}`
         }
-        return response.json();
       })
-      .then(data => {
-        this.setState(() => {
-          return {
-            data,
-            loaded: true
-          };
+        .then(res => res.json())
+        .then(json => {
+          this.setState({ username: json.username });
         });
-      });
+    }
   }
 
+  handle_login = (e, data) => {
+    e.preventDefault();
+    fetch("http://localhost:8000/token-auth/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(json => {
+        console.log(json);
+        localStorage.setItem("token", json.token);
+        this.setState({
+          logged_in: true,
+          displayed_form: "",
+          username: json.user.username
+        });
+      });
+  };
+
+  handle_signup = (e, data) => {
+    // e.preventDefault();
+    fetch("http://localhost:8000/core/users/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(json => {
+        console.log(json);
+        localStorage.setItem("token", json.token);
+        this.setState({
+          logged_in: true,
+          displayed_form: "",
+          username: json.username
+        });
+      });
+  };
+
+  handle_logout = () => {
+    localStorage.removeItem("token");
+    this.setState({ logged_in: false, username: "" });
+  };
+
+  display_form = form => {
+    this.setState({
+      displayed_form: form
+    });
+  };
+
   render() {
+    let form;
+    switch (this.state.displayed_form) {
+      case "login":
+        form = <LoginForm handle_login={this.handle_login} />;
+        break;
+      case "signup":
+        form = <SignupForm handle_signup={this.handle_signup} />;
+        break;
+      default:
+        form = null;
+    }
+
     return (
-      <ul>
-        {this.state.data.map(contact => {
-          return (
-            <li key={contact.id}>
-              {contact.name}: {contact.email}
-            </li>
-          );
-        })}
-      </ul>
+      <div className="App">
+        <Nav
+          logged_in={this.state.logged_in}
+          display_form={this.display_form}
+          handle_logout={this.handle_logout}
+        />
+        {form}
+        <h3>
+          {this.state.logged_in
+            ? `Hello, ${this.state.username}`
+            : "Please Log In"}
+        </h3>
+      </div>
     );
   }
 }
-
-export default App;
 
 const container = document.getElementById("app");
 render(<App />, container);
