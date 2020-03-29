@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Lead, List, ListItem
+from .models import List, ListItem
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 
