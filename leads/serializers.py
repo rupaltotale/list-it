@@ -4,12 +4,6 @@ from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 
 
-class LeadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Lead
-        fields = ('id', 'name', 'email', 'message')
-
-
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = List

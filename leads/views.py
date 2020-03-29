@@ -16,11 +16,6 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer, UserSerializerWithToken, LeadSerializer
 
 
-class LeadListCreate(generics.ListCreateAPIView):
-    queryset = Lead.objects.all()
-    serializer_class = LeadSerializer
-
-
 @api_view(['GET'])
 def current_user(request):
     """
