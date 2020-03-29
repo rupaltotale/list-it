@@ -1,6 +1,9 @@
+# User
+# List: id, title, owner (userId), dateCreated,
+# ListItem: id, listId, completed, content
 from django.db import models
 
-# Create your models here.
+
 class Lead(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
