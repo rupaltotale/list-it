@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import LoginForm from "./LoginForm";
-import Nav from "./Nav";
-import SignupForm from "./SignupForm";
+import LoginForm from "./components/LoginForm";
+import Nav from "./components/Nav";
+import SignupForm from "./components/SignupForm";
 import { render } from "react-dom";
 
 class App extends Component {
@@ -16,14 +16,16 @@ class App extends Component {
   }
 
   componentDidMount() {
+    console.log("component mounted");
     if (this.state.logged_in) {
-      fetch("http://localhost:8000/core/current_user/", {
+      fetch("http://localhost:8000/current_user/", {
         headers: {
           Authorization: `JWT ${localStorage.getItem("token")}`
         }
       })
         .then(res => res.json())
         .then(json => {
+          console.log(json);
           this.setState({ username: json.username });
         });
     }
@@ -40,7 +42,6 @@ class App extends Component {
     })
       .then(res => res.json())
       .then(json => {
-        console.log(json);
         localStorage.setItem("token", json.token);
         this.setState({
           logged_in: true,
@@ -51,8 +52,8 @@ class App extends Component {
   };
 
   handle_signup = (e, data) => {
-    // e.preventDefault();
-    fetch("http://localhost:8000/core/users/", {
+    e.preventDefault();
+    fetch("http://localhost:8000/users/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
