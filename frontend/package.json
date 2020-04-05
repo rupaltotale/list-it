@@ -22,6 +22,8 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "prop-types": "^15.7.2"
+    "axios": "^0.19.2",
+    "prop-types": "^15.7.2",
+    "react-router-dom": "^5.1.2"
   }
 }
