@@ -5,15 +5,22 @@ from django.contrib.auth.models import User
 
 
 class ListSerializer(serializers.ModelSerializer):
+    date_created = serializers.DateTimeField(
+        read_only=True,
+    )
+    owner = serializers.PrimaryKeyRelatedField(
+        read_only=True
+    )
+
     class Meta:
         model = List
-        fields = ('title', 'owner', 'dateCreated', 'listItems')
+        fields = ('id', 'title', 'owner', 'date_created')
 
 
 class ListItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ListItem
-        fields = ('completed', 'content')
+        fields = ('id', 'completed', 'content')
 
 
 class UserSerializer(serializers.ModelSerializer):

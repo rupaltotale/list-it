@@ -12,9 +12,58 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserSerializer, UserSerializerWithToken
+
+from rest_framework.generics import ListAPIView, CreateAPIView, \
+    RetrieveUpdateDestroyAPIView, GenericAPIView
+
+from .serializers import UserSerializer, UserSerializerWithToken, \
+    ListSerializer, ListItemSerializer
+from .models import List, ListItem
+from django.utils import timezone
 
 
+class ListGet(ListAPIView):
+    queryset = List.objects.all()
+    serializer_class = ListSerializer
+
+    def get_queryset(self):
+        return List.objects.all().filter(owner=self.request.user)
+
+
+class ListCreate(CreateAPIView):
+    serializer_class = ListSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(
+            owner=self.request.user,
+            date_created=timezone.now()
+        )
+
+
+class ListRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+    queryset = List.objects.all()
+    lookup_field = 'id'
+    serializer_class = ListSerializer
+
+    def delete(self, request, *args, **kwargs):
+        list_id = request.data.get('id')
+        response = super().delete(request, *args, **kwargs)
+        if response.status_code == 204:
+            from django.core.cache import cache
+            cache.delete('list_data_{}'.format(list_id))
+        return response
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        if response.status_code == 200:
+            from django.core.cache import cache
+            list = response.data
+            cache.set('list_data_{}'.format(list['id']), {
+                'title': list['title']
+            })
+        return response
+
+########################### User endpoints ########################################
 @api_view(['GET'])
 def current_user(request):
     """
