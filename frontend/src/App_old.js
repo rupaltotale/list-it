@@ -11,7 +11,7 @@ class App extends Component {
     this.state = {
       displayed_form: "",
       logged_in: localStorage.getItem("token") ? true : false,
-      username: ""
+      username: "",
     };
   }
 
@@ -20,11 +20,11 @@ class App extends Component {
     if (this.state.logged_in) {
       fetch("http://localhost:8000/current_user/", {
         headers: {
-          Authorization: `JWT ${localStorage.getItem("token")}`
-        }
+          Authorization: `JWT ${localStorage.getItem("token")}`,
+        },
       })
-        .then(res => res.json())
-        .then(json => {
+        .then((res) => res.json())
+        .then((json) => {
           console.log(json);
           this.setState({ username: json.username });
         });
@@ -36,17 +36,17 @@ class App extends Component {
     fetch("http://localhost:8000/token-auth/", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
-      .then(res => res.json())
-      .then(json => {
+      .then((res) => res.json())
+      .then((json) => {
         localStorage.setItem("token", json.token);
         this.setState({
           logged_in: true,
           displayed_form: "",
-          username: json.user.username
+          username: json.user.username,
         });
       });
   };
@@ -56,18 +56,18 @@ class App extends Component {
     fetch("http://localhost:8000/users/", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
-      .then(res => res.json())
-      .then(json => {
+      .then((res) => res.json())
+      .then((json) => {
         console.log(json);
         localStorage.setItem("token", json.token);
         this.setState({
           logged_in: true,
           displayed_form: "",
-          username: json.username
+          username: json.username,
         });
       });
   };
@@ -77,9 +77,9 @@ class App extends Component {
     this.setState({ logged_in: false, username: "" });
   };
 
-  display_form = form => {
+  display_form = (form) => {
     this.setState({
-      displayed_form: form
+      displayed_form: form,
     });
   };
 

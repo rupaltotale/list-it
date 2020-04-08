@@ -1,42 +1,90 @@
 import PropTypes from "prop-types";
 import React from "react";
+import {
+  Link,
+  Route,
+  Redirect,
+  BrowserRouter as Router,
+  Switch,
+  useParams,
+} from "react-router-dom";
+import { Form, Container, Col, Row } from "react-bootstrap";
 
 class LoginForm extends React.Component {
   state = {
     username: "",
-    password: ""
+    password: "",
+    redirect: null,
   };
 
-  handle_change = e => {
+  handle_change = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    this.setState(prevstate => {
+    this.setState((prevstate) => {
       const newState = { ...prevstate };
       newState[name] = value;
       return newState;
     });
   };
 
+  handle_login = (e) => {
+    e.preventDefault();
+    fetch("http://localhost:8000/token-auth/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(this.state),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        localStorage.setItem("token", json.token);
+        this.setState({
+          logged_in: true,
+          username: json.user.username,
+          redirect: "/",
+        });
+        this.props.set_username(json.user.username);
+      });
+  };
+
   render() {
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect} />;
+    }
     return (
-      <form onSubmit={e => this.props.handle_login(e, this.state)}>
-        <h4>Log In</h4>
-        <label htmlFor="username">Username</label>
-        <input
-          type="text"
-          name="username"
-          value={this.state.username}
-          onChange={this.handle_change}
-        />
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          name="password"
-          value={this.state.password}
-          onChange={this.handle_change}
-        />
-        <input type="submit" />
-      </form>
+      <Container>
+        <Row className="justify-content-center align-items-center p-3">
+          <Col md={5} className="mx-auto">
+            <h1 className="text-center">Log In</h1>
+            <Form onSubmit={(e) => this.handle_login(e)}>
+              <Form.Group>
+                <Form.Label htmlFor="username">Username</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="username"
+                  placeholder="Enter your username"
+                  value={this.state.username}
+                  onChange={this.handle_change}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label htmlFor="password">Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  value={this.state.password}
+                  onChange={this.handle_change}
+                />
+              </Form.Group>
+              <button type="submit" className="btn btn-primary">
+                Submit
+              </button>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
@@ -44,5 +92,5 @@ class LoginForm extends React.Component {
 export default LoginForm;
 
 LoginForm.propTypes = {
-  handle_login: PropTypes.func.isRequired
+  // handle_login: PropTypes.func.isRequired
 };
