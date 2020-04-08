@@ -32,12 +32,10 @@ class App extends Component {
 
   handle_navdropdown_open = () => {
     this.setState({ isNavDropdownOpen: true });
-    console.log("Mouse entered navdropdown");
   };
 
   handle_navdropdown_close = () => {
     this.setState({ isNavDropdownOpen: false });
-    console.log("Mouse exited navdropdown");
   };
 
   componentDidMount() {
@@ -59,7 +57,54 @@ class App extends Component {
     this.setState({ logged_in: false, username: "", isNavDropdownOpen: false });
   };
 
-  render_nav() {
+  render_nav_logged_in() {
+    const logged_in_nav = (
+      <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
+        <Navbar.Brand>To-Do List</Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="mr-auto">
+            <NavLink
+              exact
+              to="/"
+              className={"nav-link"}
+              activeClassName={"nav-link active"}
+            >
+              Home
+            </NavLink>
+            <NavLink
+              exact
+              to="/about"
+              className={"nav-link"}
+              activeClassName={"nav-link active"}
+            >
+              About
+            </NavLink>
+          </Nav>
+          <Nav className="mr-5">
+            <Navbar.Text>Signed in as:</Navbar.Text>
+            <NavDropdown
+              title={this.state.username}
+              onMouseEnter={this.handle_navdropdown_open}
+              onMouseLeave={this.handle_navdropdown_close}
+              show={this.state.isNavDropdownOpen}
+            >
+              <NavDropdown.Item>Your Profile</NavDropdown.Item>
+              <NavDropdown.Item
+                className="font-weight-bold"
+                onClick={this.handle_logout}
+              >
+                <u>Logout</u>
+              </NavDropdown.Item>
+            </NavDropdown>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+    );
+    return logged_in_nav;
+  }
+
+  render_nav_logged_out() {
     const logged_out_nav = (
       <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
         <Navbar.Brand href="/">To-Do List</Navbar.Brand>
@@ -104,51 +149,17 @@ class App extends Component {
         </Navbar.Collapse>
       </Navbar>
     );
+    return logged_out_nav;
+  }
 
-    const logged_in_nav = (
-      <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
-        <Navbar.Brand href="/">To-Do List</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto">
-            <NavLink
-              exact
-              to="/"
-              className={"nav-link"}
-              activeClassName={"nav-link active"}
-            >
-              Home
-            </NavLink>
-            <NavLink
-              exact
-              to="/about"
-              className={"nav-link"}
-              activeClassName={"nav-link active"}
-            >
-              About
-            </NavLink>
-          </Nav>
-          <Nav className="mr-5">
-            <Navbar.Text>Signed in as:</Navbar.Text>
-            <NavDropdown
-              title={this.state.username}
-              onMouseEnter={this.handle_navdropdown_open}
-              onMouseLeave={this.handle_navdropdown_close}
-              show={this.state.isNavDropdownOpen}
-            >
-              <NavDropdown.Item>Your Profile</NavDropdown.Item>
-              <NavDropdown.Item
-                className="font-weight-bold"
-                onClick={this.handle_logout}
-              >
-                <u>Logout</u>
-              </NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
+  render_nav() {
+    return (
+      <div>
+        {this.state.logged_in
+          ? this.render_nav_logged_in()
+          : this.render_nav_logged_out()}
+      </div>
     );
-    return <div>{this.state.logged_in ? logged_in_nav : logged_out_nav}</div>;
   }
 
   render() {
