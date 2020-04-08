@@ -81,21 +81,22 @@ class ListItemCreate(CreateAPIView):
     def create(self, request, *args, **kwargs):
         list_id = request.data.get('list_id')
         if list_id is None:
-            raise ValidationError({'list_id': 'A valid list_id is required'})
+            list_id = 2
+            # raise ValidationError({'list_id': 'A valid list_id is required'})
         list_item = super().create(request, *args, **kwargs)
         parent_list = List.objects.all().filter(id=list_id).first()
         if parent_list is None:
             raise ValidationError(
                 {'list_id': 'list with id {} does not exist'.format(list_id)})
-        print(parent_list)
-        parent_list.list_items.add(list_item)
+        parent_list.list_items.add(
+            ListItem.objects.all().filter(id=list_item.data["id"]).first())
         return list_item
 
 
 class ListItemRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     queryset = ListItem.objects.all()
     lookup_field = 'id'
-    serializer_class = ListSerializer
+    serializer_class = ListItemSerializer
 
     def delete(self, request, *args, **kwargs):
         list_id = request.data.get('id')
@@ -110,8 +111,9 @@ class ListItemRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         if response.status_code == 200:
             from django.core.cache import cache
             list = response.data
-            cache.set('list_data_{}'.format(list['id']), {
-                'title': list['title']
+            cache.set('list_item_data_{}'.format(list['id']), {
+                'content': list['content'],
+                'completed': list['completed']
             })
         return response
 

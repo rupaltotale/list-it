@@ -17,3 +17,6 @@ class ListItem(models.Model):
     id = models.AutoField(primary_key=True)
     completed = models.BooleanField()
     content = models.CharField(max_length=200)
+
+    def natural_key(self):
+        return (self.id)
