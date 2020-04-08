@@ -1,11 +1,16 @@
 import PropTypes from "prop-types";
 import React from "react";
+import { Link, Route, BrowserRouter as Router, Switch, useParams } from "react-router-dom";
 
 function Nav(props) {
   const logged_out_nav = (
     <ul>
-      <li onClick={() => props.display_form("login")}>login</li>
-      <li onClick={() => props.display_form("signup")}>signup</li>
+      <li>
+        <Link to="/login">Login</Link>
+      </li>
+      <li>
+        <Link to="/signup">Sign Up</Link>
+      </li>
     </ul>
   );
 
@@ -21,6 +26,5 @@ export default Nav;
 
 Nav.propTypes = {
   logged_in: PropTypes.bool.isRequired,
-  display_form: PropTypes.func.isRequired,
   handle_logout: PropTypes.func.isRequired
 };
