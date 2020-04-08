@@ -9,4 +9,8 @@ urlpatterns = [
     path('api/v1/lists/<int:id>/',
          views.ListRetrieveUpdateDestroy.as_view()
          ),
+    path('api/v1/list_item/new', views.ListItemCreate.as_view()),
+    path('api/v1/list_item/<int:id>/',
+         views.ListItemRetrieveUpdateDestroy.as_view()
+         ),
 ]
