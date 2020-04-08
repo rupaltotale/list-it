@@ -80,9 +80,10 @@ class ListItemCreate(CreateAPIView):
     #     )
     def create(self, request, *args, **kwargs):
         list_id = request.data.get('list_id')
-        if list_id is None:
-            list_id = 2
-            # raise ValidationError({'list_id': 'A valid list_id is required'})
+        try:
+            int(list_id)
+        except:
+            raise ValidationError({'list_id': 'A valid list_id is required'})
         list_item = super().create(request, *args, **kwargs)
         parent_list = List.objects.all().filter(id=list_id).first()
         if parent_list is None:

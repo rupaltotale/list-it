@@ -12,7 +12,8 @@ class ListItemSerializer(serializers.ModelSerializer):
         fields = ('id', 'completed', 'content', 'list_id')
 
     def create(self, validated_data):
-        validated_data.pop("list_id")
+        if "list_id" in validated_data:
+            validated_data.pop("list_id")
         return(ListItem.objects.create(**validated_data))
 
 
