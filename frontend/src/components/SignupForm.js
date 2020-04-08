@@ -9,6 +9,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { Form, Container, Col, Row } from "react-bootstrap";
+import axios from "axios";
 
 class SignupForm extends React.Component {
   state = {
@@ -29,23 +30,28 @@ class SignupForm extends React.Component {
 
   handle_signup = (e) => {
     e.preventDefault();
-    fetch("http://localhost:8000/users/", {
-      method: "POST",
+    axios({
+      method: "post",
+      url: "http://localhost:8000/users/",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.state),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        localStorage.setItem("token", json.token);
+      data: JSON.stringify(this.state),
+    }).then(
+      (response) => {
+        console.log(response);
+        localStorage.setItem("token", response.data.token);
         this.setState({
           logged_in: true,
-          username: json.username,
+          username: response.data.username,
           redirect: "/",
         });
-        this.props.set_username(json.username);
-      });
+        this.props.set_username(response.data.username);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
 
   render() {
@@ -66,6 +72,7 @@ class SignupForm extends React.Component {
                   placeholder="Enter a username"
                   value={this.state.username}
                   onChange={this.handle_change}
+                  required
                 />
               </Form.Group>
               <Form.Group>
@@ -76,6 +83,7 @@ class SignupForm extends React.Component {
                   placeholder="Enter a password"
                   value={this.state.password}
                   onChange={this.handle_change}
+                  required
                 />
               </Form.Group>
               <Form.Group controlId="formBasicChecbox">

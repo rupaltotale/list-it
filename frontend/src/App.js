@@ -138,7 +138,7 @@ class App extends Component {
             >
               <NavDropdown.Item>Your Profile</NavDropdown.Item>
               <NavDropdown.Item
-                class="font-weight-bold"
+                className="font-weight-bold"
                 onClick={this.handle_logout}
               >
                 <u>Logout</u>
