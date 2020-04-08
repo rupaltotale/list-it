@@ -9,6 +9,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { Form, Container, Col, Row } from "react-bootstrap";
+import axios from "axios";
 
 class LoginForm extends React.Component {
   state = {
@@ -29,23 +30,28 @@ class LoginForm extends React.Component {
 
   handle_login = (e) => {
     e.preventDefault();
-    fetch("http://localhost:8000/token-auth/", {
-      method: "POST",
+    axios({
+      method: "post",
+      url: "http://localhost:8000/token-auth/",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.state),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        localStorage.setItem("token", json.token);
+      data: JSON.stringify(this.state),
+    }).then(
+      (response) => {
+        console.log(response);
+        localStorage.setItem("token", response.data.token);
         this.setState({
           logged_in: true,
-          username: json.user.username,
+          username: response.data.user.username,
           redirect: "/",
         });
-        this.props.set_username(json.user.username);
-      });
+        this.props.set_username(response.data.user.username);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
 
   render() {
@@ -66,6 +72,7 @@ class LoginForm extends React.Component {
                   placeholder="Enter your username"
                   value={this.state.username}
                   onChange={this.handle_change}
+                  required
                 />
               </Form.Group>
               <Form.Group>
@@ -76,6 +83,7 @@ class LoginForm extends React.Component {
                   placeholder="Enter your password"
                   value={this.state.password}
                   onChange={this.handle_change}
+                  required
                 />
               </Form.Group>
               <button type="submit" className="btn btn-primary">
