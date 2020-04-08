@@ -4,9 +4,26 @@ from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 
 
+class ListItemSerializer(serializers.ModelSerializer):
+    list_id = serializers.IntegerField(write_only=True, required=False)
+
+    class Meta:
+        model = ListItem
+        fields = ('id', 'completed', 'content', 'list_id')
+
+    def create(self, validated_data):
+        if "list_id" in validated_data:
+            validated_data.pop("list_id")
+        return(ListItem.objects.create(**validated_data))
+
+
 class ListSerializer(serializers.ModelSerializer):
     date_created = serializers.DateTimeField(
         read_only=True,
+    )
+    list_items = ListItemSerializer(
+        many=True,
+        read_only=True
     )
     owner = serializers.PrimaryKeyRelatedField(
         read_only=True
@@ -14,13 +31,7 @@ class ListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = List
-        fields = ('id', 'title', 'owner', 'date_created')
-
-
-class ListItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ListItem
-        fields = ('id', 'completed', 'content')
+        fields = ('id', 'title', 'owner', 'date_created', "list_items")
 
 
 class UserSerializer(serializers.ModelSerializer):

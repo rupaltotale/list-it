@@ -3,3 +3,4 @@ node_modules/
 jspm_packages/
 leads/__pycache__/
 leads/migrations/
+db.sqlite3
