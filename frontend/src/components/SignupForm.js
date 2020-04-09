@@ -37,11 +37,7 @@ class SignupForm extends React.Component {
       //If the value is not empty
       if (object.value.length > 0) {
         //Get all the input fields
-        const all_inputs = document.getElementsByClassName("form-control");
-        //Make all the input fields validated
-        Array.from(all_inputs).forEach((input) => {
-          input.setCustomValidity("");
-        });
+        object.setCustomValidity("");
       }
       //If the value is empty
       else {

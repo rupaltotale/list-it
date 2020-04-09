@@ -60,7 +60,7 @@ class App extends Component {
   render_nav_logged_in() {
     const logged_in_nav = (
       <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
-        <Navbar.Brand>To-Do List</Navbar.Brand>
+        <Navbar.Brand href="/">To-Do List</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto">
