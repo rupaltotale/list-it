@@ -27,6 +27,8 @@
     "formik": "^2.1.4",
     "prop-types": "^15.7.2",
     "react-bootstrap": "^1.0.0",
-    "react-router-dom": "^5.1.2"
+    "react-icons": "^3.9.0",
+    "react-router-dom": "^5.1.2",
+    "yup": "^0.28.3"
   }
 }

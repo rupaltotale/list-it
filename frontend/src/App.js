@@ -89,8 +89,11 @@ class App extends Component {
               onMouseLeave={this.handle_navdropdown_close}
               show={this.state.isNavDropdownOpen}
             >
-              <NavDropdown.Item>Your Profile</NavDropdown.Item>
+              <NavDropdown.Item onMouseEnter={this.handle_navdropdown_open}>
+                Your Profile
+              </NavDropdown.Item>
               <NavDropdown.Item
+                onMouseEnter={this.handle_navdropdown_open}
                 className="font-weight-bold"
                 onClick={this.handle_logout}
               >
@@ -183,6 +186,9 @@ class App extends Component {
           </Route>
           <Route path="/about">
             <div>About</div>
+          </Route>
+          <Route path="/terms">
+            <div>Lol, no terms and services</div>
           </Route>
           <Route path="/">
             <Jumbotron>
