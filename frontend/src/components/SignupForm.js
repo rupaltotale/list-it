@@ -1,18 +1,19 @@
-import PropTypes from "prop-types";
-import React, { useState } from "react";
+import { Col, Container, Form, InputGroup, Row } from "react-bootstrap";
+import { FaAt, FaEnvelope, FaLock, FaPortrait } from "react-icons/fa";
+import { GiKing, GiPadlock } from "react-icons/gi";
 import {
   Link,
-  Route,
   Redirect,
+  Route,
   BrowserRouter as Router,
   Switch,
   useParams,
 } from "react-router-dom";
-import { Form, Container, Col, Row, InputGroup } from "react-bootstrap";
-import axios from "axios";
-import { GiKing, GiPadlock } from "react-icons/gi";
-import { FaAt, FaLock, FaEnvelope, FaPortrait } from "react-icons/fa";
+import React, { useState } from "react";
+
 import { IconContext } from "react-icons";
+import PropTypes from "prop-types";
+import axios from "axios";
 
 class SignupForm extends React.Component {
   state = {

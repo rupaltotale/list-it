@@ -1,190 +1,185 @@
-import PropTypes, { object } from "prop-types";
-import React, { useState } from "react";
+import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
+import { FaEye, FaLock, FaPortrait } from "react-icons/fa";
 import {
   Link,
-  Route,
   Redirect,
+  Route,
   BrowserRouter as Router,
   Switch,
   useParams,
 } from "react-router-dom";
-import { Form, Container, Col, Row, InputGroup, Button } from "react-bootstrap";
-import axios from "axios";
+import PropTypes, { object } from "prop-types";
+import React, { useState } from "react";
+
 import { IconContext } from "react-icons";
-import { FaPortrait, FaLock, FaEye } from "react-icons/fa";
+import axios from "axios";
 
 class LoginForm extends React.Component {
+  constructor(props) {
+    super(props);
+    // this.api = new API();
+  }
   state = {
     username: "",
     password: "",
     redirect: null,
-    status: null,
-    serverResponse: null,
+    submitted: false,
+    error: {
+      username: [],
+      password: [],
+    },
   };
 
   handle_change = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    const object_list = document.getElementsByName(name);
-
+    // Stores the input field value in a state variable
     this.setState((prevstate) => {
       const newState = { ...prevstate };
       newState[name] = value;
       return newState;
     });
-
-    object_list.forEach((object) => {
-      //If the value is not empty
-      if (object.value.length > 0) {
-        //Get all the input fields
-        const all_inputs = document.getElementsByClassName("form-control");
-        //Make all the input fields validated
-        Array.from(all_inputs).forEach((input) => {
-          input.setCustomValidity("");
-        });
-      }
-      //If the value is empty
-      else {
-        //Capitalize the object's name
-        const capitalized_object =
-          object.name.charAt(0).toUpperCase() + object.name.slice(1);
-        //Set the invalidation message
-        object.setCustomValidity(`${capitalized_object} is required`);
-        //Display the invalidation message
-        object.nextElementSibling.innerHTML = object.validationMessage;
-      }
+    // Sets validity of the input field being changed (based on if it is now empty)
+    const updatedErrorState = this.state.error;
+    if (value.length > 0) {
+      Object.keys(this.state.error).forEach((field) => {
+        updatedErrorState[field] = [];
+      });
+    } else {
+      updatedErrorState[name] = ["This field is required"];
+    }
+    this.setState({
+      error: updatedErrorState,
     });
   };
 
-  handle_login = (e, callback) => {
+  handleLogin = (e) => {
     e.preventDefault();
     axios({
       method: "post",
+      // TODO: Abstract root url: http://localhost:8000/
       url: "http://localhost:8000/token-auth/",
       headers: {
         "Content-Type": "application/json",
       },
       data: JSON.stringify(this.state),
     })
-      .then(
-        (response) => {
-          localStorage.setItem("token", response.data.token);
-          this.setState({
-            logged_in: true,
-            username: response.data.user.username,
-            redirect: "/",
-            status: response.status,
-            serverResponse: response.data,
-          });
-          this.props.set_username(response.data.user.username);
-        },
-        (error) => {
-          this.setState({
-            status: error.response.status,
-            serverResponse: error.response.data,
-          });
-        }
-      )
-      .then(() => {
-        if (this.state.status == 400) {
-          callback();
-        }
-      });
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        const username = response.data.user.username;
+        this.setState({
+          logged_in: true,
+          username,
+          redirect: "/",
+        });
+        this.props.set_username(username);
+      })
+      .catch(this.setInvalidFeedback);
   };
 
-  validating_login_form = () => {
-    const [validated, setValidated] = useState(false);
-
-    const set_invalid_feedback = () => {
-      const arr = this.state.serverResponse;
-
-      for (const key in arr) {
-        if (key == "non_field_errors") {
-          const all_inputs = document.getElementsByClassName("form-control");
-          Array.from(all_inputs).forEach((input) => {
-            input.setCustomValidity(arr[key]);
-            input.nextElementSibling.innerHTML = input.validationMessage;
-          });
-        } else {
-          const object_list = document.getElementsByName(key);
-          object_list.forEach((object) => {
-            object.setCustomValidity(arr[key]);
-            object.nextElementSibling.innerHTML = object.validationMessage;
-          });
-        }
-      }
-    };
-
-    const handleSubmit = (event) => {
-      const form = event.currentTarget;
-      if (form.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
+  setInvalidFeedback = (error) => {
+    const errorDict = error.response.data;
+    const updatedErrorState = this.state.error;
+    for (const errorField in errorDict) {
+      if (errorField == "non_field_errors") {
+        Object.keys(this.state.error).forEach((field) => {
+          updatedErrorState[field] = errorDict[errorField];
+        });
       } else {
-        this.handle_login(event, () => {
-          set_invalid_feedback();
+        const object_list = document.getElementsByName(key);
+        object_list.forEach((object) => {
+          object.setCustomValidity(arr[key]);
+          object.nextElementSibling.innerHTML = object.validationMessage;
         });
       }
-      setValidated(true);
-    };
+    }
+    this.setState({
+      error: updatedErrorState,
+    });
+  };
 
+  handleSubmit = (event) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else {
+      this.handleLogin(event);
+    }
+    this.setState({
+      submitted: true,
+    });
+  };
+
+  capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  renderField(fieldName, type, renderLeftIcon, renderRightIcon = () => {}) {
+    return (
+      <Form.Group>
+        <Form.Label>{this.capitalizeFirstLetter(fieldName)}</Form.Label>
+        <InputGroup>
+          <InputGroup.Prepend>
+            <InputGroup.Text>{renderLeftIcon()}</InputGroup.Text>
+          </InputGroup.Prepend>
+          <Form.Control
+            isInvalid={this.state.error[fieldName].length !== 0}
+            isValid={
+              this.state.submitted && this.state.error[fieldName].length === 0
+            }
+            type={type}
+            name={fieldName}
+            placeholder={`Enter your ${fieldName}`}
+            value={this.state[fieldName]}
+            onChange={this.handle_change}
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            {this.state.error[fieldName]}
+          </Form.Control.Feedback>
+          {renderRightIcon()}
+        </InputGroup>
+      </Form.Group>
+    );
+  }
+
+  renderForm() {
+    return (
+      <Form noValidate onSubmit={this.handleSubmit}>
+        {this.renderField("username", "text", () => {
+          return <FaPortrait size={20} />;
+        })}
+        {this.renderField(
+          "password",
+          "password",
+          () => {
+            return <FaLock size={20} />;
+          },
+          () => {
+            return (
+              <InputGroup.Append>
+                <Button variant="outline-secondary">
+                  <FaEye size={20} />
+                </Button>
+              </InputGroup.Append>
+            );
+          }
+        )}
+        <Button type="submit" className="btn btn-primary">
+          Submit
+        </Button>
+      </Form>
+    );
+  }
+
+  renderLoginForm = () => {
     return (
       <Container>
         <Row className="justify-content-center align-items-center p-3">
           <Col md={5} className="mx-auto">
             <h1 className="text-center">Log In</h1>
-            <Form noValidate validated={validated} onSubmit={handleSubmit}>
-              <Form.Group>
-                <Form.Label>Username</Form.Label>
-                <InputGroup>
-                  <InputGroup.Prepend>
-                    <InputGroup.Text>
-                      <FaPortrait size={20} />
-                    </InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <Form.Control
-                    type="text"
-                    name="username"
-                    placeholder="Enter your username"
-                    value={this.state.username}
-                    onChange={this.handle_change}
-                    required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    Username is required
-                  </Form.Control.Feedback>
-                </InputGroup>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Password</Form.Label>
-                <InputGroup>
-                  <InputGroup.Prepend>
-                    <InputGroup.Text>
-                      <FaLock size={20} />
-                    </InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <Form.Control
-                    type="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    value={this.state.password}
-                    onChange={this.handle_change}
-                    required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    Password is required
-                  </Form.Control.Feedback>
-                  <InputGroup.Append>
-                    <Button variant="outline-secondary">
-                      <FaEye size={20} />
-                    </Button>
-                  </InputGroup.Append>
-                </InputGroup>
-              </Form.Group>
-              <Button type="submit" className="btn btn-primary">
-                Submit
-              </Button>
-            </Form>
+            {this.renderForm()}
           </Col>
         </Row>
       </Container>
@@ -195,12 +190,12 @@ class LoginForm extends React.Component {
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />;
     }
-    return <this.validating_login_form />;
+    return this.renderLoginForm();
   }
 }
 
 export default LoginForm;
 
 LoginForm.propTypes = {
-  // handle_login: PropTypes.func.isRequired
+  // handleLogin: PropTypes.func.isRequired
 };
