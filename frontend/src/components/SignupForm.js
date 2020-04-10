@@ -11,12 +11,16 @@ import {
 import { Form, Container, Col, Row, InputGroup } from "react-bootstrap";
 import axios from "axios";
 import { GiKing, GiPadlock } from "react-icons/gi";
+import { FaAt, FaLock, FaEnvelope, FaPortrait } from "react-icons/fa";
 import { IconContext } from "react-icons";
 
 class SignupForm extends React.Component {
   state = {
     username: "",
     password: "",
+    first_name: "",
+    last_name: "",
+    email: "",
     redirect: null,
     status: null,
     serverResponse: null,
@@ -41,11 +45,8 @@ class SignupForm extends React.Component {
       }
       //If the value is empty
       else {
-        //Capitalize the object's name
-        const capitalized_object =
-          object.name.charAt(0).toUpperCase() + object.name.slice(1);
         //Set the invalidation message
-        object.setCustomValidity(`${capitalized_object} is required`);
+        object.setCustomValidity("This field is required");
         //Display the invalidation message
         object.nextElementSibling.innerHTML = object.validationMessage;
       }
@@ -79,6 +80,7 @@ class SignupForm extends React.Component {
             status: error.response.status,
             serverResponse: error.response.data,
           });
+          console.log(error.response);
         }
       )
       .then(() => {
@@ -104,7 +106,18 @@ class SignupForm extends React.Component {
         } else {
           const object_list = document.getElementsByName(key);
           object_list.forEach((object) => {
-            object.setCustomValidity(arr[key]);
+            if (arr[key].length > 1) {
+              var multiple_invalid_messages = "";
+              arr[key].forEach((single_invalid_message) => {
+                multiple_invalid_messages = multiple_invalid_messages.concat(
+                  single_invalid_message,
+                  "<br>"
+                );
+              });
+              object.setCustomValidity(multiple_invalid_messages);
+            } else {
+              object.setCustomValidity(arr[key]);
+            }
             object.nextElementSibling.innerHTML = object.validationMessage;
           });
         }
@@ -127,15 +140,75 @@ class SignupForm extends React.Component {
     return (
       <Container>
         <Row className="justify-content-center align-items-center p-3">
-          <Col md={5} className="mx-auto">
+          <Col md={6} className="mx-auto">
             <h1 className="text-center">Sign Up</h1>
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
               <Form.Group>
-                <Form.Label>Username&#42;</Form.Label>
+                <Form.Row>
+                  <Col className="pr-0">
+                    <Form.Label>First Name</Form.Label>
+                    <InputGroup>
+                      <InputGroup.Prepend>
+                        <InputGroup.Text>
+                          <FaPortrait size={20} />
+                        </InputGroup.Text>
+                      </InputGroup.Prepend>
+                      <Form.Control
+                        type="text"
+                        name="first_name"
+                        placeholder="Enter your first name"
+                        value={this.state.first_name}
+                        onChange={this.handle_change}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        First name is required
+                      </Form.Control.Feedback>
+                    </InputGroup>
+                  </Col>
+                  <Col className="pl-0">
+                    <Form.Label>Last Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="last_name"
+                      placeholder="Enter your last name"
+                      value={this.state.last_name}
+                      onChange={this.handle_change}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Last name is required
+                    </Form.Control.Feedback>
+                  </Col>
+                </Form.Row>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
                 <InputGroup>
                   <InputGroup.Prepend>
                     <InputGroup.Text>
-                      <GiKing size={20} />
+                      <FaEnvelope size={20} />
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <Form.Control
+                    type="text"
+                    name="email"
+                    placeholder="Enter your email"
+                    value={this.state.email}
+                    onChange={this.handle_change}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Last name is required
+                  </Form.Control.Feedback>
+                </InputGroup>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Username</Form.Label>
+                <InputGroup>
+                  <InputGroup.Prepend>
+                    <InputGroup.Text>
+                      <FaAt size={20} />
                     </InputGroup.Text>
                   </InputGroup.Prepend>
                   <Form.Control
@@ -152,11 +225,11 @@ class SignupForm extends React.Component {
                 </InputGroup>
               </Form.Group>
               <Form.Group>
-                <Form.Label>Password&#42;</Form.Label>
+                <Form.Label>Password</Form.Label>
                 <InputGroup>
                   <InputGroup.Prepend>
                     <InputGroup.Text>
-                      <GiPadlock size={20} />
+                      <FaLock size={20} />
                     </InputGroup.Text>
                   </InputGroup.Prepend>
                   <Form.Control

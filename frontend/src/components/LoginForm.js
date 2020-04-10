@@ -8,10 +8,10 @@ import {
   Switch,
   useParams,
 } from "react-router-dom";
-import { Form, Container, Col, Row, InputGroup } from "react-bootstrap";
+import { Form, Container, Col, Row, InputGroup, Button } from "react-bootstrap";
 import axios from "axios";
-import { GiKing, GiPadlock } from "react-icons/gi";
 import { IconContext } from "react-icons";
+import { FaPortrait, FaLock, FaEye } from "react-icons/fa";
 
 class LoginForm extends React.Component {
   state = {
@@ -135,11 +135,11 @@ class LoginForm extends React.Component {
             <h1 className="text-center">Log In</h1>
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
               <Form.Group>
-                <Form.Label>Username&#42;</Form.Label>
+                <Form.Label>Username</Form.Label>
                 <InputGroup>
                   <InputGroup.Prepend>
                     <InputGroup.Text>
-                      <GiKing size={20} />
+                      <FaPortrait size={20} />
                     </InputGroup.Text>
                   </InputGroup.Prepend>
                   <Form.Control
@@ -156,11 +156,11 @@ class LoginForm extends React.Component {
                 </InputGroup>
               </Form.Group>
               <Form.Group>
-                <Form.Label>Password&#42;</Form.Label>
+                <Form.Label>Password</Form.Label>
                 <InputGroup>
                   <InputGroup.Prepend>
                     <InputGroup.Text>
-                      <GiPadlock size={20} />
+                      <FaLock size={20} />
                     </InputGroup.Text>
                   </InputGroup.Prepend>
                   <Form.Control
@@ -174,11 +174,16 @@ class LoginForm extends React.Component {
                   <Form.Control.Feedback type="invalid">
                     Password is required
                   </Form.Control.Feedback>
+                  <InputGroup.Append>
+                    <Button variant="outline-secondary">
+                      <FaEye size={20} />
+                    </Button>
+                  </InputGroup.Append>
                 </InputGroup>
               </Form.Group>
-              <button type="submit" className="btn btn-primary">
+              <Button type="submit" className="btn btn-primary">
                 Submit
-              </button>
+              </Button>
             </Form>
           </Col>
         </Row>
