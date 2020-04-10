@@ -81,9 +81,10 @@ class App extends Component {
               About
             </NavLink>
           </Nav>
-          <Nav className="mr-5">
+          <Nav className="mr-5 pr-5">
             <Navbar.Text>Signed in as:</Navbar.Text>
             <NavDropdown
+              className="mr-3"
               title={this.state.username}
               onMouseEnter={this.handle_navdropdown_open}
               onMouseLeave={this.handle_navdropdown_close}
