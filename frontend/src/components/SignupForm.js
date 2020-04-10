@@ -185,9 +185,11 @@ class SignupForm extends React.Component {
                   readOnly
                 />
               </Form.Group>
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
+              <Form.Group>
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
+              </Form.Group>
             </Form>
           </Col>
         </Row>
