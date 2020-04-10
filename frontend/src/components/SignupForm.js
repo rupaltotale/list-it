@@ -47,7 +47,7 @@ class SignupForm extends React.Component {
       //If the value is empty
       else {
         //Set the invalidation message
-        object.setCustomValidity("This field is required");
+        object.setCustomValidity("This field may not be blank.");
         //Display the invalidation message
         object.nextElementSibling.innerHTML = object.validationMessage;
       }
@@ -81,7 +81,6 @@ class SignupForm extends React.Component {
             status: error.response.status,
             serverResponse: error.response.data,
           });
-          console.log(error.response);
         }
       )
       .then(() => {

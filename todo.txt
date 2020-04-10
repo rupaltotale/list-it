@@ -1,0 +1,7 @@
+- Replace underscore with space
+- Non field errors should show below all fields and only field validation should
+  change when its value is changed
+- Backend fix for login/signup inconsitentcy
+- password errors with other things
+- Right eye
+- Login page --> sign up page breaks stuff... why?

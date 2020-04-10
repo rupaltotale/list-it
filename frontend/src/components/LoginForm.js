@@ -17,40 +17,61 @@ import axios from "axios";
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
-    // this.api = new API();
   }
-  state = {
-    username: "",
-    password: "",
-    redirect: null,
-    submitted: false,
-    error: {
-      username: [],
-      password: [],
-    },
+  componentDidMount() {
+    console.log("State mounted only!!");
+    console.log(this.state);
+  }
+
+  componentDidUpdate() {
+    console.log("State updated only!");
+  }
+
+  getFields = (initialValue) => {
+    const returnDict = {};
+    this.props.formFields.forEach((field) => {
+      returnDict[field.fieldName] = initialValue;
+    });
+    return returnDict;
   };
+
+  state = Object.assign(
+    {},
+    {
+      redirect: null,
+      submitted: false,
+      error: this.getFields([]),
+    },
+    this.getFields("")
+  );
 
   handle_change = (e) => {
     const name = e.target.name;
     const value = e.target.value;
     // Stores the input field value in a state variable
-    this.setState((prevstate) => {
-      const newState = { ...prevstate };
-      newState[name] = value;
-      return newState;
-    });
-    // Sets validity of the input field being changed (based on if it is now empty)
-    const updatedErrorState = this.state.error;
-    if (value.length > 0) {
-      Object.keys(this.state.error).forEach((field) => {
-        updatedErrorState[field] = [];
-      });
-    } else {
-      updatedErrorState[name] = ["This field is required"];
-    }
-    this.setState({
-      error: updatedErrorState,
-    });
+    this.setState(
+      (prevstate) => {
+        const newState = { ...prevstate };
+        newState[name] = value;
+        return newState;
+      },
+      () => {
+        // Sets validity of the input field being changed (based on if it is now empty)
+        const updatedErrorState = this.state.error;
+        if (value.length > 0) {
+          Object.keys(this.state.error).forEach((field) => {
+            if (this.state[field]) {
+              updatedErrorState[field] = [];
+            }
+          });
+        } else {
+          updatedErrorState[name] = ["This field may not be blank."];
+        }
+        this.setState({
+          error: updatedErrorState,
+        });
+      }
+    );
   };
 
   handleLogin = (e) => {
@@ -58,7 +79,7 @@ class LoginForm extends React.Component {
     axios({
       method: "post",
       // TODO: Abstract root url: http://localhost:8000/
-      url: "http://localhost:8000/token-auth/",
+      url: this.props.postUrl,
       headers: {
         "Content-Type": "application/json",
       },
@@ -66,7 +87,9 @@ class LoginForm extends React.Component {
     })
       .then((response) => {
         localStorage.setItem("token", response.data.token);
-        const username = response.data.user.username;
+        const username = response.data.username
+          ? response.data.username
+          : response.data.user.username;
         this.setState({
           logged_in: true,
           username,
@@ -86,11 +109,7 @@ class LoginForm extends React.Component {
           updatedErrorState[field] = errorDict[errorField];
         });
       } else {
-        const object_list = document.getElementsByName(key);
-        object_list.forEach((object) => {
-          object.setCustomValidity(arr[key]);
-          object.nextElementSibling.innerHTML = object.validationMessage;
-        });
+        updatedErrorState[errorField] = errorDict[errorField];
       }
     }
     this.setState({
@@ -99,13 +118,7 @@ class LoginForm extends React.Component {
   };
 
   handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    } else {
-      this.handleLogin(event);
-    }
+    this.handleLogin(event);
     this.setState({
       submitted: true,
     });
@@ -136,49 +149,48 @@ class LoginForm extends React.Component {
             required
           />
           <Form.Control.Feedback type="invalid">
-            {this.state.error[fieldName]}
+            {this.state.error[fieldName].map((item, i) => {
+              return <Form.Label key={i}>{item}</Form.Label>;
+            })}
           </Form.Control.Feedback>
-          {renderRightIcon()}
+          {renderRightIcon ? renderRightIcon() : null}
         </InputGroup>
       </Form.Group>
     );
   }
 
-  renderForm() {
+  renderFields = () => {
+    return (
+      <React.Fragment>
+        {this.props.formFields.map((field) => {
+          return this.renderField(
+            field.fieldName,
+            field.type,
+            field.leftIcon,
+            field.rightIcon
+          );
+        })}
+      </React.Fragment>
+    );
+  };
+
+  renderForm = () => {
     return (
       <Form noValidate onSubmit={this.handleSubmit}>
-        {this.renderField("username", "text", () => {
-          return <FaPortrait size={20} />;
-        })}
-        {this.renderField(
-          "password",
-          "password",
-          () => {
-            return <FaLock size={20} />;
-          },
-          () => {
-            return (
-              <InputGroup.Append>
-                <Button variant="outline-secondary">
-                  <FaEye size={20} />
-                </Button>
-              </InputGroup.Append>
-            );
-          }
-        )}
+        {this.renderFields()}
         <Button type="submit" className="btn btn-primary">
           Submit
         </Button>
       </Form>
     );
-  }
+  };
 
   renderLoginForm = () => {
     return (
       <Container>
         <Row className="justify-content-center align-items-center p-3">
           <Col md={5} className="mx-auto">
-            <h1 className="text-center">Log In</h1>
+            <h1 className="text-center">{this.props.pageTitle}</h1>
             {this.renderForm()}
           </Col>
         </Row>
@@ -197,5 +209,8 @@ class LoginForm extends React.Component {
 export default LoginForm;
 
 LoginForm.propTypes = {
-  // handleLogin: PropTypes.func.isRequired
+  set_username: PropTypes.func.isRequired,
+  pageTitle: PropTypes.string.isRequired,
+  formFields: PropTypes.array.isRequired,
+  postUrl: PropTypes.string.isRequired,
 };

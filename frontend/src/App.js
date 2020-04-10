@@ -1,17 +1,26 @@
 import {
+  Button,
+  InputGroup,
+  Jumbotron,
+  Nav,
+  NavDropdown,
+  Navbar,
+} from "react-bootstrap";
+import { FaAt, FaEnvelope, FaEye, FaLock, FaPortrait } from "react-icons/fa";
+import {
   Link,
+  NavLink,
+  Redirect,
   Route,
   BrowserRouter as Router,
   Switch,
   useParams,
-  NavLink,
-  Redirect,
 } from "react-router-dom";
 import React, { Component } from "react";
+
 import LoginForm from "./components/LoginForm";
 import SignupForm from "./components/SignupForm";
 import { render } from "react-dom";
-import { Jumbotron, Nav, Navbar, Button, NavDropdown } from "react-bootstrap";
 
 class App extends Component {
   constructor(props) {
@@ -166,6 +175,97 @@ class App extends Component {
     );
   }
 
+  renderSignUpForm = () => {
+    return (
+      <LoginForm
+        set_username={this.set_username}
+        pageTitle={"Sign Up"}
+        formFields={[
+          {
+            fieldName: "first_name",
+            type: "text",
+            leftIcon: () => {
+              return <FaPortrait size={20} />;
+            },
+          },
+          {
+            fieldName: "last_name",
+            type: "text",
+            leftIcon: () => {
+              return <FaPortrait size={20} />;
+            },
+          },
+          {
+            fieldName: "email",
+            type: "text",
+            leftIcon: () => {
+              return <FaEnvelope size={20} />;
+            },
+          },
+          {
+            fieldName: "username",
+            type: "text",
+            leftIcon: () => {
+              return <FaAt size={20} />;
+            },
+          },
+          {
+            fieldName: "password",
+            type: "password",
+            leftIcon: () => {
+              return <FaLock size={20} />;
+            },
+            rightIcon: () => {
+              return (
+                <InputGroup.Append>
+                  <Button variant="outline-secondary">
+                    <FaEye size={20} />
+                  </Button>
+                </InputGroup.Append>
+              );
+            },
+          },
+        ]}
+        postUrl={"http://localhost:8000/users/"}
+      />
+    );
+  };
+
+  renderLoginForm = () => {
+    return (
+      <LoginForm
+        set_username={this.set_username}
+        pageTitle={"Log In"}
+        formFields={[
+          {
+            fieldName: "username",
+            type: "text",
+            leftIcon: () => {
+              return <FaAt size={20} />;
+            },
+          },
+          {
+            fieldName: "password",
+            type: "password",
+            leftIcon: () => {
+              return <FaLock size={20} />;
+            },
+            rightIcon: () => {
+              return (
+                <InputGroup.Append>
+                  <Button variant="outline-secondary">
+                    <FaEye size={20} />
+                  </Button>
+                </InputGroup.Append>
+              );
+            },
+          },
+        ]}
+        postUrl={"http://localhost:8000/token-auth/"}
+      />
+    );
+  };
+
   render() {
     return (
       <Router>
@@ -174,15 +274,11 @@ class App extends Component {
             renders the first one that matches the current URL. */}
         <Switch>
           <Route path="/login">
-            {!this.state.logged_in && (
-              <LoginForm set_username={this.set_username} />
-            )}
+            {!this.state.logged_in && this.renderLoginForm()}
             {this.state.logged_in && <Redirect to="/" />}
           </Route>
           <Route path="/signup">
-            {!this.state.logged_in && (
-              <SignupForm set_username={this.set_username} />
-            )}
+            {!this.state.logged_in && this.renderSignUpForm()}
             {this.state.logged_in && <Redirect to="/" />}
           </Route>
           <Route path="/about">
