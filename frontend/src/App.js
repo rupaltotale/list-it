@@ -6,7 +6,15 @@ import {
   NavDropdown,
   Navbar,
 } from "react-bootstrap";
-import { FaAt, FaEnvelope, FaEye, FaLock, FaPortrait } from "react-icons/fa";
+import {
+  FaAt,
+  FaEnvelope,
+  FaEye,
+  FaLock,
+  FaPortrait,
+  FaEyeSlash,
+  FaKey,
+} from "react-icons/fa";
 import {
   Link,
   NavLink,
@@ -29,23 +37,9 @@ class App extends Component {
       logged_in: localStorage.getItem("token") ? true : false,
       username: "",
       isNavDropdownOpen: false,
+      isPasswordShowing: false,
     };
   }
-
-  set_username = (username) => {
-    this.setState({
-      username: username,
-      logged_in: true,
-    });
-  };
-
-  handle_navdropdown_open = () => {
-    this.setState({ isNavDropdownOpen: true });
-  };
-
-  handle_navdropdown_close = () => {
-    this.setState({ isNavDropdownOpen: false });
-  };
 
   componentDidMount() {
     if (this.state.logged_in) {
@@ -60,6 +54,32 @@ class App extends Component {
         });
     }
   }
+
+  set_username = (username) => {
+    this.setState({
+      username: username,
+      logged_in: true,
+    });
+  };
+
+  showPassword = () => {
+    this.setState(
+      {
+        isPasswordShowing: !this.state.isPasswordShowing,
+      },
+      () => {
+        console.log(this.state.isPasswordShowing);
+      }
+    );
+  };
+
+  handle_navdropdown_open = () => {
+    this.setState({ isNavDropdownOpen: true });
+  };
+
+  handle_navdropdown_close = () => {
+    this.setState({ isNavDropdownOpen: false });
+  };
 
   handle_logout = () => {
     localStorage.removeItem("token");
@@ -211,15 +231,22 @@ class App extends Component {
           },
           {
             fieldName: "password",
-            type: "password",
+            type: this.state.isPasswordShowing ? "text" : "password",
             leftIcon: () => {
-              return <FaLock size={20} />;
+              return <FaKey size={20} />;
             },
             rightIcon: () => {
               return (
                 <InputGroup.Append>
-                  <Button variant="outline-secondary">
-                    <FaEye size={20} />
+                  <Button
+                    variant="outline-secondary"
+                    onClick={this.showPassword}
+                  >
+                    {this.state.isPasswordShowing ? (
+                      <FaEye size={20} />
+                    ) : (
+                      <FaEyeSlash size={20} />
+                    )}
                   </Button>
                 </InputGroup.Append>
               );
@@ -246,15 +273,22 @@ class App extends Component {
           },
           {
             fieldName: "password",
-            type: "password",
+            type: this.state.isPasswordShowing ? "text" : "password",
             leftIcon: () => {
-              return <FaLock size={20} />;
+              return <FaKey size={20} />;
             },
             rightIcon: () => {
               return (
                 <InputGroup.Append>
-                  <Button variant="outline-secondary">
-                    <FaEye size={20} />
+                  <Button
+                    variant="outline-secondary"
+                    onClick={this.showPassword}
+                  >
+                    {this.state.isPasswordShowing ? (
+                      <FaEye size={20} />
+                    ) : (
+                      <FaEyeSlash size={20} />
+                    )}
                   </Button>
                 </InputGroup.Append>
               );

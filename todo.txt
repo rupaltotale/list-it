@@ -5,3 +5,4 @@
 - password errors with other things
 - Right eye
 - Login page --> sign up page breaks stuff... why?
+- Convert underscore to camelcase

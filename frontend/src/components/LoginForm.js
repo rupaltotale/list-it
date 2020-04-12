@@ -1,5 +1,4 @@
 import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
-import { FaEye, FaLock, FaPortrait } from "react-icons/fa";
 import {
   Link,
   Redirect,
@@ -45,7 +44,7 @@ class LoginForm extends React.Component {
     this.getFields("")
   );
 
-  handle_change = (e) => {
+  handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
     // Stores the input field value in a state variable
@@ -125,7 +124,8 @@ class LoginForm extends React.Component {
   };
 
   capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    string = string.charAt(0).toUpperCase() + string.slice(1);
+    return string.replace("_", " ");
   };
 
   renderField(fieldName, type, renderLeftIcon, renderRightIcon = () => {}) {
@@ -143,17 +143,17 @@ class LoginForm extends React.Component {
             }
             type={type}
             name={fieldName}
-            placeholder={`Enter your ${fieldName}`}
+            placeholder={`Enter your ${fieldName.replace("_", " ")}`}
             value={this.state[fieldName]}
-            onChange={this.handle_change}
+            onChange={this.handleChange}
             required
           />
+          {renderRightIcon ? renderRightIcon() : null}
           <Form.Control.Feedback type="invalid">
             {this.state.error[fieldName].map((item, i) => {
               return <Form.Label key={i}>{item}</Form.Label>;
             })}
           </Form.Control.Feedback>
-          {renderRightIcon ? renderRightIcon() : null}
         </InputGroup>
       </Form.Group>
     );
@@ -174,24 +174,18 @@ class LoginForm extends React.Component {
     );
   };
 
-  renderForm = () => {
-    return (
-      <Form noValidate onSubmit={this.handleSubmit}>
-        {this.renderFields()}
-        <Button type="submit" className="btn btn-primary">
-          Submit
-        </Button>
-      </Form>
-    );
-  };
-
   renderLoginForm = () => {
     return (
       <Container>
         <Row className="justify-content-center align-items-center p-3">
           <Col md={5} className="mx-auto">
             <h1 className="text-center">{this.props.pageTitle}</h1>
-            {this.renderForm()}
+            <Form noValidate onSubmit={this.handleSubmit}>
+              {this.renderFields()}
+              <Button type="submit" className="btn btn-primary">
+                Submit
+              </Button>
+            </Form>
           </Col>
         </Row>
       </Container>
