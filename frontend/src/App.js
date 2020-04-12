@@ -10,24 +10,20 @@ import {
   FaAt,
   FaEnvelope,
   FaEye,
-  FaLock,
-  FaPortrait,
   FaEyeSlash,
   FaKey,
+  FaPortrait,
 } from "react-icons/fa";
 import {
-  Link,
   NavLink,
   Redirect,
   Route,
   BrowserRouter as Router,
   Switch,
-  useParams,
 } from "react-router-dom";
 import React, { Component } from "react";
 
-import LoginForm from "./components/LoginForm";
-import SignupForm from "./components/SignupForm";
+import CustomForm from "./components/CustomForm";
 import { render } from "react-dom";
 
 class App extends Component {
@@ -55,7 +51,7 @@ class App extends Component {
     }
   }
 
-  set_username = (username) => {
+  setUsername = (username) => {
     this.setState({
       username: username,
       logged_in: true,
@@ -73,20 +69,20 @@ class App extends Component {
     );
   };
 
-  handle_navdropdown_open = () => {
+  handleNavDropDownOpen = () => {
     this.setState({ isNavDropdownOpen: true });
   };
 
-  handle_navdropdown_close = () => {
+  handleNavDropDownClose = () => {
     this.setState({ isNavDropdownOpen: false });
   };
 
-  handle_logout = () => {
+  handleLogout = () => {
     localStorage.removeItem("token");
     this.setState({ logged_in: false, username: "", isNavDropdownOpen: false });
   };
 
-  render_nav_logged_in() {
+  renderNavLoggedIn() {
     const logged_in_nav = (
       <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
         <Navbar.Brand href="/">To-Do List</Navbar.Brand>
@@ -115,17 +111,17 @@ class App extends Component {
             <NavDropdown
               className="mr-3"
               title={this.state.username}
-              onMouseEnter={this.handle_navdropdown_open}
-              onMouseLeave={this.handle_navdropdown_close}
+              onMouseEnter={this.handleNavDropDownOpen}
+              onMouseLeave={this.handleNavDropDownClose}
               show={this.state.isNavDropdownOpen}
             >
-              <NavDropdown.Item onMouseEnter={this.handle_navdropdown_open}>
+              <NavDropdown.Item onMouseEnter={this.handleNavDropDownOpen}>
                 Your Profile
               </NavDropdown.Item>
               <NavDropdown.Item
-                onMouseEnter={this.handle_navdropdown_open}
+                onMouseEnter={this.handleNavDropDownOpen}
                 className="font-weight-bold"
-                onClick={this.handle_logout}
+                onClick={this.handleLogout}
               >
                 <u>Logout</u>
               </NavDropdown.Item>
@@ -137,7 +133,7 @@ class App extends Component {
     return logged_in_nav;
   }
 
-  render_nav_logged_out() {
+  renderNavLoggedOut() {
     const logged_out_nav = (
       <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
         <Navbar.Brand href="/">To-Do List</Navbar.Brand>
@@ -189,16 +185,16 @@ class App extends Component {
     return (
       <div>
         {this.state.logged_in
-          ? this.render_nav_logged_in()
-          : this.render_nav_logged_out()}
+          ? this.renderNavLoggedIn()
+          : this.renderNavLoggedOut()}
       </div>
     );
   }
 
   renderSignUpForm = () => {
     return (
-      <LoginForm
-        set_username={this.set_username}
+      <CustomForm
+        setUsername={this.setUsername}
         pageTitle={"Sign Up"}
         formFields={[
           {
@@ -260,8 +256,8 @@ class App extends Component {
 
   renderLoginForm = () => {
     return (
-      <LoginForm
-        set_username={this.set_username}
+      <CustomForm
+        setUsername={this.setUsername}
         pageTitle={"Log In"}
         formFields={[
           {

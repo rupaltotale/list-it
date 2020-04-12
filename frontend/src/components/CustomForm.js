@@ -1,47 +1,51 @@
 import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
-import {
-  Link,
-  Redirect,
-  Route,
-  BrowserRouter as Router,
-  Switch,
-  useParams,
-} from "react-router-dom";
-import PropTypes, { object } from "prop-types";
-import React, { useState } from "react";
+import { Redirect, BrowserRouter as Router } from "react-router-dom";
 
-import { IconContext } from "react-icons";
+import PropTypes from "prop-types";
+import React from "react";
 import axios from "axios";
 
-class LoginForm extends React.Component {
+class CustomForm extends React.Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
-    console.log("State mounted only!!");
-    console.log(this.state);
+  componentDidMount() {}
+
+  componentDidUpdate() {}
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.pageTitle !== prevState.pageTitle) {
+      return Object.assign(
+        {},
+        {
+          redirect: null,
+          submitted: false,
+          error: CustomForm.getFields([], nextProps),
+          pageTitle: nextProps.pageTitle,
+        },
+        CustomForm.getFields("", nextProps)
+      );
+    }
+    return null;
   }
 
-  componentDidUpdate() {
-    console.log("State updated only!");
-  }
-
-  getFields = (initialValue) => {
+  static getFields(initialValue, props) {
     const returnDict = {};
-    this.props.formFields.forEach((field) => {
+    props.formFields.forEach((field) => {
       returnDict[field.fieldName] = initialValue;
     });
     return returnDict;
-  };
+  }
 
   state = Object.assign(
     {},
     {
       redirect: null,
       submitted: false,
-      error: this.getFields([]),
+      error: CustomForm.getFields([], this.props),
+      pageTitle: this.props.pageTitle,
     },
-    this.getFields("")
+    CustomForm.getFields("", this.props)
   );
 
   handleChange = (e) => {
@@ -73,32 +77,6 @@ class LoginForm extends React.Component {
     );
   };
 
-  handleLogin = (e) => {
-    e.preventDefault();
-    axios({
-      method: "post",
-      // TODO: Abstract root url: http://localhost:8000/
-      url: this.props.postUrl,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify(this.state),
-    })
-      .then((response) => {
-        localStorage.setItem("token", response.data.token);
-        const username = response.data.username
-          ? response.data.username
-          : response.data.user.username;
-        this.setState({
-          logged_in: true,
-          username,
-          redirect: "/",
-        });
-        this.props.set_username(username);
-      })
-      .catch(this.setInvalidFeedback);
-  };
-
   setInvalidFeedback = (error) => {
     const errorDict = error.response.data;
     const updatedErrorState = this.state.error;
@@ -117,13 +95,36 @@ class LoginForm extends React.Component {
   };
 
   handleSubmit = (event) => {
-    this.handleLogin(event);
+    event.preventDefault();
+    axios({
+      method: "post",
+      // TODO: Abstract root url: http://localhost:8000/
+      url: this.props.postUrl,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify(this.state),
+    })
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        // TODO: Have same username location for login and signup
+        const username = response.data.username
+          ? response.data.username
+          : response.data.user.username;
+        this.setState({
+          logged_in: true,
+          username,
+          redirect: "/",
+        });
+        this.props.setUsername(username);
+      })
+      .catch(this.setInvalidFeedback);
     this.setState({
       submitted: true,
     });
   };
 
-  capitalizeFirstLetter = (string) => {
+  getProperNameFromField = (string) => {
     string = string.charAt(0).toUpperCase() + string.slice(1);
     return string.replace("_", " ");
   };
@@ -131,7 +132,7 @@ class LoginForm extends React.Component {
   renderField(fieldName, type, renderLeftIcon, renderRightIcon = () => {}) {
     return (
       <Form.Group>
-        <Form.Label>{this.capitalizeFirstLetter(fieldName)}</Form.Label>
+        <Form.Label>{this.getProperNameFromField(fieldName)}</Form.Label>
         <InputGroup>
           <InputGroup.Prepend>
             <InputGroup.Text>{renderLeftIcon()}</InputGroup.Text>
@@ -174,7 +175,7 @@ class LoginForm extends React.Component {
     );
   };
 
-  renderLoginForm = () => {
+  renderForm = () => {
     return (
       <Container>
         <Row className="justify-content-center align-items-center p-3">
@@ -196,14 +197,14 @@ class LoginForm extends React.Component {
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />;
     }
-    return this.renderLoginForm();
+    return this.renderForm();
   }
 }
 
-export default LoginForm;
+export default CustomForm;
 
-LoginForm.propTypes = {
-  set_username: PropTypes.func.isRequired,
+CustomForm.propTypes = {
+  setUsername: PropTypes.func.isRequired,
   pageTitle: PropTypes.string.isRequired,
   formFields: PropTypes.array.isRequired,
   postUrl: PropTypes.string.isRequired,
