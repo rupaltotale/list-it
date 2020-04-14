@@ -112,7 +112,7 @@ class CustomForm extends React.Component {
           ? response.data.username
           : response.data.user.username;
         this.setState({
-          logged_in: true,
+          loggedIn: true,
           username,
           redirect: "/",
         });

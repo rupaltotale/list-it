@@ -25,12 +25,15 @@ import React, { Component } from "react";
 
 import CustomForm from "./components/CustomForm";
 import { render } from "react-dom";
+import Home from "./components/Home";
+import List from "./components/List";
+import axios from "axios";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      logged_in: localStorage.getItem("token") ? true : false,
+      loggedIn: localStorage.getItem("token") ? true : false,
       username: "",
       isNavDropdownOpen: false,
       isPasswordShowing: false,
@@ -38,15 +41,16 @@ class App extends Component {
   }
 
   componentDidMount() {
-    if (this.state.logged_in) {
-      fetch("http://localhost:8000/current_user/", {
-        headers: {
-          Authorization: `JWT ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          this.setState({ username: json.username });
+    console.log(localStorage.getItem("token"));
+    if (this.state.loggedIn) {
+      axios
+        .get("http://localhost:8000/current_user/", {
+          headers: {
+            Authorization: `JWT ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          this.setState({ username: response.data.username });
         });
     }
   }
@@ -54,19 +58,14 @@ class App extends Component {
   setUsername = (username) => {
     this.setState({
       username: username,
-      logged_in: true,
+      loggedIn: true,
     });
   };
 
   showPassword = () => {
-    this.setState(
-      {
-        isPasswordShowing: !this.state.isPasswordShowing,
-      },
-      () => {
-        console.log(this.state.isPasswordShowing);
-      }
-    );
+    this.setState({
+      isPasswordShowing: !this.state.isPasswordShowing,
+    });
   };
 
   handleNavDropDownOpen = () => {
@@ -79,11 +78,11 @@ class App extends Component {
 
   handleLogout = () => {
     localStorage.removeItem("token");
-    this.setState({ logged_in: false, username: "", isNavDropdownOpen: false });
+    this.setState({ loggedIn: false, username: "", isNavDropdownOpen: false });
   };
 
   renderNavLoggedIn() {
-    const logged_in_nav = (
+    const loggedIn_nav = (
       <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
         <Navbar.Brand href="/">To-Do List</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -130,7 +129,7 @@ class App extends Component {
         </Navbar.Collapse>
       </Navbar>
     );
-    return logged_in_nav;
+    return loggedIn_nav;
   }
 
   renderNavLoggedOut() {
@@ -184,7 +183,7 @@ class App extends Component {
   render_nav() {
     return (
       <div>
-        {this.state.logged_in
+        {this.state.loggedIn
           ? this.renderNavLoggedIn()
           : this.renderNavLoggedOut()}
       </div>
@@ -296,6 +295,12 @@ class App extends Component {
     );
   };
 
+  renderHomePage = () => {
+    return (
+      <Home username={this.state.username} loggedIn={this.state.loggedIn} />
+    );
+  };
+
   render() {
     return (
       <Router>
@@ -304,12 +309,12 @@ class App extends Component {
             renders the first one that matches the current URL. */}
         <Switch>
           <Route path="/login">
-            {!this.state.logged_in && this.renderLoginForm()}
-            {this.state.logged_in && <Redirect to="/" />}
+            {!this.state.loggedIn && this.renderLoginForm()}
+            {this.state.loggedIn && <Redirect to="/" />}
           </Route>
           <Route path="/signup">
-            {!this.state.logged_in && this.renderSignUpForm()}
-            {this.state.logged_in && <Redirect to="/" />}
+            {!this.state.loggedIn && this.renderSignUpForm()}
+            {this.state.loggedIn && <Redirect to="/" />}
           </Route>
           <Route path="/about">
             <div>About</div>
@@ -317,14 +322,11 @@ class App extends Component {
           <Route path="/terms">
             <div>Lol, no terms and services</div>
           </Route>
-          <Route path="/">
-            <Jumbotron>
-              <h2>To-do List</h2>
-            </Jumbotron>
-          </Route>
+          <Route path="/">{this.renderHomePage()}</Route>
         </Switch>
       </Router>
     );
+    return null;
   }
 }
 
