@@ -79,6 +79,7 @@ class CustomForm extends React.Component {
 
   setInvalidFeedback = (error) => {
     const errorDict = error.response.data;
+    console.log(error.response.data);
     const updatedErrorState = this.state.error;
     for (const errorField in errorDict) {
       if (errorField == "non_field_errors") {
