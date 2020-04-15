@@ -41,7 +41,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log(localStorage.getItem("token"));
     if (this.state.loggedIn) {
       axios
         .get("http://localhost:8000/current_user/", {

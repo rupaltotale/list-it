@@ -6,38 +6,56 @@ import {
   Col,
   ListGroup,
   ListGroupItem,
-  CardGroup,
   Button,
-  CardDeck,
   InputGroup,
-  FormControl,
-  OverlayTrigger,
-  Tooltip,
+  Form,
+  ButtonGroup,
 } from "react-bootstrap";
 import moment from "moment";
-import { FaRegCheckSquare } from "react-icons/fa";
+import { FaRegCheckSquare, FaEdit, FaTrashAlt } from "react-icons/fa";
 
 class List extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: this.props.username,
       title: this.props.title,
       currentlyEditingTitle: false,
-      isButtonDisabled: false,
+      errorResponse: null,
     };
   }
 
   componentDidMount() {}
 
-  changeTitleEditState = () => {
-    this.setState({
-      currentlyEditingTitle: !this.state.currentlyEditingTitle,
-      isButtonDisabled: true,
-    });
+  handleTitleChange = (titleData) => {
+    this.setState(
+      {
+        title: titleData.target.value,
+        errorResponse: null,
+      },
+      () => {
+        if (!this.state.title) {
+          this.setState({
+            errorResponse: "This field may not be blank",
+          });
+        }
+      }
+    );
   };
 
-  changeTitle = () => {
+  changeTitleEditState = () => {
+    if (this.state.currentlyEditingTitle) {
+      this.setState({
+        currentlyEditingTitle: false,
+      });
+    } else {
+      this.setState({
+        currentlyEditingTitle: true,
+      });
+    }
+  };
+
+  updateListTitle = (event) => {
+    event.preventDefault();
     axios
       .put(
         `http://127.0.0.1:8000/api/v1/lists/${this.props.id}/`,
@@ -53,75 +71,118 @@ class List extends React.Component {
       )
       .then((response) => {
         console.log(response);
+        this.changeTitleEditState();
+        // this.setState({
+        //   title: response.data,
+        //   errorResponse: null,
+        // });
       })
       .catch((error) => {
-        console.log(error.response.data);
+        this.setState({
+          errorResponse: error.response.data.title,
+        });
       });
+  };
+
+  renderEditingListTitle = () => {
+    return (
+      <Card.Header className="d-flex justify-content-center">
+        <Card.Title className="my-0">
+          <Form>
+            <InputGroup>
+              <Form.Control
+                required
+                className="pr-5"
+                type="text"
+                placeholder="Title cannot be blank"
+                value={this.state.title}
+                onChange={this.handleTitleChange}
+              ></Form.Control>
+              <InputGroup.Append>
+                <Button
+                  className="mr-4"
+                  size="sm"
+                  type="submit"
+                  variant={this.state.errorResponse ? "danger" : "success"}
+                  onClick={this.updateListTitle}
+                >
+                  <FaRegCheckSquare size={20}></FaRegCheckSquare>
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
+          </Form>
+        </Card.Title>
+      </Card.Header>
+    );
+  };
+
+  renderFixedListTitle = () => {
+    return (
+      <Card.Header className="d-flex justify-content-between">
+        <Card.Title className="ml-3 my-0">{this.state.title}</Card.Title>
+        <ButtonGroup>
+          <Button
+            size="sm"
+            variant="warning"
+            className="mr-2"
+            onClick={this.changeTitleEditState}
+          >
+            <FaEdit size={16}></FaEdit>
+          </Button>
+
+          {/* <Button
+            className="mr-4"
+            size="sm"
+            variant="danger"
+            onClick={this.changeTitleEditState}
+          >
+            <FaTrashAlt size={16}></FaTrashAlt>
+          </Button> */}
+        </ButtonGroup>
+      </Card.Header>
+    );
   };
 
   renderListTitle = () => {
     if (this.state.currentlyEditingTitle) {
-      return (
-        <InputGroup>
-          <FormControl
-            size="sm"
-            required
-            type="text"
-            value={this.state.title}
-            onChange={(formData) => {
-              this.setState({
-                title: formData.target.value,
-              });
-            }}
-          ></FormControl>
-          <InputGroup.Append>
-            <Button variant="secondary" onClick={this.changeTitle}>
-              <FaRegCheckSquare size={17}></FaRegCheckSquare>
-            </Button>
-          </InputGroup.Append>
-        </InputGroup>
-      );
+      return this.renderEditingListTitle();
     } else {
-      return <Card.Title className="m-0">{this.state.title}</Card.Title>;
+      return this.renderFixedListTitle();
     }
   };
 
   renderListItems = () => {
     return (
-      <ListGroup variant="flush">
-        {this.props.listItems.map((listItem) => {
-          return (
-            <ListGroupItem key={listItem.id}>This is a list item</ListGroupItem>
-          );
-        })}
-      </ListGroup>
+      <Card.Body className="flex-fill">
+        <ListGroup variant="flush">
+          {this.props.listItems.map((listItem) => {
+            return (
+              <ListGroupItem className="p-1 m-1" key={listItem.id}>
+                This is a list item
+              </ListGroupItem>
+            );
+          })}
+        </ListGroup>
+      </Card.Body>
     );
   };
 
+  renderDateCreated() {
+    return (
+      <Card.Footer>
+        Created on{" "}
+        {moment(this.props.dateCreated).format("MMMM Do, YYYY (h:mm A)")}
+      </Card.Footer>
+    );
+  }
+
   renderList = () => {
     return (
-      <CardDeck className="m-2">
-        <Card className="text-center">
-          <Card.Header>List ID: {this.props.id}</Card.Header>
-          <Card.Body>
-            <Button
-              className="m-0 p-2"
-              variant="light"
-              onClick={this.changeTitleEditState}
-              disabled={this.state.isButtonDisabled}
-            >
-              {this.renderListTitle()}
-            </Button>
-            <CardDeck className="text-center">
-              {this.renderListItems()}
-            </CardDeck>
-          </Card.Body>
-          <Card.Footer>
-            Created on{" "}
-            {moment(this.props.dateCreated).format("MMMM Do, YYYY (h:mm A)")}
-          </Card.Footer>
-        </Card>
-      </CardDeck>
+      <Card>
+        {this.renderListTitle()}
+        {this.renderListItems()}
+        {this.renderDateCreated()}
+      </Card>
     );
   };
 

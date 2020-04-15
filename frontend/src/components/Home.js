@@ -11,6 +11,8 @@ import {
   Jumbotron,
   Alert,
   CardDeck,
+  CardGroup,
+  CardColumns,
 } from "react-bootstrap";
 import { Redirect, BrowserRouter as Router } from "react-router-dom";
 import List from "./List";
@@ -71,21 +73,27 @@ class Home extends React.Component {
       return (
         <React.Fragment>
           <h1 className="text-center display-4">My Lists</h1>
-          <Container className="justify-content-around">
-            <CardDeck>
-              {this.state.userListData.map((list) => {
-                return (
+          <Row>
+            {this.state.userListData.map((list) => {
+              return (
+                <Col
+                  key={list.id}
+                  className="my-2"
+                  xs={12}
+                  s={10}
+                  md={6}
+                  lg={4}
+                >
                   <List
                     id={list.id}
-                    key={list.id}
                     title={list.title}
                     dateCreated={list.date_created}
                     listItems={list.list_items}
                   />
-                );
-              })}
-            </CardDeck>
-          </Container>
+                </Col>
+              );
+            })}
+          </Row>
         </React.Fragment>
       );
     } else {
