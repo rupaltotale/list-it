@@ -72,10 +72,10 @@ class List extends React.Component {
       .then((response) => {
         console.log(response);
         this.changeTitleEditState();
-        // this.setState({
-        //   title: response.data,
-        //   errorResponse: null,
-        // });
+        this.setState({
+          title: response.data,
+          errorResponse: null,
+        });
       })
       .catch((error) => {
         this.setState({
