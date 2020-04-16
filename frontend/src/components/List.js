@@ -87,34 +87,16 @@ class List extends React.Component {
       });
   };
 
-  renderEditingListTitle = () => {
-    return (
-      <Card.Header
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignContent: "flex-center",
-          alignItems: "flex-center",
-          height: "100%",
-        }}
-      >
-        <InputGroup style={{ height: "100%", width: "70%" }}>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Title cannot be blank"
-            value={this.state.changingTitle}
-            onChange={this.handleTitleChange}
-          ></Form.Control>
-        </InputGroup>
-        <div
-          style={{
-            marginLeft: "auto",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "flex-center",
-          }}
-        >
+  renderButtons = () => {
+    if (!this.state.currentlyEditingTitle) {
+      return (
+        <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
+          <FaEdit size={20} color="green"></FaEdit>
+        </Button>
+      );
+    } else {
+      return (
+        <>
           <Button
             size="sm"
             type="submit"
@@ -126,12 +108,12 @@ class List extends React.Component {
           <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
             <FaRegWindowClose size={20} color="red"></FaRegWindowClose>
           </Button>
-        </div>
-      </Card.Header>
-    );
+        </>
+      );
+    }
   };
 
-  renderFixedListTitle = () => {
+  renderListTitle = () => {
     return (
       <Card.Header
         style={{
@@ -149,29 +131,22 @@ class List extends React.Component {
             placeholder="Title cannot be blank"
             value={this.state.changingTitle}
             onChange={this.handleTitleChange}
-            disabled={true}
+            disabled={!this.state.currentlyEditingTitle}
+            plaintext={!this.state.currentlyEditingTitle}
           ></Form.Control>
         </InputGroup>
-        <ButtonGroup
+        <div
           style={{
             marginLeft: "auto",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-center",
           }}
         >
-          <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
-            <FaEdit size={16} color="green"></FaEdit>
-          </Button>
-        </ButtonGroup>
-        {/* </Card.Title> */}
+          {this.renderButtons()}
+        </div>
       </Card.Header>
     );
-  };
-
-  renderListTitle = () => {
-    if (this.state.currentlyEditingTitle) {
-      return this.renderEditingListTitle();
-    } else {
-      return this.renderFixedListTitle();
-    }
   };
 
   renderListItems = () => {
