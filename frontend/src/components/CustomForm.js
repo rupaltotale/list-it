@@ -179,7 +179,7 @@ class CustomForm extends React.Component {
   renderForm = () => {
     return (
       <Container>
-        <Row className="justify-content-center align-items-center p-3">
+        <Row className="justify-content-center align-items-center">
           <Col md={5} className="mx-auto">
             <h1 className="text-center">{this.props.pageTitle}</h1>
             <Form noValidate onSubmit={this.handleSubmit}>

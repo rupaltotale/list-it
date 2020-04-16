@@ -73,7 +73,7 @@ class List extends React.Component {
         console.log(response);
         this.changeTitleEditState();
         this.setState({
-          title: response.data,
+          title: response.data.title,
           errorResponse: null,
         });
       })
@@ -87,12 +87,11 @@ class List extends React.Component {
   renderEditingListTitle = () => {
     return (
       <Card.Header className="d-flex justify-content-center">
-        <Card.Title className="my-0">
+        <Card.Title>
           <Form>
             <InputGroup>
               <Form.Control
                 required
-                className="pr-5"
                 type="text"
                 placeholder="Title cannot be blank"
                 value={this.state.title}
@@ -100,7 +99,6 @@ class List extends React.Component {
               ></Form.Control>
               <InputGroup.Append>
                 <Button
-                  className="mr-4"
                   size="sm"
                   type="submit"
                   variant={this.state.errorResponse ? "danger" : "success"}
@@ -118,27 +116,36 @@ class List extends React.Component {
 
   renderFixedListTitle = () => {
     return (
-      <Card.Header className="d-flex justify-content-between">
-        <Card.Title className="ml-3 my-0">{this.state.title}</Card.Title>
-        <ButtonGroup>
-          <Button
-            size="sm"
-            variant="warning"
-            className="mr-2"
-            onClick={this.changeTitleEditState}
+      <Card.Header>
+        <Card.Title
+          style={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          {this.state.title}
+          <ButtonGroup
+            style={{
+              marginLeft: "auto",
+            }}
           >
-            <FaEdit size={16}></FaEdit>
-          </Button>
+            <Button
+              size="sm"
+              variant="light"
+              onClick={this.changeTitleEditState}
+            >
+              <FaEdit size={16}></FaEdit>
+            </Button>
 
-          {/* <Button
-            className="mr-4"
+            {/* <Button
             size="sm"
             variant="danger"
             onClick={this.changeTitleEditState}
           >
             <FaTrashAlt size={16}></FaTrashAlt>
           </Button> */}
-        </ButtonGroup>
+          </ButtonGroup>
+        </Card.Title>
       </Card.Header>
     );
   };
@@ -153,11 +160,11 @@ class List extends React.Component {
 
   renderListItems = () => {
     return (
-      <Card.Body className="flex-fill">
+      <Card.Body>
         <ListGroup variant="flush">
           {this.props.listItems.map((listItem) => {
             return (
-              <ListGroupItem className="p-1 m-1" key={listItem.id}>
+              <ListGroupItem key={listItem.id}>
                 This is a list item
               </ListGroupItem>
             );
@@ -178,7 +185,7 @@ class List extends React.Component {
 
   renderList = () => {
     return (
-      <Card>
+      <Card style={{ margin: "5px", minWidth: "315px" }}>
         {this.renderListTitle()}
         {this.renderListItems()}
         {this.renderDateCreated()}

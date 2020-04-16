@@ -80,6 +80,28 @@ class App extends Component {
     this.setState({ loggedIn: false, username: "", isNavDropdownOpen: false });
   };
 
+  renderNavbarDropdown = () => {
+    return (
+      <NavDropdown
+        title={this.state.username}
+        onMouseEnter={this.handleNavDropDownOpen}
+        onMouseLeave={this.handleNavDropDownClose}
+        show={this.state.isNavDropdownOpen}
+      >
+        <NavDropdown.Item onMouseEnter={this.handleNavDropDownOpen}>
+          Your Profile
+        </NavDropdown.Item>
+        <NavDropdown.Item
+          onMouseEnter={this.handleNavDropDownOpen}
+          className="font-weight-bold"
+          onClick={this.handleLogout}
+        >
+          <u>Logout</u>
+        </NavDropdown.Item>
+      </NavDropdown>
+    );
+  };
+
   renderNavLoggedIn() {
     const loggedIn_nav = (
       <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
@@ -104,26 +126,9 @@ class App extends Component {
               About
             </NavLink>
           </Nav>
-          <Nav className="mr-5 pr-5">
+          <Nav>
             <Navbar.Text>Signed in as:</Navbar.Text>
-            <NavDropdown
-              className="mr-3"
-              title={this.state.username}
-              onMouseEnter={this.handleNavDropDownOpen}
-              onMouseLeave={this.handleNavDropDownClose}
-              show={this.state.isNavDropdownOpen}
-            >
-              <NavDropdown.Item onMouseEnter={this.handleNavDropDownOpen}>
-                Your Profile
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onMouseEnter={this.handleNavDropDownOpen}
-                className="font-weight-bold"
-                onClick={this.handleLogout}
-              >
-                <u>Logout</u>
-              </NavDropdown.Item>
-            </NavDropdown>
+            {this.renderNavbarDropdown()}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

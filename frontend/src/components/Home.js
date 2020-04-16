@@ -71,44 +71,45 @@ class Home extends React.Component {
   renderLists = () => {
     if (this.state.loggedIn) {
       return (
-        <React.Fragment>
-          <h1 className="text-center display-4">My Lists</h1>
-          <Row>
-            {this.state.userListData.map((list) => {
-              return (
-                <Col
-                  key={list.id}
-                  className="my-2"
-                  xs={12}
-                  s={10}
-                  md={6}
-                  lg={4}
-                >
-                  <List
-                    id={list.id}
-                    title={list.title}
-                    dateCreated={list.date_created}
-                    listItems={list.list_items}
-                  />
-                </Col>
-              );
-            })}
-          </Row>
-        </React.Fragment>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            flex: 1,
+            justifyContent: "space-evenly",
+            alignItems: "flex-start",
+            alignContent: "space-evenly",
+            minHeight: "80%",
+          }}
+        >
+          {this.state.userListData.map((list) => {
+            return (
+              <List
+                id={list.id}
+                title={list.title}
+                dateCreated={list.date_created}
+                listItems={list.list_items}
+              />
+            );
+          })}
+        </div>
       );
     } else {
       return (
         <React.Fragment>
-          <Container className="text-center mt-3">
-            <h1>You must log in to create lists</h1>
-          </Container>
+          <h1 className="text-center">You must log in to create lists</h1>
         </React.Fragment>
       );
     }
   };
 
   render() {
-    return this.renderLists();
+    return (
+      <Container>
+        <h1 className="text-center display-4">My Lists</h1>
+        {this.renderLists()}
+      </Container>
+    );
   }
 }
 
