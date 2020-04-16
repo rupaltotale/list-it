@@ -10,12 +10,13 @@ import {
   InputGroup,
   Form,
   ButtonGroup,
+  Modal,
 } from "react-bootstrap";
 import moment from "moment";
 import {
   FaRegCheckSquare,
   FaEdit,
-  FaTrashAlt,
+  FaRegTrashAlt,
   FaCross,
   FaRegWindowClose,
 } from "react-icons/fa";
@@ -28,6 +29,7 @@ class List extends React.Component {
       changingTitle: this.props.title,
       currentlyEditingTitle: false,
       errorResponse: null,
+      showDeleteModal: false,
     };
   }
 
@@ -87,22 +89,57 @@ class List extends React.Component {
       });
   };
 
+  toggleModal = () => {
+    this.setState(
+      {
+        showDeleteModal: !this.state.showDeleteModal,
+      },
+      this.renderDeleteModal
+    );
+  };
+
+  renderDeleteModal = () => {
+    return (
+      <Modal show={this.state.showDeleteModal} onHide={this.toggleModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            Delete <em>{this.state.title}</em>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this list?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.toggleModal}>
+            Close
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              this.props.deleteList(this.props.id, this.toggleModal);
+            }}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  };
+
   renderButtons = () => {
     if (!this.state.currentlyEditingTitle) {
       return (
-        <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
-          <FaEdit size={20} color="green"></FaEdit>
-        </Button>
+        <>
+          <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
+            <FaEdit size={20} color="blue"></FaEdit>
+          </Button>
+          <Button size="sm" variant="light" onClick={this.toggleModal}>
+            <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
+          </Button>
+        </>
       );
     } else {
       return (
         <>
-          <Button
-            size="sm"
-            type="submit"
-            variant="light"
-            onClick={this.updateListTitle}
-          >
+          <Button size="sm" variant="light" onClick={this.updateListTitle}>
             <FaRegCheckSquare size={20} color="green"></FaRegCheckSquare>
           </Button>
           <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
@@ -176,11 +213,14 @@ class List extends React.Component {
 
   renderList = () => {
     return (
-      <Card style={{ margin: "5px", minWidth: "315px" }}>
-        {this.renderListTitle()}
-        {this.renderListItems()}
-        {this.renderDateCreated()}
-      </Card>
+      <>
+        <React.Fragment>{this.renderDeleteModal()}</React.Fragment>
+        <Card style={{ margin: "10px", minWidth: "315px" }}>
+          {this.renderListTitle()}
+          {this.renderListItems()}
+          {this.renderDateCreated()}
+        </Card>
+      </>
     );
   };
 
@@ -196,4 +236,5 @@ List.propTypes = {
   title: PropTypes.string.isRequired,
   dateCreated: PropTypes.string.isRequired,
   listItems: PropTypes.array.isRequired,
+  deleteList: PropTypes.func.isRequired,
 };

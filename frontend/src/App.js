@@ -42,6 +42,7 @@ class App extends Component {
 
   componentDidMount() {
     if (this.state.loggedIn) {
+      console.log("JWT", localStorage.getItem("token"));
       axios
         .get("http://localhost:8000/current_user/", {
           headers: {
