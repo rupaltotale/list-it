@@ -164,10 +164,16 @@ class List extends React.Component {
           height: "100%",
         }}
       >
-        <InputGroup style={{ height: "100%", width: "70%" }}>
+        <InputGroup
+          style={{
+            height: "100%",
+            width: "70%",
+          }}
+        >
           <Form.Control
             required
-            type="text"
+            as="textarea"
+            rows={this.state.changingTitle.length > 20 ? 2 : 1}
             placeholder="Title cannot be blank"
             value={this.state.changingTitle}
             onChange={this.handleTitleChange}
@@ -180,6 +186,9 @@ class List extends React.Component {
             // onBlur={() => {
             //   this.setState({ currentlyEditingTitle: false });
             // }}
+            style={{
+              resize: "none",
+            }}
           ></Form.Control>
         </InputGroup>
         <div
@@ -201,9 +210,11 @@ class List extends React.Component {
       <Card.Body>
         <ListGroup variant="flush">
           {this.props.listItems.map((listItem) => {
+            console.log(listItem);
             return (
               <ListGroupItem key={listItem.id}>
-                This is a list item
+                Lorem ipsum, or lipsum as it is sometimes known, is dummy text
+                used in laying out print, graphic or web designs.
               </ListGroupItem>
             );
           })}
@@ -225,7 +236,7 @@ class List extends React.Component {
     return (
       <>
         <React.Fragment>{this.renderDeleteModal()}</React.Fragment>
-        <Card style={{ margin: "10px", minWidth: "315px" }}>
+        <Card style={{ margin: "10px", width: "315px" }}>
           {this.renderListTitle()}
           {this.renderListItems()}
           {this.renderDateCreated()}
