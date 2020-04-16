@@ -7,6 +7,7 @@
 - Change api endpoint for login and signup
 - Delete not working?
 - On delete, return updated lists so another call need not be made
+- Put max length for list title
 
 ### Frontend:
 
@@ -19,6 +20,7 @@
 - Refactor nav bar (create own file)
 - refactor App.js and Home.js
 - Layout of lists still wanky
+- Make title bold; can span multiple lines
 
 ## Advanced Features:
 

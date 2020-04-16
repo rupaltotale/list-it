@@ -106,7 +106,10 @@ class List extends React.Component {
             Delete <em>{this.state.title}</em>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this list?</Modal.Body>
+        <Modal.Body>
+          Are you sure you want to delete this list? This action cannot be
+          undone.
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={this.toggleModal}>
             Close
@@ -125,18 +128,7 @@ class List extends React.Component {
   };
 
   renderButtons = () => {
-    if (!this.state.currentlyEditingTitle) {
-      return (
-        <>
-          <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
-            <FaEdit size={20} color="blue"></FaEdit>
-          </Button>
-          <Button size="sm" variant="light" onClick={this.toggleModal}>
-            <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
-          </Button>
-        </>
-      );
-    } else {
+    if (this.state.currentlyEditingTitle) {
       return (
         <>
           <Button size="sm" variant="light" onClick={this.updateListTitle}>
@@ -144,6 +136,17 @@ class List extends React.Component {
           </Button>
           <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
             <FaRegWindowClose size={20} color="red"></FaRegWindowClose>
+          </Button>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
+            <FaEdit size={20} color="blue"></FaEdit>
+          </Button>
+          <Button size="sm" variant="light" onClick={this.toggleModal}>
+            <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
           </Button>
         </>
       );
@@ -168,8 +171,15 @@ class List extends React.Component {
             placeholder="Title cannot be blank"
             value={this.state.changingTitle}
             onChange={this.handleTitleChange}
+            // Change disabled to readOnly for event handlers to be triggered.
             disabled={!this.state.currentlyEditingTitle}
             plaintext={!this.state.currentlyEditingTitle}
+            // onClick={() => {
+            //   this.setState({ currentlyEditingTitle: true });
+            // }}
+            // onBlur={() => {
+            //   this.setState({ currentlyEditingTitle: false });
+            // }}
           ></Form.Control>
         </InputGroup>
         <div
