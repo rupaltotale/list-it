@@ -12,13 +12,20 @@ import {
   ButtonGroup,
 } from "react-bootstrap";
 import moment from "moment";
-import { FaRegCheckSquare, FaEdit, FaTrashAlt } from "react-icons/fa";
+import {
+  FaRegCheckSquare,
+  FaEdit,
+  FaTrashAlt,
+  FaCross,
+  FaRegWindowClose,
+} from "react-icons/fa";
 
 class List extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       title: this.props.title,
+      changingTitle: this.props.title,
       currentlyEditingTitle: false,
       errorResponse: null,
     };
@@ -29,11 +36,11 @@ class List extends React.Component {
   handleTitleChange = (titleData) => {
     this.setState(
       {
-        title: titleData.target.value,
+        changingTitle: titleData.target.value,
         errorResponse: null,
       },
       () => {
-        if (!this.state.title) {
+        if (!this.state.changingTitle) {
           this.setState({
             errorResponse: "This field may not be blank",
           });
@@ -43,15 +50,10 @@ class List extends React.Component {
   };
 
   changeTitleEditState = () => {
-    if (this.state.currentlyEditingTitle) {
-      this.setState({
-        currentlyEditingTitle: false,
-      });
-    } else {
-      this.setState({
-        currentlyEditingTitle: true,
-      });
-    }
+    this.setState({
+      currentlyEditingTitle: !this.state.currentlyEditingTitle,
+      changingTitle: this.state.title,
+    });
   };
 
   updateListTitle = (event) => {
@@ -60,7 +62,7 @@ class List extends React.Component {
       .put(
         `http://127.0.0.1:8000/api/v1/lists/${this.props.id}/`,
         {
-          title: this.state.title,
+          title: this.state.changingTitle,
         },
         {
           headers: {
@@ -74,6 +76,7 @@ class List extends React.Component {
         this.changeTitleEditState();
         this.setState({
           title: response.data.title,
+          changingTitle: response.data.title,
           errorResponse: null,
         });
       })
@@ -86,66 +89,79 @@ class List extends React.Component {
 
   renderEditingListTitle = () => {
     return (
-      <Card.Header className="d-flex justify-content-center">
-        <Card.Title>
-          <Form>
-            <InputGroup>
-              <Form.Control
-                required
-                type="text"
-                placeholder="Title cannot be blank"
-                value={this.state.title}
-                onChange={this.handleTitleChange}
-              ></Form.Control>
-              <InputGroup.Append>
-                <Button
-                  size="sm"
-                  type="submit"
-                  variant={this.state.errorResponse ? "danger" : "success"}
-                  onClick={this.updateListTitle}
-                >
-                  <FaRegCheckSquare size={20}></FaRegCheckSquare>
-                </Button>
-              </InputGroup.Append>
-            </InputGroup>
-          </Form>
-        </Card.Title>
+      <Card.Header
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignContent: "flex-center",
+          alignItems: "flex-center",
+          height: "100%",
+        }}
+      >
+        <InputGroup style={{ height: "100%", width: "70%" }}>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Title cannot be blank"
+            value={this.state.changingTitle}
+            onChange={this.handleTitleChange}
+          ></Form.Control>
+        </InputGroup>
+        <div
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-center",
+          }}
+        >
+          <Button
+            size="sm"
+            type="submit"
+            variant="light"
+            onClick={this.updateListTitle}
+          >
+            <FaRegCheckSquare size={20} color="green"></FaRegCheckSquare>
+          </Button>
+          <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
+            <FaRegWindowClose size={20} color="red"></FaRegWindowClose>
+          </Button>
+        </div>
       </Card.Header>
     );
   };
 
   renderFixedListTitle = () => {
     return (
-      <Card.Header>
-        <Card.Title
+      <Card.Header
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignContent: "flex-center",
+          alignItems: "flex-center",
+          height: "100%",
+        }}
+      >
+        <InputGroup style={{ height: "100%", width: "70%" }}>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Title cannot be blank"
+            value={this.state.changingTitle}
+            onChange={this.handleTitleChange}
+            disabled={true}
+          ></Form.Control>
+        </InputGroup>
+        <ButtonGroup
           style={{
-            display: "flex",
-            flexDirection: "row",
+            marginLeft: "auto",
           }}
         >
-          {this.state.title}
-          <ButtonGroup
-            style={{
-              marginLeft: "auto",
-            }}
-          >
-            <Button
-              size="sm"
-              variant="light"
-              onClick={this.changeTitleEditState}
-            >
-              <FaEdit size={16}></FaEdit>
-            </Button>
-
-            {/* <Button
-            size="sm"
-            variant="danger"
-            onClick={this.changeTitleEditState}
-          >
-            <FaTrashAlt size={16}></FaTrashAlt>
-          </Button> */}
-          </ButtonGroup>
-        </Card.Title>
+          <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
+            <FaEdit size={16} color="green"></FaEdit>
+          </Button>
+        </ButtonGroup>
+        {/* </Card.Title> */}
       </Card.Header>
     );
   };
