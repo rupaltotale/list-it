@@ -34,12 +34,29 @@ class List extends React.Component {
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.changeTextAreaHeight();
+  }
 
-  handleTitleChange = (titleData) => {
+  componentDidUpdate() {
+    this.changeTextAreaHeight();
+  }
+
+  changeTextAreaHeight = () => {
+    var tx = document.getElementsByTagName("textarea");
+    for (var i = 0; i < tx.length; i++) {
+      tx[i].setAttribute("style", "height: auto");
+      tx[i].setAttribute(
+        "style",
+        "height:" + tx[i].scrollHeight + "px; resize: none; overflow: hidden"
+      );
+    }
+  };
+
+  handleTitleChange = (event) => {
     this.setState(
       {
-        changingTitle: titleData.target.value,
+        changingTitle: event.target.value,
         errorResponse: null,
       },
       () => {
@@ -48,6 +65,7 @@ class List extends React.Component {
             errorResponse: "This field may not be blank",
           });
         }
+        // event.target.scrollHeight
       }
     );
   };
@@ -75,7 +93,6 @@ class List extends React.Component {
         }
       )
       .then((response) => {
-        console.log(response);
         this.changeTitleEditState();
         this.setState({
           title: response.data.title,
@@ -174,22 +191,12 @@ class List extends React.Component {
           <Form.Control
             required
             as="textarea"
-            rows={this.state.changingTitle.length > 20 ? 2 : 1}
+            rows="1"
             placeholder="Title cannot be blank"
             value={this.state.changingTitle}
             onChange={this.handleTitleChange}
-            // Change disabled to readOnly for event handlers to be triggered.
             disabled={!this.state.currentlyEditingTitle}
             plaintext={!this.state.currentlyEditingTitle}
-            // onClick={() => {
-            //   this.setState({ currentlyEditingTitle: true });
-            // }}
-            // onBlur={() => {
-            //   this.setState({ currentlyEditingTitle: false });
-            // }}
-            style={{
-              resize: "none",
-            }}
           ></Form.Control>
         </InputGroup>
         <div
@@ -211,13 +218,13 @@ class List extends React.Component {
       <Card.Body>
         <ListGroup>
           {this.props.listItems.map((listItem) => {
-            console.log(listItem);
             return (
               <ListItem
                 key={listItem.id}
                 content={listItem.content}
                 id={listItem.id}
                 completed={listItem.completed}
+                changeTextAreaHeight={this.changeTextAreaHeight}
               ></ListItem>
             );
           })}
@@ -226,14 +233,14 @@ class List extends React.Component {
     );
   };
 
-  renderDateCreated() {
+  renderDateCreated = () => {
     return (
       <Card.Footer>
         Created on{" "}
         {moment(this.props.dateCreated).format("MMMM Do, YYYY (h:mm A)")}
       </Card.Footer>
     );
-  }
+  };
 
   renderList = () => {
     return (
