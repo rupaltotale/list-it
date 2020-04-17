@@ -20,6 +20,7 @@ import {
   FaCross,
   FaRegWindowClose,
 } from "react-icons/fa";
+import ListItem from "./ListItem";
 
 class List extends React.Component {
   constructor(props) {
@@ -208,14 +209,16 @@ class List extends React.Component {
   renderListItems = () => {
     return (
       <Card.Body>
-        <ListGroup variant="flush">
+        <ListGroup>
           {this.props.listItems.map((listItem) => {
             console.log(listItem);
             return (
-              <ListGroupItem key={listItem.id}>
-                Lorem ipsum, or lipsum as it is sometimes known, is dummy text
-                used in laying out print, graphic or web designs.
-              </ListGroupItem>
+              <ListItem
+                key={listItem.id}
+                content={listItem.content}
+                id={listItem.id}
+                completed={listItem.completed}
+              ></ListItem>
             );
           })}
         </ListGroup>
