@@ -107,6 +107,24 @@ class List extends React.Component {
       });
   };
 
+  deleteList = () => {
+    console.log("Calling this method");
+    axios
+      .delete(`http://127.0.0.1:8000/api/v1/lists/${this.props.id}/`, {
+        headers: {
+          Authorization: `JWT ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        this.toggleModal();
+        this.props.update();
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  };
+
   toggleModal = () => {
     this.setState(
       {
@@ -135,7 +153,7 @@ class List extends React.Component {
           <Button
             variant="danger"
             onClick={() => {
-              this.props.deleteList(this.props.id, this.toggleModal);
+              this.deleteList();
             }}
           >
             Delete
@@ -214,22 +232,28 @@ class List extends React.Component {
   };
 
   renderListItems = () => {
+    let listItems = [].concat(this.props.listItems);
+    listItems.push({
+      key: -1,
+      content: "",
+      id: -1,
+      completed: false,
+    });
     return (
-      <Card.Body>
-        <ListGroup>
-          {this.props.listItems.map((listItem) => {
-            return (
-              <ListItem
-                key={listItem.id}
-                content={listItem.content}
-                id={listItem.id}
-                completed={listItem.completed}
-                changeTextAreaHeight={this.changeTextAreaHeight}
-              ></ListItem>
-            );
-          })}
-        </ListGroup>
-      </Card.Body>
+      <>
+        {listItems.map((listItem) => {
+          return (
+            <ListItem
+              key={listItem.id}
+              content={listItem.content}
+              id={listItem.id}
+              completed={listItem.completed}
+              list_id={this.props.id}
+              update={this.props.update}
+            ></ListItem>
+          );
+        })}
+      </>
     );
   };
 
@@ -267,5 +291,5 @@ List.propTypes = {
   title: PropTypes.string.isRequired,
   dateCreated: PropTypes.string.isRequired,
   listItems: PropTypes.array.isRequired,
-  deleteList: PropTypes.func.isRequired,
+  update: PropTypes.func.isRequired,
 };

@@ -52,22 +52,8 @@ class Home extends React.Component {
     return null;
   }
 
-  deleteList = (id, callback) => {
-    console.log("Calling this method");
-    axios
-      .delete(`http://127.0.0.1:8000/api/v1/lists/${id}/`, {
-        headers: {
-          Authorization: `JWT ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        callback();
-        this.getUserLists();
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
+  update = () => {
+    this.getUserLists();
   };
 
   getUserLists = () => {
@@ -108,7 +94,8 @@ class Home extends React.Component {
                 title={list.title}
                 dateCreated={list.date_created}
                 listItems={list.list_items}
-                deleteList={this.deleteList}
+                // deleteList={this.deleteList}
+                update={this.update}
               />
             );
           })}
