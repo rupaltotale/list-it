@@ -34,13 +34,9 @@ class List extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.changeTextAreaHeight();
-  }
+  componentDidMount() {}
 
-  componentDidUpdate() {
-    this.changeTextAreaHeight();
-  }
+  componentDidUpdate() {}
 
   changeTextAreaHeight = () => {
     var tx = document.getElementsByTagName("textarea");
@@ -108,7 +104,6 @@ class List extends React.Component {
   };
 
   deleteList = () => {
-    console.log("Calling this method");
     axios
       .delete(`http://127.0.0.1:8000/api/v1/lists/${this.props.id}/`, {
         headers: {
@@ -147,9 +142,6 @@ class List extends React.Component {
           undone.
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.toggleModal}>
-            Close
-          </Button>
           <Button
             variant="danger"
             onClick={() => {
@@ -215,6 +207,9 @@ class List extends React.Component {
             onChange={this.handleTitleChange}
             disabled={!this.state.currentlyEditingTitle}
             plaintext={!this.state.currentlyEditingTitle}
+            style={{
+              resize: "none",
+            }}
           ></Form.Control>
         </InputGroup>
         <div
@@ -241,18 +236,20 @@ class List extends React.Component {
     });
     return (
       <>
-        {listItems.map((listItem) => {
-          return (
-            <ListItem
-              key={listItem.id}
-              content={listItem.content}
-              id={listItem.id}
-              completed={listItem.completed}
-              list_id={this.props.id}
-              update={this.props.update}
-            ></ListItem>
-          );
-        })}
+        <ListGroup variant="flush">
+          {listItems.map((listItem) => {
+            return (
+              <ListItem
+                key={listItem.id}
+                content={listItem.content}
+                id={listItem.id}
+                completed={listItem.completed}
+                list_id={this.props.id}
+                update={this.props.update}
+              ></ListItem>
+            );
+          })}
+        </ListGroup>
       </>
     );
   };

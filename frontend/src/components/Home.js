@@ -23,11 +23,11 @@ class Home extends React.Component {
     this.state = {
       loggedIn: this.props.loggedIn,
       username: this.props.username,
-      userListData: [],
+      lists: [],
     };
   }
 
-  //On mount, get the user's list and update userListData
+  //On mount, get the user's list and update lists
   componentDidMount() {
     this.getUserLists();
   }
@@ -66,7 +66,7 @@ class Home extends React.Component {
         })
         .then((response) => {
           this.setState({
-            userListData: response.data,
+            lists: response.data,
           });
         });
     }
@@ -86,7 +86,7 @@ class Home extends React.Component {
             minHeight: "80%",
           }}
         >
-          {this.state.userListData.map((list) => {
+          {this.state.lists.map((list) => {
             return (
               <List
                 key={list.id}
