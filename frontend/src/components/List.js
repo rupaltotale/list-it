@@ -112,7 +112,7 @@ class List extends React.Component {
       })
       .then((response) => {
         console.log(response);
-        this.toggleModal();
+        this.toggleDeleteModal();
         this.props.update();
       })
       .catch((error) => {
@@ -120,7 +120,7 @@ class List extends React.Component {
       });
   };
 
-  toggleModal = () => {
+  toggleDeleteModal = () => {
     this.setState(
       {
         showDeleteModal: !this.state.showDeleteModal,
@@ -131,7 +131,7 @@ class List extends React.Component {
 
   renderDeleteModal = () => {
     return (
-      <Modal show={this.state.showDeleteModal} onHide={this.toggleModal}>
+      <Modal show={this.state.showDeleteModal} onHide={this.toggleDeleteModal}>
         <Modal.Header closeButton>
           <Modal.Title>
             Delete <em>{this.state.title}</em>
@@ -173,7 +173,7 @@ class List extends React.Component {
           <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
             <FaEdit size={20} color="blue"></FaEdit>
           </Button>
-          <Button size="sm" variant="light" onClick={this.toggleModal}>
+          <Button size="sm" variant="light" onClick={this.toggleDeleteModal}>
             <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
           </Button>
         </>

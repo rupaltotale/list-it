@@ -3,7 +3,11 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { ListGroupItem, InputGroup, Form, Button } from "react-bootstrap";
 import TextareaAutosize from "react-textarea-autosize";
-import { FaRegTimesCircle } from "react-icons/fa";
+import {
+  FaRegTimesCircle,
+  FaRegSquare,
+  FaRegCheckSquare,
+} from "react-icons/fa";
 
 class ListItem extends React.Component {
   constructor(props) {
@@ -103,6 +107,36 @@ class ListItem extends React.Component {
       });
   };
 
+  changeCompleted = () => {
+    this.setState(
+      {
+        completed: !this.state.completed,
+      },
+      this.updateListItem
+    );
+  };
+
+  renderCheckbox = () => {
+    return (
+      <div
+        style={{
+          marginRight: "auto",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-center",
+        }}
+      >
+        <Button size="sm" variant="light" onClick={this.changeCompleted}>
+          {this.state.completed ? (
+            <FaRegCheckSquare size={16}></FaRegCheckSquare>
+          ) : (
+            <FaRegSquare size={16}></FaRegSquare>
+          )}
+        </Button>
+      </div>
+    );
+  };
+
   renderDeleteButton = () => {
     return (
       <div
@@ -155,6 +189,7 @@ class ListItem extends React.Component {
           height: "100%",
         }}
       >
+        {this.props.id > -1 ? this.renderCheckbox() : null}
         {this.renderListItemContent()}
         {this.props.id > -1 ? this.renderDeleteButton() : null}
       </ListGroupItem>
