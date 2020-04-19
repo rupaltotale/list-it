@@ -11,6 +11,7 @@ import {
   Form,
   ButtonGroup,
   Modal,
+  Alert,
 } from "react-bootstrap";
 import moment from "moment";
 import {
@@ -226,18 +227,14 @@ class List extends React.Component {
     );
   };
 
-  renderListItems = () => {
-    let listItems = [].concat(this.props.listItems);
-    listItems.push({
-      key: -1,
-      content: "",
-      id: -1,
-      completed: false,
-    });
+  renderNoncompletedListItems = (listItems) => {
     return (
       <>
-        <ListGroup variant="flush">
-          {listItems.map((listItem) => {
+        {listItems
+          .filter((listItem) => {
+            return !listItem.completed;
+          })
+          .map((listItem) => {
             return (
               <ListItem
                 key={listItem.id}
@@ -249,6 +246,53 @@ class List extends React.Component {
               ></ListItem>
             );
           })}
+      </>
+    );
+  };
+
+  renderCompletedListItems = (listItems) => {
+    return (
+      <>
+        {listItems
+          .filter((listItem) => {
+            return listItem.completed;
+          })
+          .map((listItem) => {
+            return (
+              <ListItem
+                key={listItem.id}
+                content={listItem.content}
+                id={listItem.id}
+                completed={listItem.completed}
+                list_id={this.props.id}
+                update={this.props.update}
+              ></ListItem>
+            );
+          })}
+      </>
+    );
+  };
+
+  renderListItems = () => {
+    let listItems = [].concat(this.props.listItems);
+    listItems.push({
+      key: -1,
+      content: "",
+      id: -1,
+      completed: false,
+    });
+    return (
+      <>
+        <ListGroup variant="flush">
+          {this.renderNoncompletedListItems(listItems)}
+          <Alert
+            className="text-center"
+            variant="secondary"
+            style={{ borderRadius: "0px" }}
+          >
+            <b>Completed Items</b>
+          </Alert>
+          {this.renderCompletedListItems(listItems)}
         </ListGroup>
       </>
     );

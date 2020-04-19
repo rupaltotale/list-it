@@ -16,6 +16,7 @@ import {
 } from "react-bootstrap";
 import { Redirect, BrowserRouter as Router } from "react-router-dom";
 import List from "./List";
+import { FaPlus } from "react-icons/fa";
 
 class Home extends React.Component {
   constructor(props) {
@@ -113,7 +114,28 @@ class Home extends React.Component {
   render() {
     return (
       <Container>
-        <h1 className="text-center display-4">My Lists</h1>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h1 className="text-center display-4">My Lists</h1>
+          <Button
+            variant="outline-success"
+            style={{
+              width: "wrap-content",
+              margin: "6px 6px",
+              textAlign: "center",
+            }}
+          >
+            <FaPlus></FaPlus>
+            {" Add list"}
+          </Button>
+        </div>
         {this.renderLists()}
       </Container>
     );

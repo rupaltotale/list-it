@@ -7,6 +7,7 @@ import {
   FaRegTimesCircle,
   FaRegSquare,
   FaRegCheckSquare,
+  FaRegPlusSquare,
 } from "react-icons/fa";
 
 class ListItem extends React.Component {
@@ -17,6 +18,7 @@ class ListItem extends React.Component {
       completed: this.props.completed,
       currentlyEditingContent: false,
       errorResponse: null,
+      id: this.props.id,
     };
   }
 
@@ -30,14 +32,14 @@ class ListItem extends React.Component {
         changingContent: event.target.value,
         errorResponse: null,
       },
-      () => {
-        if (!this.state.changingContent) {
-          this.setState({
-            errorResponse: "This field may not be blank",
-          });
-        }
-      }
+      this.saveChanges
     );
+  };
+
+  saveChanges = () => {
+    this.setState({ currentlyEditingContent: false });
+    console.log("save changes");
+    this.state.id > -1 ? this.updateListItem() : this.createListItem();
   };
 
   createListItem = () => {
@@ -57,10 +59,14 @@ class ListItem extends React.Component {
         }
       )
       .then((response) => {
-        this.props.update();
-        this.setState({
-          changingContent: "",
-        });
+        this.setState(
+          {
+            id: response.data.id,
+          },
+          () => {
+            this.props.update();
+          }
+        );
       })
       .catch((error) => {
         console.log(error.response);
@@ -70,7 +76,7 @@ class ListItem extends React.Component {
   updateListItem = () => {
     axios
       .put(
-        `http://127.0.0.1:8000/api/v1/list_item/${this.props.id}/`,
+        `http://127.0.0.1:8000/api/v1/list_item/${this.state.id}/`,
         {
           content: this.state.changingContent,
           completed: this.state.completed,
@@ -83,9 +89,12 @@ class ListItem extends React.Component {
         }
       )
       .then((response) => {
-        this.setState({
-          changingContent: response.data.content,
-        });
+        this.setState(
+          {
+            changingContent: response.data.content,
+          },
+          this.props.update
+        );
       })
       .catch((error) => {
         console.log(error.response);
@@ -94,7 +103,7 @@ class ListItem extends React.Component {
 
   deleteListItem = () => {
     axios
-      .delete(`http://127.0.0.1:8000/api/v1/list_item/${this.props.id}/`, {
+      .delete(`http://127.0.0.1:8000/api/v1/list_item/${this.state.id}/`, {
         headers: {
           Authorization: `JWT ${localStorage.getItem("token")}`,
         },
@@ -116,21 +125,42 @@ class ListItem extends React.Component {
     );
   };
 
+  renderPlus = () => {
+    if (this.state.changingContent) {
+      return this.renderCheckbox();
+    } else {
+      return (
+        <div
+          style={{
+            marginRight: "1px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <Button size="sm" variant="light" onClick={this.changeCompleted}>
+            <FaRegPlusSquare size={20}></FaRegPlusSquare>
+          </Button>
+        </div>
+      );
+    }
+  };
+
   renderCheckbox = () => {
     return (
       <div
         style={{
-          marginRight: "auto",
+          marginRight: "1px",
           display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-center",
+          flexDirection: "column",
+          justifyContent: "center",
         }}
       >
         <Button size="sm" variant="light" onClick={this.changeCompleted}>
           {this.state.completed ? (
-            <FaRegCheckSquare size={16}></FaRegCheckSquare>
+            <FaRegCheckSquare size={20}></FaRegCheckSquare>
           ) : (
-            <FaRegSquare size={16}></FaRegSquare>
+            <FaRegSquare size={20}></FaRegSquare>
           )}
         </Button>
       </div>
@@ -141,7 +171,7 @@ class ListItem extends React.Component {
     return (
       <div
         style={{
-          marginLeft: "auto",
+          marginLeft: "3px",
           display: "flex",
           flexDirection: "row",
           alignItems: "flex-center",
@@ -166,13 +196,10 @@ class ListItem extends React.Component {
         onClick={() => {
           this.setState({ currentlyEditingContent: true });
         }}
-        onBlur={() => {
-          this.setState({ currentlyEditingContent: false });
-          this.props.id > -1 ? this.updateListItem() : this.createListItem();
-        }}
+        onBlur={this.saveChanges}
         onChange={this.handleContentChange}
         rows={1}
-        placeholder={this.props.id < 0 ? "New List Item" : ""}
+        placeholder={this.state.id < 0 ? "New List Item" : ""}
       ></TextareaAutosize>
     );
   };
@@ -187,11 +214,12 @@ class ListItem extends React.Component {
           alignContent: "flex-center",
           alignItems: "flex-center",
           height: "100%",
+          paddingLeft: "0px",
         }}
       >
-        {this.props.id > -1 ? this.renderCheckbox() : null}
+        {this.state.id > -1 ? this.renderCheckbox() : this.renderPlus()}
         {this.renderListItemContent()}
-        {this.props.id > -1 ? this.renderDeleteButton() : null}
+        {this.state.id > -1 ? this.renderDeleteButton() : null}
       </ListGroupItem>
     );
   };
