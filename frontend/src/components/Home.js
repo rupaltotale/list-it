@@ -36,6 +36,7 @@ class Home extends React.Component {
   //If the username has changed (user logged in/out), then run render lists again
   componentDidUpdate(prevProps, prevState) {
     if (prevState.username !== this.state.username) {
+      console.log("updating");
       this.getUserLists();
       this.renderLists();
     }
@@ -53,8 +54,32 @@ class Home extends React.Component {
     return null;
   }
 
-  update = () => {
+  refresh = () => {
+    console.log("Refreshing");
     this.getUserLists();
+  };
+
+  createNewList = () => {
+    axios
+      .post(
+        "http://127.0.0.1:8000/api/v1/lists/new",
+        {
+          title: "",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `JWT ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        this.getUserLists();
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
   };
 
   getUserLists = () => {
@@ -66,6 +91,7 @@ class Home extends React.Component {
           },
         })
         .then((response) => {
+          console.log(response.data);
           this.setState({
             lists: response.data,
           });
@@ -95,8 +121,7 @@ class Home extends React.Component {
                 title={list.title}
                 dateCreated={list.date_created}
                 listItems={list.list_items}
-                // deleteList={this.deleteList}
-                update={this.update}
+                refresh={this.refresh}
               />
             );
           })}
@@ -119,7 +144,7 @@ class Home extends React.Component {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            alignContent: "center",
+            alignContent: "stretch",
             alignItems: "center",
           }}
         >
@@ -129,10 +154,14 @@ class Home extends React.Component {
             style={{
               width: "wrap-content",
               margin: "6px 6px",
-              textAlign: "center",
+              display: "flex",
+              alignContent: "center",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
+            onClick={this.createNewList}
           >
-            <FaPlus></FaPlus>
+            <FaPlus style={{ margin: "2px" }}></FaPlus>
             {" Add list"}
           </Button>
         </div>

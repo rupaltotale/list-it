@@ -18,8 +18,8 @@ import {
   FaRegCheckSquare,
   FaEdit,
   FaRegTrashAlt,
-  FaCross,
   FaRegWindowClose,
+  FaPlus,
 } from "react-icons/fa";
 import ListItem from "./ListItem";
 
@@ -39,32 +39,11 @@ class List extends React.Component {
 
   componentDidUpdate() {}
 
-  changeTextAreaHeight = () => {
-    var tx = document.getElementsByTagName("textarea");
-    for (var i = 0; i < tx.length; i++) {
-      tx[i].setAttribute("style", "height: auto");
-      tx[i].setAttribute(
-        "style",
-        "height:" + tx[i].scrollHeight + "px; resize: none; overflow: hidden"
-      );
-    }
-  };
-
   handleTitleChange = (event) => {
-    this.setState(
-      {
-        changingTitle: event.target.value,
-        errorResponse: null,
-      },
-      () => {
-        if (!this.state.changingTitle) {
-          this.setState({
-            errorResponse: "This field may not be blank",
-          });
-        }
-        // event.target.scrollHeight
-      }
-    );
+    this.setState({
+      changingTitle: event.target.value,
+      errorResponse: null,
+    });
   };
 
   changeTitleEditState = () => {
@@ -98,9 +77,7 @@ class List extends React.Component {
         });
       })
       .catch((error) => {
-        this.setState({
-          errorResponse: error.response.data.title,
-        });
+        console.log(error);
       });
   };
 
@@ -112,12 +89,11 @@ class List extends React.Component {
         },
       })
       .then((response) => {
-        console.log(response);
         this.toggleDeleteModal();
-        this.props.update();
+        this.props.refresh();
       })
       .catch((error) => {
-        console.log(error.response.data);
+        console.log(error.response);
       });
   };
 
@@ -203,7 +179,7 @@ class List extends React.Component {
             required
             as="textarea"
             rows="1"
-            placeholder="Title cannot be blank"
+            placeholder="List Title"
             value={this.state.changingTitle}
             onChange={this.handleTitleChange}
             disabled={!this.state.currentlyEditingTitle}
@@ -227,6 +203,43 @@ class List extends React.Component {
     );
   };
 
+  createListItem = () => {
+    axios
+      .post(
+        "http://127.0.0.1:8000/api/v1/list_item/new",
+        {
+          content: "",
+          completed: false,
+          list_id: this.props.id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `JWT ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        this.props.refresh();
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
+
+  renderListItem = (listItem) => {
+    return (
+      <ListItem
+        key={listItem.id + "_" + this.props.id}
+        content={listItem.content}
+        id={listItem.id}
+        completed={listItem.completed}
+        list_id={this.props.id}
+        refresh={this.props.refresh}
+      ></ListItem>
+    );
+  };
+
   renderNoncompletedListItems = (listItems) => {
     return (
       <>
@@ -235,56 +248,39 @@ class List extends React.Component {
             return !listItem.completed;
           })
           .map((listItem) => {
-            return (
-              <ListItem
-                key={listItem.id}
-                content={listItem.content}
-                id={listItem.id}
-                completed={listItem.completed}
-                list_id={this.props.id}
-                update={this.props.update}
-              ></ListItem>
-            );
+            return this.renderListItem(listItem);
           })}
       </>
+    );
+  };
+
+  renderAddListItemButton = () => {
+    return (
+      <Button
+        variant="outline-dark"
+        style={{
+          width: "wrap-content",
+          margin: "6px 6px",
+          display: "flex",
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onClick={this.createListItem}
+      >
+        <FaPlus style={{ margin: "2px" }}></FaPlus>
+        {" Add list item"}
+      </Button>
     );
   };
 
   renderCompletedListItems = (listItems) => {
-    return (
-      <>
-        {listItems
-          .filter((listItem) => {
-            return listItem.completed;
-          })
-          .map((listItem) => {
-            return (
-              <ListItem
-                key={listItem.id}
-                content={listItem.content}
-                id={listItem.id}
-                completed={listItem.completed}
-                list_id={this.props.id}
-                update={this.props.update}
-              ></ListItem>
-            );
-          })}
-      </>
-    );
-  };
-
-  renderListItems = () => {
-    let listItems = [].concat(this.props.listItems);
-    listItems.push({
-      key: -1,
-      content: "",
-      id: -1,
-      completed: false,
+    var completedListItems = listItems.filter((listItem) => {
+      return listItem.completed;
     });
-    return (
-      <>
-        <ListGroup variant="flush">
-          {this.renderNoncompletedListItems(listItems)}
+    if (completedListItems.length > 0) {
+      return (
+        <>
           <Alert
             className="text-center"
             variant="secondary"
@@ -292,9 +288,23 @@ class List extends React.Component {
           >
             <b>Completed Items</b>
           </Alert>
-          {this.renderCompletedListItems(listItems)}
-        </ListGroup>
-      </>
+          {completedListItems.map((listItem) => {
+            return this.renderListItem(listItem);
+          })}
+        </>
+      );
+    }
+    return null;
+  };
+
+  renderListItems = () => {
+    const listItems = [].concat(this.props.listItems);
+    return (
+      <ListGroup variant="flush">
+        {this.renderNoncompletedListItems(listItems)}
+        {this.renderAddListItemButton()}
+        {this.renderCompletedListItems(listItems)}
+      </ListGroup>
     );
   };
 
@@ -332,5 +342,5 @@ List.propTypes = {
   title: PropTypes.string.isRequired,
   dateCreated: PropTypes.string.isRequired,
   listItems: PropTypes.array.isRequired,
-  update: PropTypes.func.isRequired,
+  refresh: PropTypes.func.isRequired,
 };

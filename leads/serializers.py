@@ -9,7 +9,7 @@ import django.contrib.auth.password_validation as validators
 
 class ListItemSerializer(serializers.ModelSerializer):
     list_id = serializers.IntegerField(write_only=True, required=False)
-
+    content = serializers.CharField(trim_whitespace=False, allow_blank=True)
     class Meta:
         model = ListItem
         fields = ('id', 'completed', 'content', 'list_id')
@@ -21,6 +21,7 @@ class ListItemSerializer(serializers.ModelSerializer):
 
 
 class ListSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(trim_whitespace=False, allow_blank=True)
     date_created = serializers.DateTimeField(
         read_only=True,
     )

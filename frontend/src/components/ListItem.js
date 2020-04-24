@@ -7,18 +7,16 @@ import {
   FaRegTimesCircle,
   FaRegSquare,
   FaRegCheckSquare,
-  FaRegPlusSquare,
 } from "react-icons/fa";
 
 class ListItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      changingContent: this.props.content,
+      content: this.props.content,
       completed: this.props.completed,
       currentlyEditingContent: false,
       errorResponse: null,
-      id: this.props.id,
     };
   }
 
@@ -29,56 +27,19 @@ class ListItem extends React.Component {
   handleContentChange = (event) => {
     this.setState(
       {
-        changingContent: event.target.value,
+        content: event.target.value,
         errorResponse: null,
       },
-      this.saveChanges
+      this.updateListItem
     );
-  };
-
-  saveChanges = () => {
-    this.setState({ currentlyEditingContent: false });
-    console.log("save changes");
-    this.state.id > -1 ? this.updateListItem() : this.createListItem();
-  };
-
-  createListItem = () => {
-    axios
-      .post(
-        "http://127.0.0.1:8000/api/v1/list_item/new",
-        {
-          content: this.state.changingContent,
-          completed: this.state.completed,
-          list_id: this.props.list_id,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `JWT ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      .then((response) => {
-        this.setState(
-          {
-            id: response.data.id,
-          },
-          () => {
-            this.props.update();
-          }
-        );
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
   };
 
   updateListItem = () => {
     axios
       .put(
-        `http://127.0.0.1:8000/api/v1/list_item/${this.state.id}/`,
+        `http://127.0.0.1:8000/api/v1/list_item/${this.props.id}/`,
         {
-          content: this.state.changingContent,
+          content: this.state.content,
           completed: this.state.completed,
         },
         {
@@ -89,12 +50,7 @@ class ListItem extends React.Component {
         }
       )
       .then((response) => {
-        this.setState(
-          {
-            changingContent: response.data.content,
-          },
-          this.props.update
-        );
+        this.props.refresh();
       })
       .catch((error) => {
         console.log(error.response);
@@ -103,47 +59,26 @@ class ListItem extends React.Component {
 
   deleteListItem = () => {
     axios
-      .delete(`http://127.0.0.1:8000/api/v1/list_item/${this.state.id}/`, {
+      .delete(`http://127.0.0.1:8000/api/v1/list_item/${this.props.id}/`, {
         headers: {
           Authorization: `JWT ${localStorage.getItem("token")}`,
         },
       })
       .then((response) => {
-        this.props.update();
+        this.props.refresh();
       })
       .catch((error) => {
         console.log(error.response);
       });
   };
 
-  changeCompleted = () => {
+  toggleCompleted = () => {
     this.setState(
       {
         completed: !this.state.completed,
       },
       this.updateListItem
     );
-  };
-
-  renderPlus = () => {
-    if (this.state.changingContent) {
-      return this.renderCheckbox();
-    } else {
-      return (
-        <div
-          style={{
-            marginRight: "1px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
-          <Button size="sm" variant="light" onClick={this.changeCompleted}>
-            <FaRegPlusSquare size={20}></FaRegPlusSquare>
-          </Button>
-        </div>
-      );
-    }
   };
 
   renderCheckbox = () => {
@@ -156,7 +91,7 @@ class ListItem extends React.Component {
           justifyContent: "center",
         }}
       >
-        <Button size="sm" variant="light" onClick={this.changeCompleted}>
+        <Button size="sm" variant="light" onClick={this.toggleCompleted}>
           {this.state.completed ? (
             <FaRegCheckSquare size={20}></FaRegCheckSquare>
           ) : (
@@ -190,16 +125,19 @@ class ListItem extends React.Component {
         style={{
           resize: "none",
           width: "85%",
+          textDecorationLine:
+            this.state.completed && this.state.content
+              ? "line-through"
+              : "none",
         }}
-        value={this.state.changingContent}
+        value={this.state.content}
         className={"form-control"}
-        onClick={() => {
+        onFocus={() => {
           this.setState({ currentlyEditingContent: true });
         }}
-        onBlur={this.saveChanges}
         onChange={this.handleContentChange}
         rows={1}
-        placeholder={this.state.id < 0 ? "New List Item" : ""}
+        placeholder="List Item"
       ></TextareaAutosize>
     );
   };
@@ -217,9 +155,9 @@ class ListItem extends React.Component {
           paddingLeft: "0px",
         }}
       >
-        {this.state.id > -1 ? this.renderCheckbox() : this.renderPlus()}
+        {this.renderCheckbox()}
         {this.renderListItemContent()}
-        {this.state.id > -1 ? this.renderDeleteButton() : null}
+        {this.renderDeleteButton()}
       </ListGroupItem>
     );
   };
@@ -233,7 +171,8 @@ export default ListItem;
 
 ListItem.propTypes = {
   id: PropTypes.number.isRequired,
+  list_id: PropTypes.number.isRequired,
   completed: PropTypes.bool.isRequired,
   content: PropTypes.string.isRequired,
-  update: PropTypes.func.isRequired,
+  refresh: PropTypes.func.isRequired,
 };
