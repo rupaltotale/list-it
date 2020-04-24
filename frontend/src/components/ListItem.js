@@ -82,9 +82,9 @@ class ListItem extends React.Component {
     );
   };
 
-  toggleCheckboxHover = () => {
+  toggleCheckboxHover = (bool) => {
     this.setState({
-      hoveringCheckbox: !this.state.hoveringCheckbox,
+      hoveringCheckbox: bool,
     });
   };
 
@@ -102,8 +102,12 @@ class ListItem extends React.Component {
           size="sm"
           style={{ borderColor: "transparent", backgroundColor: "white" }}
           onClick={this.toggleCompleted}
-          onMouseEnter={this.toggleCheckboxHover}
-          onMouseLeave={this.toggleCheckboxHover}
+          onMouseEnter={() => {
+            this.toggleCheckboxHover(true);
+          }}
+          onMouseLeave={() => {
+            this.toggleCheckboxHover(false);
+          }}
         >
           {this.state.completed ? (
             <FaRegCheckSquare
