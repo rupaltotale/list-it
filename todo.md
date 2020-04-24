@@ -9,6 +9,7 @@
 - On delete, return updated lists so another call need not be made
 - Put max length for list title.
 - Order by newest list first
+- Move list items
 
 ### Frontend:
 

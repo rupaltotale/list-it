@@ -36,7 +36,6 @@ class Home extends React.Component {
   //If the username has changed (user logged in/out), then run render lists again
   componentDidUpdate(prevProps, prevState) {
     if (prevState.username !== this.state.username) {
-      console.log("updating");
       this.getUserLists();
       this.renderLists();
     }
@@ -55,7 +54,6 @@ class Home extends React.Component {
   }
 
   refresh = () => {
-    console.log("Refreshing");
     this.getUserLists();
   };
 
@@ -75,7 +73,6 @@ class Home extends React.Component {
       )
       .then((response) => {
         this.getUserLists();
-        console.log(response);
       })
       .catch((error) => {
         console.log(error.response);
@@ -91,7 +88,6 @@ class Home extends React.Component {
           },
         })
         .then((response) => {
-          console.log(response.data);
           this.setState({
             lists: response.data,
           });

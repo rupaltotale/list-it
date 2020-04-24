@@ -22,14 +22,13 @@ import {
   FaPlus,
 } from "react-icons/fa";
 import ListItem from "./ListItem";
+import TextareaAutosize from "react-textarea-autosize";
 
 class List extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       title: this.props.title,
-      changingTitle: this.props.title,
-      currentlyEditingTitle: false,
       errorResponse: null,
       showDeleteModal: false,
     };
@@ -40,26 +39,21 @@ class List extends React.Component {
   componentDidUpdate() {}
 
   handleTitleChange = (event) => {
-    this.setState({
-      changingTitle: event.target.value,
-      errorResponse: null,
-    });
+    this.setState(
+      {
+        title: event.target.value,
+        errorResponse: null,
+      },
+      this.updateListTitle
+    );
   };
 
-  changeTitleEditState = () => {
-    this.setState({
-      currentlyEditingTitle: !this.state.currentlyEditingTitle,
-      changingTitle: this.state.title,
-    });
-  };
-
-  updateListTitle = (event) => {
-    event.preventDefault();
+  updateListTitle = () => {
     axios
       .put(
         `http://127.0.0.1:8000/api/v1/lists/${this.props.id}/`,
         {
-          title: this.state.changingTitle,
+          title: this.state.title,
         },
         {
           headers: {
@@ -69,15 +63,13 @@ class List extends React.Component {
         }
       )
       .then((response) => {
-        this.changeTitleEditState();
         this.setState({
           title: response.data.title,
-          changingTitle: response.data.title,
           errorResponse: null,
         });
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response);
       });
   };
 
@@ -132,73 +124,30 @@ class List extends React.Component {
     );
   };
 
-  renderButtons = () => {
-    if (this.state.currentlyEditingTitle) {
-      return (
-        <>
-          <Button size="sm" variant="light" onClick={this.updateListTitle}>
-            <FaRegCheckSquare size={20} color="green"></FaRegCheckSquare>
-          </Button>
-          <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
-            <FaRegWindowClose size={20} color="red"></FaRegWindowClose>
-          </Button>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <Button size="sm" variant="light" onClick={this.changeTitleEditState}>
-            <FaEdit size={20} color="blue"></FaEdit>
-          </Button>
-          <Button size="sm" variant="light" onClick={this.toggleDeleteModal}>
-            <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
-          </Button>
-        </>
-      );
-    }
+  renderDeleteButton = () => {
+    return (
+      <Button size="sm" variant="light" onClick={this.toggleDeleteModal}>
+        <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
+      </Button>
+    );
   };
 
   renderListTitle = () => {
     return (
-      <Card.Header
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignContent: "flex-center",
-          alignItems: "flex-center",
-          height: "100%",
-        }}
-      >
-        <InputGroup
+      <Card.Header className="bg-light">
+        <TextareaAutosize
           style={{
-            height: "100%",
-            width: "70%",
+            resize: "none",
+            border: "none",
+            fontWeight: "bold",
+            textAlign: "center",
           }}
-        >
-          <Form.Control
-            required
-            as="textarea"
-            rows="1"
-            placeholder="List Title"
-            value={this.state.changingTitle}
-            onChange={this.handleTitleChange}
-            disabled={!this.state.currentlyEditingTitle}
-            plaintext={!this.state.currentlyEditingTitle}
-            style={{
-              resize: "none",
-            }}
-          ></Form.Control>
-        </InputGroup>
-        <div
-          style={{
-            marginLeft: "auto",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "flex-center",
-          }}
-        >
-          {this.renderButtons()}
-        </div>
+          value={this.state.title}
+          className="form-control bg-light shadow-none"
+          onChange={this.handleTitleChange}
+          placeholder="List Title"
+          rows={1}
+        ></TextareaAutosize>
       </Card.Header>
     );
   };
@@ -257,7 +206,7 @@ class List extends React.Component {
   renderAddListItemButton = () => {
     return (
       <Button
-        variant="outline-dark"
+        variant="outline-primary"
         style={{
           width: "wrap-content",
           margin: "6px 6px",
@@ -282,9 +231,12 @@ class List extends React.Component {
       return (
         <>
           <Alert
-            className="text-center"
-            variant="secondary"
-            style={{ borderRadius: "0px" }}
+            style={{
+              borderRadius: "0px",
+              marginTop: "0px",
+              marginBottom: "0px",
+              paddingBottom: "10px",
+            }}
           >
             <b>Completed Items</b>
           </Alert>
@@ -301,8 +253,8 @@ class List extends React.Component {
     const listItems = [].concat(this.props.listItems);
     return (
       <ListGroup variant="flush">
-        {this.renderNoncompletedListItems(listItems)}
         {this.renderAddListItemButton()}
+        {this.renderNoncompletedListItems(listItems)}
         {this.renderCompletedListItems(listItems)}
       </ListGroup>
     );
@@ -310,9 +262,27 @@ class List extends React.Component {
 
   renderDateCreated = () => {
     return (
-      <Card.Footer>
+      <Card.Footer
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignContent: "flex-center",
+          alignItems: "flex-center",
+          height: "100%",
+        }}
+      >
         Created on{" "}
         {moment(this.props.dateCreated).format("MMMM Do, YYYY (h:mm A)")}
+        <div
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-center",
+          }}
+        >
+          {this.renderDeleteButton()}
+        </div>
       </Card.Footer>
     );
   };

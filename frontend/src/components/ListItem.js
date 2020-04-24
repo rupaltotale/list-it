@@ -17,6 +17,7 @@ class ListItem extends React.Component {
       completed: this.props.completed,
       currentlyEditingContent: false,
       errorResponse: null,
+      hoveringCheckbox: false,
     };
   }
 
@@ -81,6 +82,12 @@ class ListItem extends React.Component {
     );
   };
 
+  toggleCheckboxHover = () => {
+    this.setState({
+      hoveringCheckbox: !this.state.hoveringCheckbox,
+    });
+  };
+
   renderCheckbox = () => {
     return (
       <div
@@ -91,11 +98,23 @@ class ListItem extends React.Component {
           justifyContent: "center",
         }}
       >
-        <Button size="sm" variant="light" onClick={this.toggleCompleted}>
+        <Button
+          size="sm"
+          style={{ borderColor: "transparent", backgroundColor: "white" }}
+          onClick={this.toggleCompleted}
+          onMouseEnter={this.toggleCheckboxHover}
+          onMouseLeave={this.toggleCheckboxHover}
+        >
           {this.state.completed ? (
-            <FaRegCheckSquare size={20}></FaRegCheckSquare>
+            <FaRegCheckSquare
+              color={this.state.hoveringCheckbox ? "black" : "gray"}
+              size={20}
+            ></FaRegCheckSquare>
           ) : (
-            <FaRegSquare size={20}></FaRegSquare>
+            <FaRegSquare
+              color={this.state.hoveringCheckbox ? "black" : "gray"}
+              size={20}
+            ></FaRegSquare>
           )}
         </Button>
       </div>
@@ -112,8 +131,12 @@ class ListItem extends React.Component {
           alignItems: "flex-center",
         }}
       >
-        <Button size="sm" variant="light" onClick={this.deleteListItem}>
-          <FaRegTimesCircle size={20}></FaRegTimesCircle>
+        <Button
+          size="sm"
+          style={{ borderColor: "transparent", backgroundColor: "white" }}
+          onClick={this.deleteListItem}
+        >
+          <FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>
         </Button>
       </div>
     );
@@ -131,7 +154,7 @@ class ListItem extends React.Component {
               : "none",
         }}
         value={this.state.content}
-        className={"form-control"}
+        className="form-control"
         onFocus={() => {
           this.setState({ currentlyEditingContent: true });
         }}
@@ -145,7 +168,6 @@ class ListItem extends React.Component {
   renderListItem = () => {
     return (
       <ListGroupItem
-        variant="light"
         style={{
           display: "flex",
           flexDirection: "row",
