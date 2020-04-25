@@ -100,9 +100,9 @@ class ListItem extends React.Component {
       >
         <Button
           size="sm"
+          variant={null}
           style={{
             borderColor: "transparent",
-            backgroundColor: "white",
           }}
           onClick={this.toggleCompleted}
           onMouseEnter={() => {
@@ -154,7 +154,7 @@ class ListItem extends React.Component {
           onMouseLeave={() => {
             this.toggleDeleteHover(false);
           }}
-          variant={this.state.hoveringDelete ? "light" : "white"}
+          variant={this.state.hoveringDelete ? "light" : null}
         >
           <FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>
         </Button>
@@ -196,6 +196,7 @@ class ListItem extends React.Component {
           height: "100%",
           paddingLeft: "0px",
         }}
+        variant={this.state.completed ? "light" : null}
       >
         {this.renderCheckbox()}
         {this.renderListItemContent()}
