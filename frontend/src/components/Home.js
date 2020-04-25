@@ -77,6 +77,7 @@ class Home extends React.Component {
           },
         })
         .then((response) => {
+          console.log(response.data);
           this.setState({
             lists: response.data,
           });
@@ -84,19 +85,8 @@ class Home extends React.Component {
     }
   };
 
-  sortListsByDate = () => {
-    if (this.state.lists) {
-      this.state.lists.sort(
-        (a, b) =>
-          new moment(b.date_created).format("YYYYMMDDHHmmssSSS") -
-          new moment(a.date_created).format("YYYYMMDDHHmmssSSS")
-      );
-    }
-  };
-
   renderLists = () => {
     if (this.state.loggedIn) {
-      this.sortListsByDate();
       return (
         <div
           style={{
@@ -124,43 +114,51 @@ class Home extends React.Component {
         </div>
       );
     } else {
-      return (
-        <React.Fragment>
-          <h1 className="text-center">You must log in to create lists</h1>
-        </React.Fragment>
-      );
+      return <h1 className="text-center">You must log in to create lists</h1>;
     }
+  };
+
+  renderAddListButton = () => {
+    return (
+      <Button
+        variant="outline-success"
+        style={{
+          width: "wrap-content",
+          margin: "6px 6px",
+          display: "flex",
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+        onClick={this.createNewList}
+      >
+        <FaPlus style={{ margin: "2px" }}></FaPlus>
+        {" Add list"}
+      </Button>
+    );
+  };
+
+  renderHeading = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignContent: "stretch",
+          alignItems: "center",
+        }}
+      >
+        <h1 className="text-center display-4">My Lists</h1>
+        {this.renderAddListButton()}
+      </div>
+    );
   };
 
   render() {
     return (
       <Container>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignContent: "stretch",
-            alignItems: "center",
-          }}
-        >
-          <h1 className="text-center display-4">My Lists</h1>
-          <Button
-            variant="outline-success"
-            style={{
-              width: "wrap-content",
-              margin: "6px 6px",
-              display: "flex",
-              alignContent: "center",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-            onClick={this.createNewList}
-          >
-            <FaPlus style={{ margin: "2px" }}></FaPlus>
-            {" Add list"}
-          </Button>
-        </div>
+        {this.renderHeading()}
         {this.renderLists()}
       </Container>
     );

@@ -6,6 +6,7 @@ import moment from "moment";
 import { FaRegTrashAlt, FaPlus } from "react-icons/fa";
 import ListItem from "./ListItem";
 import TextareaAutosize from "react-textarea-autosize";
+import { AlertHeading } from "react-bootstrap/Alert";
 
 class List extends React.Component {
   constructor(props) {
@@ -123,6 +124,7 @@ class List extends React.Component {
             resize: "none",
             border: "none",
             fontWeight: "bold",
+            fontSize: "large",
             textAlign: "center",
           }}
           value={this.state.title}
@@ -219,9 +221,10 @@ class List extends React.Component {
               marginTop: "0px",
               marginBottom: "0px",
               paddingBottom: "10px",
+              fontWeight: "bold",
             }}
           >
-            <b>Completed Items</b>
+            Completed Items
           </Alert>
           {completedListItems.map((listItem) => {
             return this.renderListItem(listItem);

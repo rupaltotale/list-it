@@ -32,7 +32,7 @@ class ListGet(ListAPIView):
     serializer_class = ListSerializer
 
     def get_queryset(self):
-        return List.objects.all().filter(owner=self.request.user)
+        return List.objects.all().filter(owner=self.request.user).order_by("-date_created")
 
 
 class ListCreate(CreateAPIView):
