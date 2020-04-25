@@ -30,6 +30,7 @@
     "prop-types": "^15.7.2",
     "react-bootstrap": "^1.0.0",
     "react-icons": "^3.9.0",
+    "react-keybind": "^0.7.0",
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.1.2",
     "react-textarea-autosize": "^7.1.2",

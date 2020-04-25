@@ -1,11 +1,4 @@
-import {
-  Button,
-  InputGroup,
-  Jumbotron,
-  Nav,
-  NavDropdown,
-  Navbar,
-} from "react-bootstrap";
+import { Button, InputGroup, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import {
   FaAt,
   FaEnvelope,
@@ -26,7 +19,6 @@ import React, { Component } from "react";
 import CustomForm from "./components/CustomForm";
 import { render } from "react-dom";
 import Home from "./components/Home";
-import List from "./components/List";
 import axios from "axios";
 
 class App extends Component {

@@ -18,6 +18,7 @@ class ListItem extends React.Component {
       currentlyEditingContent: false,
       errorResponse: null,
       hoveringCheckbox: false,
+      hoveringDelete: false,
     };
   }
 
@@ -92,7 +93,6 @@ class ListItem extends React.Component {
     return (
       <div
         style={{
-          marginRight: "1px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -100,7 +100,10 @@ class ListItem extends React.Component {
       >
         <Button
           size="sm"
-          style={{ borderColor: "transparent", backgroundColor: "white" }}
+          style={{
+            borderColor: "transparent",
+            backgroundColor: "white",
+          }}
           onClick={this.toggleCompleted}
           onMouseEnter={() => {
             this.toggleCheckboxHover(true);
@@ -125,6 +128,12 @@ class ListItem extends React.Component {
     );
   };
 
+  toggleDeleteHover = (bool) => {
+    this.setState({
+      hoveringDelete: bool,
+    });
+  };
+
   renderDeleteButton = () => {
     return (
       <div
@@ -137,8 +146,15 @@ class ListItem extends React.Component {
       >
         <Button
           size="sm"
-          style={{ borderColor: "transparent", backgroundColor: "white" }}
+          style={{ borderColor: "transparent" }}
           onClick={this.deleteListItem}
+          onMouseEnter={() => {
+            this.toggleDeleteHover(true);
+          }}
+          onMouseLeave={() => {
+            this.toggleDeleteHover(false);
+          }}
+          variant={this.state.hoveringDelete ? "light" : "white"}
         >
           <FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>
         </Button>

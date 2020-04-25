@@ -1,26 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import {
-  Card,
-  Col,
-  ListGroup,
-  ListGroupItem,
-  Button,
-  InputGroup,
-  Form,
-  ButtonGroup,
-  Modal,
-  Alert,
-} from "react-bootstrap";
+import { Card, ListGroup, Button, Modal, Alert } from "react-bootstrap";
 import moment from "moment";
-import {
-  FaRegCheckSquare,
-  FaEdit,
-  FaRegTrashAlt,
-  FaRegWindowClose,
-  FaPlus,
-} from "react-icons/fa";
+import { FaRegTrashAlt, FaPlus } from "react-icons/fa";
 import ListItem from "./ListItem";
 import TextareaAutosize from "react-textarea-autosize";
 
@@ -271,8 +254,7 @@ class List extends React.Component {
           height: "100%",
         }}
       >
-        Created on{" "}
-        {moment(this.props.dateCreated).format("MMMM Do, YYYY (h:mm A)")}
+        {moment(this.props.dateCreated).format("[Created on] MMMM Do, YYYY")}
         <div
           style={{
             marginLeft: "auto",

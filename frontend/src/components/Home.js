@@ -1,22 +1,11 @@
 import React from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
-import {
-  Button,
-  Col,
-  Container,
-  Form,
-  InputGroup,
-  Row,
-  Jumbotron,
-  Alert,
-  CardDeck,
-  CardGroup,
-  CardColumns,
-} from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import { Redirect, BrowserRouter as Router } from "react-router-dom";
 import List from "./List";
 import { FaPlus } from "react-icons/fa";
+import moment from "moment";
 
 class Home extends React.Component {
   constructor(props) {
@@ -95,8 +84,19 @@ class Home extends React.Component {
     }
   };
 
+  sortListsByDate = () => {
+    if (this.state.lists) {
+      this.state.lists.sort(
+        (a, b) =>
+          new moment(b.date_created).format("YYYYMMDDHHmmssSSS") -
+          new moment(a.date_created).format("YYYYMMDDHHmmssSSS")
+      );
+    }
+  };
+
   renderLists = () => {
     if (this.state.loggedIn) {
+      this.sortListsByDate();
       return (
         <div
           style={{
