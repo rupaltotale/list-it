@@ -113,9 +113,8 @@ class Home extends React.Component {
           })}
         </div>
       );
-    } else {
-      return <h1 className="text-center">You must log in to create lists</h1>;
     }
+    return null;
   };
 
   renderAddListButton = () => {
@@ -155,13 +154,24 @@ class Home extends React.Component {
     );
   };
 
-  render() {
+  renderLoggedInHome = () => {
     return (
       <Container>
         {this.renderHeading()}
         {this.renderLists()}
       </Container>
     );
+  };
+
+  renderLoggedOutHome = () => {
+    return <h1 className="text-center">You must log in to create lists</h1>;
+  };
+
+  render() {
+    if (this.state.loggedIn) {
+      return this.renderLoggedInHome();
+    }
+    return this.renderLoggedOutHome();
   }
 }
 
