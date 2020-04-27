@@ -6,7 +6,6 @@ import moment from "moment";
 import { FaRegTrashAlt, FaPlus } from "react-icons/fa";
 import ListItem from "./ListItem";
 import TextareaAutosize from "react-textarea-autosize";
-import { AlertHeading } from "react-bootstrap/Alert";
 
 class List extends React.Component {
   constructor(props) {
@@ -154,6 +153,7 @@ class List extends React.Component {
         }
       )
       .then((response) => {
+        console.log(response.data.id);
         this.props.refresh();
       })
       .catch((error) => {
@@ -170,6 +170,7 @@ class List extends React.Component {
         completed={listItem.completed}
         list_id={this.props.id}
         refresh={this.props.refresh}
+        createListItem={this.createListItem}
       ></ListItem>
     );
   };

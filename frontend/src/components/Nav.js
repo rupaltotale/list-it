@@ -17,7 +17,6 @@ class NavBar extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.username !== prevState.username) {
-      console.log(nextProps.username);
       return {
         username: nextProps.username,
         loggedIn: nextProps.username ? true : false,

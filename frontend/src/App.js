@@ -48,7 +48,6 @@ class App extends Component {
   }
 
   setUsername = (username, isLoggedIn) => {
-    console.log(username, isLoggedIn);
     this.setState({
       username: username,
       loggedIn: isLoggedIn,

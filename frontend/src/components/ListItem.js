@@ -8,6 +8,7 @@ import {
   FaRegSquare,
   FaRegCheckSquare,
 } from "react-icons/fa";
+import * as Mousetrap from "Mousetrap";
 
 class ListItem extends React.Component {
   constructor(props) {
@@ -15,16 +16,14 @@ class ListItem extends React.Component {
     this.state = {
       content: this.props.content,
       completed: this.props.completed,
-      currentlyEditingContent: false,
       errorResponse: null,
       hoveringCheckbox: false,
       hoveringDelete: false,
     };
+    this.handleEnterPress = this.handleEnterPress.bind(this);
   }
 
   componentDidMount() {}
-
-  componentDidUpdate() {}
 
   handleContentChange = (event) => {
     this.setState(
@@ -162,7 +161,12 @@ class ListItem extends React.Component {
     );
   };
 
+  handleEnterPress = () => {
+    this.props.createListItem();
+  };
+
   renderListItemContent = () => {
+    var _ = this;
     return (
       <TextareaAutosize
         style={{
@@ -174,11 +178,17 @@ class ListItem extends React.Component {
               : "none",
         }}
         value={this.state.content}
-        className="form-control"
-        onFocus={() => {
-          this.setState({ currentlyEditingContent: true });
-        }}
+        className="form-control mousetrap"
         onChange={this.handleContentChange}
+        onFocus={() => {
+          Mousetrap.bind("enter", function (event) {
+            event.preventDefault();
+            _.handleEnterPress();
+          });
+        }}
+        onBlur={() => {
+          Mousetrap.unbind("enter");
+        }}
         rows={1}
         placeholder="List Item"
       ></TextareaAutosize>
@@ -218,4 +228,5 @@ ListItem.propTypes = {
   completed: PropTypes.bool.isRequired,
   content: PropTypes.string.isRequired,
   refresh: PropTypes.func.isRequired,
+  createListItem: PropTypes.func.isRequired,
 };
