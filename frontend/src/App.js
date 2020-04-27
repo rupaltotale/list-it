@@ -15,7 +15,7 @@ import {
   Switch,
 } from "react-router-dom";
 import React, { Component } from "react";
-
+import NavBar from "./components/Nav";
 import CustomForm from "./components/CustomForm";
 import { render } from "react-dom";
 import Home from "./components/Home";
@@ -47,10 +47,11 @@ class App extends Component {
     }
   }
 
-  setUsername = (username) => {
+  setUsername = (username, isLoggedIn) => {
+    console.log(username, isLoggedIn);
     this.setState({
       username: username,
-      loggedIn: true,
+      loggedIn: isLoggedIn,
     });
   };
 
@@ -60,130 +61,9 @@ class App extends Component {
     });
   };
 
-  handleNavDropDownOpen = () => {
-    this.setState({ isNavDropdownOpen: true });
-  };
-
-  handleNavDropDownClose = () => {
-    this.setState({ isNavDropdownOpen: false });
-  };
-
-  handleLogout = () => {
-    localStorage.removeItem("token");
-    this.setState({ loggedIn: false, username: "", isNavDropdownOpen: false });
-  };
-
-  renderNavbarDropdown = () => {
+  renderNav() {
     return (
-      <NavDropdown
-        title={this.state.username}
-        onMouseEnter={this.handleNavDropDownOpen}
-        onMouseLeave={this.handleNavDropDownClose}
-        show={this.state.isNavDropdownOpen}
-      >
-        <NavDropdown.Item onMouseEnter={this.handleNavDropDownOpen}>
-          Your Profile
-        </NavDropdown.Item>
-        <NavDropdown.Item
-          onMouseEnter={this.handleNavDropDownOpen}
-          className="font-weight-bold"
-          onClick={this.handleLogout}
-        >
-          <u>Logout</u>
-        </NavDropdown.Item>
-      </NavDropdown>
-    );
-  };
-
-  renderNavLoggedIn() {
-    const loggedIn_nav = (
-      <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
-        <Navbar.Brand href="/">To-Do List</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto">
-            <NavLink
-              exact
-              to="/"
-              className={"nav-link"}
-              activeClassName={"nav-link active"}
-            >
-              Home
-            </NavLink>
-            <NavLink
-              exact
-              to="/about"
-              className={"nav-link"}
-              activeClassName={"nav-link active"}
-            >
-              About
-            </NavLink>
-          </Nav>
-          <Nav>
-            <Navbar.Text>Signed in as:</Navbar.Text>
-            {this.renderNavbarDropdown()}
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-    );
-    return loggedIn_nav;
-  }
-
-  renderNavLoggedOut() {
-    const logged_out_nav = (
-      <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
-        <Navbar.Brand href="/">To-Do List</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto" align="center">
-            <NavLink
-              exact
-              to="/"
-              className={"nav-link"}
-              activeClassName={"nav-link active"}
-            >
-              Home
-            </NavLink>
-            <NavLink
-              exact
-              to="/about"
-              className={"nav-link"}
-              activeClassName={"nav-link active"}
-            >
-              About
-            </NavLink>
-          </Nav>
-          <Nav>
-            <NavLink
-              exact
-              to="/login"
-              className={"nav-link"}
-              activeClassName={"nav-link active"}
-            >
-              Login
-            </NavLink>
-            <NavLink
-              exact
-              to="/signup"
-              className={"nav-link"}
-              activeClassName={"nav-link active"}
-            >
-              Sign Up
-            </NavLink>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-    );
-    return logged_out_nav;
-  }
-
-  render_nav() {
-    return (
-      <div>
-        {this.state.loggedIn
-          ? this.renderNavLoggedIn()
-          : this.renderNavLoggedOut()}
-      </div>
+      <NavBar username={this.state.username} setUsername={this.setUsername} />
     );
   }
 
@@ -301,7 +181,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        {this.render_nav()}
+        {this.renderNav()}
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
@@ -323,7 +203,6 @@ class App extends Component {
         </Switch>
       </Router>
     );
-    return null;
   }
 }
 

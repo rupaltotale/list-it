@@ -117,7 +117,7 @@ class CustomForm extends React.Component {
           username,
           redirect: "/",
         });
-        this.props.setUsername(username);
+        this.props.setUsername(username, true);
       })
       .catch(this.setInvalidFeedback);
     this.setState({

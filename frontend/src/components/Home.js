@@ -77,7 +77,6 @@ class Home extends React.Component {
           },
         })
         .then((response) => {
-          console.log(response.data);
           this.setState({
             lists: response.data,
           });
