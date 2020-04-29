@@ -17,12 +17,11 @@
   change when its value is changed
 - Make api utils on frontend
 - Change api endpoint for login and signup after backend fix
-- Margin between buttons on list title
-- Drop down out of sight
 - Refactor nav bar (create own file)
 - refactor App.js and Home.js
 - Layout of lists still wanky
-- Make title bold; can span multiple lines
+- Set focus to list item when updated
+- Make setNewIdToFocus work in List.js
 
 ## Advanced Features:
 
