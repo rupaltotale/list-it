@@ -15,12 +15,17 @@ class List extends React.Component {
       title: this.props.title,
       errorResponse: null,
       showDeleteModal: false,
+      idToFocus: null,
     };
   }
 
   componentDidMount() {}
 
   componentDidUpdate() {}
+
+  toggleMousetrapBinding = (isBinding, key, callback) => {
+    isBinding ? Mousetrap.bind(key, callback) : Mousetrap.unbind(key);
+  };
 
   handleTitleChange = (event) => {
     this.setState(
@@ -82,10 +87,6 @@ class List extends React.Component {
     );
   };
 
-  toggleMousetrapBinding = (isBinding, key, callback) => {
-    isBinding ? Mousetrap.bind(key, callback) : Mousetrap.unbind(key);
-  };
-
   renderDeleteModal = () => {
     return (
       <Modal
@@ -127,7 +128,7 @@ class List extends React.Component {
         size="sm"
         variant="light"
         onClick={() => {
-          this.toggleDeleteModal;
+          this.toggleDeleteModal();
         }}
       >
         <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
@@ -147,10 +148,19 @@ class List extends React.Component {
             textAlign: "center",
           }}
           value={this.state.title}
-          className="form-control bg-light shadow-none"
+          className="form-control bg-light shadow-none mousetrap"
           onChange={this.handleTitleChange}
           placeholder="List Title"
           rows={1}
+          onFocus={() => {
+            this.toggleMousetrapBinding(true, "enter", (event) => {
+              event.preventDefault();
+              this.createListItem();
+            });
+          }}
+          onBlur={() => {
+            this.toggleMousetrapBinding(false, "enter");
+          }}
         ></TextareaAutosize>
       </Card.Header>
     );
@@ -173,7 +183,14 @@ class List extends React.Component {
         }
       )
       .then((response) => {
-        this.props.refresh();
+        this.setState(
+          {
+            idToFocus: response.data.id,
+          },
+          () => {
+            this.props.refresh();
+          }
+        );
       })
       .catch((error) => {
         console.log(error.response);
@@ -183,12 +200,13 @@ class List extends React.Component {
   renderListItem = (listItem) => {
     return (
       <ListItem
-        key={listItem.id + "_" + this.props.id}
+        key={listItem.id}
         content={listItem.content}
         id={listItem.id}
         completed={listItem.completed}
         list_id={this.props.id}
         refresh={this.props.refresh}
+        idToFocus={this.state.idToFocus}
         createListItem={this.createListItem}
       ></ListItem>
     );

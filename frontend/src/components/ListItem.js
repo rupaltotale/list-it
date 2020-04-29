@@ -13,18 +13,49 @@ import * as Mousetrap from "Mousetrap";
 class ListItem extends React.Component {
   constructor(props) {
     super(props);
+    this.ref = React.createRef();
     this.state = {
       content: this.props.content,
       completed: this.props.completed,
       errorResponse: null,
       hoveringCheckbox: false,
       hoveringDelete: false,
-      toFocus: null,
-      isFocusing: false,
+      idToFocus: this.props.idToFocus,
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.state.idToFocus === this.props.id) {
+      this.focusListItem();
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.idToFocus !== prevProps.idToFocus &&
+      this.state.idToFocus === this.props.id
+    ) {
+      this.focusListItem();
+      this.setState({
+        idToFocus: null,
+      });
+    }
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.idToFocus !== prevState.idToFocus) {
+      return {
+        idToFocus: nextProps.idToFocus,
+      };
+    }
+    return null;
+  }
+
+  focusListItem = () => {
+    if (this.ref.current) {
+      this.ref.current.focus();
+    }
+  };
 
   handleContentChange = (event) => {
     this.setState(
@@ -191,6 +222,7 @@ class ListItem extends React.Component {
         }}
         rows={1}
         placeholder="List Item"
+        inputRef={this.ref}
       ></TextareaAutosize>
     );
   };
