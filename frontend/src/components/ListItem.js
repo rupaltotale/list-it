@@ -53,6 +53,8 @@ class ListItem extends React.Component {
   focusListItem = () => {
     if (this.ref.current) {
       this.ref.current.focus();
+      this.ref.current.selectionStart = this.ref.current.value.length;
+      this.ref.current.selectionEnd = this.ref.current.value.length;
     }
   };
 
@@ -85,24 +87,6 @@ class ListItem extends React.Component {
       )
       .then((response) => {
         this.props.refresh();
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
-  };
-
-  deleteListItem = () => {
-    axios
-      .delete(`http://127.0.0.1:8000/api/v1/list_item/${this.props.id}/`, {
-        headers: {
-          Authorization: `JWT ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        this.props.refresh();
-        if (this.state.focused) {
-          this.props.setNewIdToFocus();
-        }
       })
       .catch((error) => {
         console.log(error.response);
@@ -207,8 +191,24 @@ class ListItem extends React.Component {
     );
   };
 
-  handleEnterPress = () => {
-    this.props.createListItem(this.state.completed);
+  deleteListItem = () => {
+    if (this.state.focused) {
+      Mousetrap.unbind(["enter", "backspace", "down", "up", "tab"]);
+      //Mousetrap.reset()
+      this.props.setNextIdToFocus(this.props.id, true);
+    }
+    axios
+      .delete(`http://127.0.0.1:8000/api/v1/list_item/${this.props.id}/`, {
+        headers: {
+          Authorization: `JWT ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        this.props.refresh();
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
   };
 
   renderListItemContent = () => {
@@ -226,23 +226,35 @@ class ListItem extends React.Component {
         className="form-control mousetrap"
         onChange={this.handleContentChange}
         onFocus={() => {
-          this.setState({
-            focused: true,
-          });
-          Mousetrap.bind("enter", (event) => {
-            event.preventDefault();
-            this.handleEnterPress();
-          });
-          Mousetrap.bind("backspace", (event) => {
-            if (!this.state.content.length) {
-              event.preventDefault();
-              this.deleteListItem();
-              Mousetrap.unbind("backspace");
+          this.setState(
+            {
+              focused: true,
+            },
+            () => {
+              Mousetrap.bind("enter", (event) => {
+                event.preventDefault();
+                this.props.createListItem(this.state.completed);
+              });
+              Mousetrap.bind("backspace", (event) => {
+                if (this.state.content.length === 0) {
+                  event.preventDefault();
+                  this.deleteListItem();
+                }
+              });
+              Mousetrap.bind(["down", "tab"], (event) => {
+                event.preventDefault();
+                this.props.setNextIdToFocus(this.props.id);
+              });
+              Mousetrap.bind("up", (event) => {
+                event.preventDefault();
+                this.props.setPreviousIdToFocus(this.props.id);
+              });
             }
-          });
+          );
         }}
         onBlur={() => {
-          Mousetrap.unbind(["enter", "backspace"]);
+          Mousetrap.unbind(["enter", "backspace", "down", "up", "tab"]);
+          //Mousetrap.reset()
         }}
         rows={1}
         placeholder="List Item"

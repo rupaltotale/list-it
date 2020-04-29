@@ -24,8 +24,80 @@ class List extends React.Component {
 
   componentDidUpdate() {}
 
-  setNewIdToFocus = () => {
-    console.log("trying to set a new id");
+  setPreviousIdToFocus = (oldID) => {
+    return new Promise((resolve, reject) => {
+      const listItems = [].concat(this.props.listItems);
+      if (listItems.length > 1) {
+        var previousListItemID = null;
+        for (var i = 0; i < listItems.length; i++) {
+          if (listItems[i].id === oldID) {
+            if (i > 0) {
+              previousListItemID = listItems[i - 1].id;
+              this.setState({ idToFocus: previousListItemID }, () => {
+                resolve();
+              });
+            } else {
+              this.setLastIdToFocus();
+            }
+          }
+        }
+      } else {
+        resolve();
+      }
+    });
+  };
+
+  setNextIdToFocus = (oldID, isDeleting = false) => {
+    return new Promise((resolve, reject) => {
+      const listItems = [].concat(this.props.listItems);
+      if (listItems.length > 1) {
+        var nextListItemID = null;
+        for (var i = 0; i < listItems.length; i++) {
+          if (listItems[i].id === oldID) {
+            if (i < listItems.length - 1) {
+              nextListItemID = listItems[i + 1].id;
+              this.setState({ idToFocus: nextListItemID }, () => {
+                resolve();
+              });
+            } else if (isDeleting) {
+              this.setPreviousIdToFocus(oldID);
+            } else {
+              this.setFirstIdToFocus();
+            }
+          }
+        }
+      } else {
+        resolve();
+      }
+    });
+  };
+
+  setFirstIdToFocus = () => {
+    return new Promise((resolve, reject) => {
+      const listItems = [].concat(this.props.listItems);
+      this.setState(
+        {
+          idToFocus: listItems[0].id,
+        },
+        () => {
+          resolve();
+        }
+      );
+    });
+  };
+
+  setLastIdToFocus = () => {
+    return new Promise((resolve, reject) => {
+      const listItems = [].concat(this.props.listItems);
+      this.setState(
+        {
+          idToFocus: listItems.slice(-1)[0].id,
+        },
+        () => {
+          resolve();
+        }
+      );
+    });
   };
 
   handleTitleChange = (event) => {
@@ -214,7 +286,8 @@ class List extends React.Component {
         list_id={this.props.id}
         refresh={this.props.refresh}
         idToFocus={this.state.idToFocus}
-        setNewIdToFocus={this.setNewIdToFocus}
+        setPreviousIdToFocus={this.setPreviousIdToFocus}
+        setNextIdToFocus={this.setNextIdToFocus}
         createListItem={this.createListItem}
       ></ListItem>
     );

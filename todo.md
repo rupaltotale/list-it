@@ -21,7 +21,7 @@
 - refactor App.js and Home.js
 - Layout of lists still wanky
 - Set focus to list item when updated
-- Make setNewIdToFocus work in List.js
+- Focus on list items using completed/not
 
 ## Advanced Features:
 
