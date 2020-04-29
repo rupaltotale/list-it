@@ -24,8 +24,8 @@ class List extends React.Component {
 
   componentDidUpdate() {}
 
-  toggleMousetrapBinding = (isBinding, key, callback) => {
-    isBinding ? Mousetrap.bind(key, callback) : Mousetrap.unbind(key);
+  setNewIdToFocus = () => {
+    console.log("trying to set a new id");
   };
 
   handleTitleChange = (event) => {
@@ -93,11 +93,14 @@ class List extends React.Component {
       <Modal
         show={this.state.showDeleteModal}
         onShow={() => {
-          this.toggleMousetrapBinding(true, "enter", this.deleteList);
+          Mousetrap.bind("enter", () => {
+            this.deleteList();
+            Mousetrap.unbind("enter");
+          });
         }}
         onHide={() => {
           this.toggleDeleteModal();
-          this.toggleMousetrapBinding(false, "enter");
+          Mousetrap.unbind("enter");
         }}
       >
         <Modal.Header closeButton>
@@ -114,6 +117,7 @@ class List extends React.Component {
             variant="danger"
             onClick={() => {
               this.deleteList();
+              Mousetrap.unbind("enter");
             }}
           >
             Delete
@@ -147,21 +151,22 @@ class List extends React.Component {
             fontWeight: "bold",
             fontSize: "large",
             textAlign: "center",
+            boxShadow: "none",
           }}
           value={this.state.title}
-          className="form-control bg-light shadow-none mousetrap"
+          className="form-control bg-light mousetrap"
           onChange={this.handleTitleChange}
           placeholder="List Title"
           rows={1}
           inputRef={this.listTitle}
           onFocus={() => {
-            this.toggleMousetrapBinding(true, ["enter", "escape"], (event) => {
+            Mousetrap.bind(["enter", "escape"], (event) => {
               event.preventDefault();
               this.listTitle.current.blur();
             });
           }}
           onBlur={() => {
-            this.toggleMousetrapBinding(false, ["enter", "escape"]);
+            Mousetrap.unbind(["enter", "escape"]);
           }}
         ></TextareaAutosize>
       </Card.Header>
@@ -209,6 +214,7 @@ class List extends React.Component {
         list_id={this.props.id}
         refresh={this.props.refresh}
         idToFocus={this.state.idToFocus}
+        setNewIdToFocus={this.setNewIdToFocus}
         createListItem={this.createListItem}
       ></ListItem>
     );

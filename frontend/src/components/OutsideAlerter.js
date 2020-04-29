@@ -34,11 +34,19 @@ export default class OutsideAlerter extends React.Component {
   };
 
   render() {
-    return <div ref={this.setWrapperRef}>{this.props.children}</div>;
+    return (
+      <div
+        style={this.props.divStyle ? this.props.divStyle : null}
+        ref={this.setWrapperRef}
+      >
+        {this.props.children}
+      </div>
+    );
   }
 }
 
 OutsideAlerter.propTypes = {
   children: PropTypes.element.isRequired,
   callback: PropTypes.func.isRequired,
+  divStyle: PropTypes.object,
 };

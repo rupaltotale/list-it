@@ -9,6 +9,7 @@ import {
   FaRegCheckSquare,
 } from "react-icons/fa";
 import * as Mousetrap from "Mousetrap";
+import OutsideAlerter from "./OutsideAlerter";
 
 class ListItem extends React.Component {
   constructor(props) {
@@ -21,11 +22,12 @@ class ListItem extends React.Component {
       hoveringCheckbox: false,
       hoveringDelete: false,
       idToFocus: this.props.idToFocus,
+      focused: false,
     };
   }
 
   componentDidMount() {
-    if (this.state.idToFocus === this.props.id) {
+    if (this.state.idToFocus === this.props.id && !this.state.focused) {
       this.focusListItem();
     }
   }
@@ -60,7 +62,9 @@ class ListItem extends React.Component {
         content: event.target.value,
         errorResponse: null,
       },
-      this.updateListItem
+      () => {
+        this.updateListItem();
+      }
     );
   };
 
@@ -96,6 +100,9 @@ class ListItem extends React.Component {
       })
       .then((response) => {
         this.props.refresh();
+        if (this.state.focused) {
+          this.props.setNewIdToFocus();
+        }
       })
       .catch((error) => {
         console.log(error.response);
@@ -163,30 +170,40 @@ class ListItem extends React.Component {
   };
 
   renderDeleteButton = () => {
+    const divStyle = {
+      marginLeft: "3px",
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "flex-center",
+      justifyContent: "center",
+    };
     return (
-      <div
-        style={{
-          marginLeft: "3px",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-center",
+      <OutsideAlerter
+        divStyle={divStyle}
+        children={
+          <Button
+            size="sm"
+            style={{ borderColor: "transparent" }}
+            onClick={this.deleteListItem}
+            onMouseEnter={() => {
+              this.toggleDeleteHover(true);
+            }}
+            onMouseLeave={() => {
+              this.toggleDeleteHover(false);
+            }}
+            variant={this.state.hoveringDelete ? "light" : null}
+          >
+            <FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>
+          </Button>
+        }
+        callback={() => {
+          if (this.state.focused) {
+            this.setState({
+              focused: false,
+            });
+          }
         }}
-      >
-        <Button
-          size="sm"
-          style={{ borderColor: "transparent" }}
-          onClick={this.deleteListItem}
-          onMouseEnter={() => {
-            this.toggleDeleteHover(true);
-          }}
-          onMouseLeave={() => {
-            this.toggleDeleteHover(false);
-          }}
-          variant={this.state.hoveringDelete ? "light" : null}
-        >
-          <FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>
-        </Button>
-      </div>
+      />
     );
   };
 
@@ -209,13 +226,23 @@ class ListItem extends React.Component {
         className="form-control mousetrap"
         onChange={this.handleContentChange}
         onFocus={() => {
+          this.setState({
+            focused: true,
+          });
           Mousetrap.bind("enter", (event) => {
             event.preventDefault();
             this.handleEnterPress();
           });
+          Mousetrap.bind("backspace", (event) => {
+            if (!this.state.content.length) {
+              event.preventDefault();
+              this.deleteListItem();
+              Mousetrap.unbind("backspace");
+            }
+          });
         }}
         onBlur={() => {
-          Mousetrap.unbind("enter");
+          Mousetrap.unbind(["enter", "backspace"]);
         }}
         rows={1}
         placeholder="List Item"
