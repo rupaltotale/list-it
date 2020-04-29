@@ -11,6 +11,7 @@ import * as Mousetrap from "Mousetrap";
 class List extends React.Component {
   constructor(props) {
     super(props);
+    this.listTitle = React.createRef();
     this.state = {
       title: this.props.title,
       errorResponse: null,
@@ -152,14 +153,15 @@ class List extends React.Component {
           onChange={this.handleTitleChange}
           placeholder="List Title"
           rows={1}
+          inputRef={this.listTitle}
           onFocus={() => {
-            this.toggleMousetrapBinding(true, "enter", (event) => {
+            this.toggleMousetrapBinding(true, ["enter", "escape"], (event) => {
               event.preventDefault();
-              this.createListItem();
+              this.listTitle.current.blur();
             });
           }}
           onBlur={() => {
-            this.toggleMousetrapBinding(false, "enter");
+            this.toggleMousetrapBinding(false, ["enter", "escape"]);
           }}
         ></TextareaAutosize>
       </Card.Header>

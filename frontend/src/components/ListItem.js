@@ -36,9 +36,6 @@ class ListItem extends React.Component {
       this.state.idToFocus === this.props.id
     ) {
       this.focusListItem();
-      this.setState({
-        idToFocus: null,
-      });
     }
   }
 
