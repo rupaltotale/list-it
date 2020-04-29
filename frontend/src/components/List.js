@@ -6,6 +6,7 @@ import moment from "moment";
 import { FaRegTrashAlt, FaPlus } from "react-icons/fa";
 import ListItem from "./ListItem";
 import TextareaAutosize from "react-textarea-autosize";
+import * as Mousetrap from "Mousetrap";
 
 class List extends React.Component {
   constructor(props) {
@@ -81,9 +82,22 @@ class List extends React.Component {
     );
   };
 
+  toggleMousetrapBinding = (isBinding, key, callback) => {
+    isBinding ? Mousetrap.bind(key, callback) : Mousetrap.unbind(key);
+  };
+
   renderDeleteModal = () => {
     return (
-      <Modal show={this.state.showDeleteModal} onHide={this.toggleDeleteModal}>
+      <Modal
+        show={this.state.showDeleteModal}
+        onShow={() => {
+          this.toggleMousetrapBinding(true, "enter", this.deleteList);
+        }}
+        onHide={() => {
+          this.toggleDeleteModal();
+          this.toggleMousetrapBinding(false, "enter");
+        }}
+      >
         <Modal.Header closeButton>
           <Modal.Title>
             Delete <em>{this.state.title}</em>
@@ -109,7 +123,13 @@ class List extends React.Component {
 
   renderDeleteButton = () => {
     return (
-      <Button size="sm" variant="light" onClick={this.toggleDeleteModal}>
+      <Button
+        size="sm"
+        variant="light"
+        onClick={() => {
+          this.toggleDeleteModal;
+        }}
+      >
         <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
       </Button>
     );
@@ -136,13 +156,13 @@ class List extends React.Component {
     );
   };
 
-  createListItem = () => {
+  createListItem = (isCompleted = false) => {
     axios
       .post(
         "http://127.0.0.1:8000/api/v1/list_item/new",
         {
           content: "",
-          completed: false,
+          completed: isCompleted,
           list_id: this.props.id,
         },
         {
@@ -153,7 +173,6 @@ class List extends React.Component {
         }
       )
       .then((response) => {
-        console.log(response.data.id);
         this.props.refresh();
       })
       .catch((error) => {
@@ -172,40 +191,6 @@ class List extends React.Component {
         refresh={this.props.refresh}
         createListItem={this.createListItem}
       ></ListItem>
-    );
-  };
-
-  renderNoncompletedListItems = (listItems) => {
-    return (
-      <>
-        {listItems
-          .filter((listItem) => {
-            return !listItem.completed;
-          })
-          .map((listItem) => {
-            return this.renderListItem(listItem);
-          })}
-      </>
-    );
-  };
-
-  renderAddListItemButton = () => {
-    return (
-      <Button
-        variant="outline-primary"
-        style={{
-          width: "wrap-content",
-          margin: "6px 6px",
-          display: "flex",
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        onClick={this.createListItem}
-      >
-        <FaPlus style={{ margin: "2px" }}></FaPlus>
-        {" Add list item"}
-      </Button>
     );
   };
 
@@ -234,6 +219,42 @@ class List extends React.Component {
       );
     }
     return null;
+  };
+
+  renderNoncompletedListItems = (listItems) => {
+    return (
+      <>
+        {listItems
+          .filter((listItem) => {
+            return !listItem.completed;
+          })
+          .map((listItem) => {
+            return this.renderListItem(listItem);
+          })}
+      </>
+    );
+  };
+
+  renderAddListItemButton = () => {
+    return (
+      <Button
+        variant="outline-primary"
+        style={{
+          width: "wrap-content",
+          margin: "6px 6px",
+          display: "flex",
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          this.createListItem();
+        }}
+      >
+        <FaPlus style={{ margin: "2px" }}></FaPlus>
+        {" Add list item"}
+      </Button>
+    );
   };
 
   renderListItems = () => {
@@ -276,7 +297,7 @@ class List extends React.Component {
   renderList = () => {
     return (
       <>
-        <React.Fragment>{this.renderDeleteModal()}</React.Fragment>
+        {this.renderDeleteModal()}
         <Card style={{ margin: "10px", width: "315px" }}>
           {this.renderListTitle()}
           {this.renderListItems()}

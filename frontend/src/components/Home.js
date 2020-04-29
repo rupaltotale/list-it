@@ -167,10 +167,9 @@ class Home extends React.Component {
   };
 
   render() {
-    if (this.state.loggedIn) {
-      return this.renderLoggedInHome();
-    }
-    return this.renderLoggedOutHome();
+    return this.state.loggedIn
+      ? this.renderLoggedInHome()
+      : this.renderLoggedOutHome();
   }
 }
 

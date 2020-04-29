@@ -19,8 +19,9 @@ class ListItem extends React.Component {
       errorResponse: null,
       hoveringCheckbox: false,
       hoveringDelete: false,
+      toFocus: null,
+      isFocusing: false,
     };
-    this.handleEnterPress = this.handleEnterPress.bind(this);
   }
 
   componentDidMount() {}
@@ -162,11 +163,10 @@ class ListItem extends React.Component {
   };
 
   handleEnterPress = () => {
-    this.props.createListItem();
+    this.props.createListItem(this.state.completed);
   };
 
   renderListItemContent = () => {
-    var _ = this;
     return (
       <TextareaAutosize
         style={{
@@ -181,9 +181,9 @@ class ListItem extends React.Component {
         className="form-control mousetrap"
         onChange={this.handleContentChange}
         onFocus={() => {
-          Mousetrap.bind("enter", function (event) {
+          Mousetrap.bind("enter", (event) => {
             event.preventDefault();
-            _.handleEnterPress();
+            this.handleEnterPress();
           });
         }}
         onBlur={() => {
