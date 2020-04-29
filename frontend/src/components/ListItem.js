@@ -9,7 +9,7 @@ import {
   FaRegCheckSquare,
 } from "react-icons/fa";
 import * as Mousetrap from "Mousetrap";
-import OutsideAlerter from "./OutsideAlerter";
+import OutsideInsideAlerter from "./OutsideInsideAlerter";
 
 class ListItem extends React.Component {
   constructor(props) {
@@ -178,7 +178,7 @@ class ListItem extends React.Component {
       justifyContent: "center",
     };
     return (
-      <OutsideAlerter
+      <OutsideInsideAlerter
         divStyle={divStyle}
         children={
           <Button
@@ -196,7 +196,7 @@ class ListItem extends React.Component {
             <FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>
           </Button>
         }
-        callback={() => {
+        outsideCallback={() => {
           if (this.state.focused) {
             this.setState({
               focused: false,

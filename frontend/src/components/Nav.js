@@ -2,7 +2,7 @@ import { Nav, Navbar, Button, Dropdown } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import OutsideAlerter from "./OutsideAlerter";
+import OutsideInsideAlerter from "./OutsideInsideAlerter";
 
 class NavBar extends React.Component {
   constructor(props) {
@@ -10,8 +10,10 @@ class NavBar extends React.Component {
     this.state = {
       loggedIn: localStorage.getItem("token") ? true : false,
       username: this.props.username,
-      isNavDropdownOpen: false,
+      isNavDropdownHovering: false,
       isNavDropdownClicked: false,
+      haveClickedNavDropdown: false,
+      isNavDropdownOpen: false,
     };
   }
 
@@ -29,19 +31,9 @@ class NavBar extends React.Component {
   handleLogout = () => {
     localStorage.removeItem("token");
     this.setState({
-      isNavDropdownOpen: false,
+      isNavDropdownHovering: false,
     });
     this.props.setUsername("", false);
-  };
-
-  toggleNavDropdownHover = (bool) => {
-    this.setState({ isNavDropdownOpen: bool });
-  };
-
-  toggleNavDropdownClicked = () => {
-    this.setState({
-      isNavDropdownClicked: !this.state.isNavDropdownClicked,
-    });
   };
 
   renderNavDropdown = () => {
@@ -82,20 +74,54 @@ class NavBar extends React.Component {
     );
   };
 
+  toggleNavDropdownHover = (bool) => {
+    this.setState({ isNavDropdownHovering: bool }, () => {
+      this.setState({
+        isNavDropdownOpen: this.toggleNavDropdown(),
+      });
+    });
+  };
+
+  toggleNavDropdownClicked = () => {
+    this.setState(
+      {
+        isNavDropdownClicked: !this.state.isNavDropdownClicked,
+        haveClickedNavDropdown: true,
+      },
+      () => {
+        this.setState({
+          isNavDropdownOpen: this.toggleNavDropdown(),
+        });
+      }
+    );
+  };
+
+  toggleNavDropdown = () => {
+    if (this.state.isNavDropdownClicked) {
+      return true;
+    } else {
+      if (this.state.haveClickedNavDropdown) {
+        return false;
+      }
+      if (this.state.isNavDropdownHovering) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   renderNavLoggedIn = () => {
     return (
       <>
         <Nav>
-          <OutsideAlerter
+          <OutsideInsideAlerter
             children={
               <Dropdown
                 onMouseEnter={() => {
                   this.toggleNavDropdownHover(true);
                 }}
                 onMouseLeave={() => {
-                  if (!this.state.isNavDropdownClicked) {
-                    this.toggleNavDropdownHover(false);
-                  }
+                  this.toggleNavDropdownHover(false);
                 }}
                 onClick={this.toggleNavDropdownClicked}
                 show={this.state.isNavDropdownOpen}
@@ -106,10 +132,12 @@ class NavBar extends React.Component {
                 </Dropdown.Menu>
               </Dropdown>
             }
-            callback={() => {
+            outsideCallback={() => {
               this.setState({
-                isNavDropdownOpen: false,
                 isNavDropdownClicked: false,
+                isNavDropdownHovering: false,
+                haveClickedNavDropdown: false,
+                isNavDropdownOpen: false,
               });
             }}
           />

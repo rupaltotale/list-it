@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-export default class OutsideAlerter extends React.Component {
+export default class OutsideInsideAlerter extends React.Component {
   constructor(props) {
     super(props);
 
@@ -29,7 +29,9 @@ export default class OutsideAlerter extends React.Component {
    */
   handleClickOutside = (event) => {
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      this.props.callback();
+      this.props.outsideCallback ? this.props.outsideCallback() : null;
+    } else {
+      this.props.insideCallback ? this.props.insideCallback() : null;
     }
   };
 
@@ -45,8 +47,9 @@ export default class OutsideAlerter extends React.Component {
   }
 }
 
-OutsideAlerter.propTypes = {
+OutsideInsideAlerter.propTypes = {
   children: PropTypes.element.isRequired,
-  callback: PropTypes.func.isRequired,
+  outsideCallback: PropTypes.func,
+  insideCallback: PropTypes.func,
   divStyle: PropTypes.object,
 };
