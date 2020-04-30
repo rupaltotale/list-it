@@ -17,10 +17,8 @@
   change when its value is changed
 - Make api utils on frontend
 - Change api endpoint for login and signup after backend fix
-- Refactor nav bar (create own file)
 - refactor App.js and Home.js
 - Layout of lists still wanky
-- Set focus to list item when updated
 - Set up inside/outside list
 
 ## Advanced Features:

@@ -26,32 +26,60 @@ class List extends React.Component {
 
   componentDidUpdate() {}
 
-  setPreviousIdToFocus = (oldID, isCompleted) => {
+  findCompletedStatusOfListItem = (id) => {
+    const listItems = [].concat(this.props.listItems);
+    for (let i = 0; i < listItems.length; i++) {
+      //Match found
+      if (listItems[i].id === id) {
+        if (listItems[i].completed) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  };
+
+  setCurrentListItemToFocus = (id) => {
+    this.setState({
+      idToFocus: id,
+    });
+  };
+
+  setPreviousListItemToFocus = (oldID, isCompleted = null) => {
     return new Promise((resolve, reject) => {
       const listItems = [].concat(this.props.listItems);
       //If there are list items
       if (listItems.length > 1) {
         //If the completed status of the list item is defined
-        if (typeof isCompleted === "boolean") {
+        if (typeof isCompleted !== "boolean") {
+          isCompleted = this.findCompletedStatusOfListItem(oldID);
+        }
+        //Filter list items based on completed status
+        const filteredListItems = listItems.filter((listItem) => {
           if (isCompleted) {
-            this.setPreviousCompletedIdToFocus(oldID);
-          } else {
-            this.setPreviousNoncompletedIdToFocus(oldID);
+            return listItem.completed;
           }
-        } else {
-          //Iterate through all the list items
-          for (var i = 0; i < listItems.length; i++) {
-            //Match found
-            if (listItems[i].id === oldID) {
-              if (listItems[i].completed) {
-                //If completed, set next completed to focus
-                this.setPreviousCompletedIdToFocus(oldID);
-              } else {
-                //If noncompleted, set next noncompleted to focus
-                this.setPreviousNoncompletedIdToFocus(oldID);
-              }
-              break;
+          return !listItem.completed;
+        });
+        //Iterate filtered list items
+        for (let i = 0; i < filteredListItems.length; i++) {
+          //Match found
+          if (filteredListItems[i].id === oldID) {
+            if (i > 0) {
+              let previousListID = filteredListItems[i - 1].id;
+              this.setState(
+                {
+                  idToFocus: previousListID,
+                },
+                () => {
+                  resolve();
+                }
+              );
+            } else {
+              this.setLastListItemToFocus(!isCompleted);
             }
+            break;
           }
         }
       } else {
@@ -60,98 +88,42 @@ class List extends React.Component {
     });
   };
 
-  setPreviousCompletedIdToFocus = (oldID) => {
-    return new Promise((resolve, reject) => {
-      const listItems = [].concat(this.props.listItems);
-      var completedListItems = listItems.filter((listItem) => {
-        return listItem.completed;
-      });
-      var previousListID = null;
-      //Iterate through the completed list items to find the next one
-      for (var i = 0; i < completedListItems.length; i++) {
-        //Match found
-        if (completedListItems[i].id === oldID) {
-          //The list item is not the last item in completed
-          if (i > 0) {
-            //Set the next focus to the next list item
-            previousListID = completedListItems[i - 1].id;
-            this.setState(
-              {
-                idToFocus: previousListID,
-              },
-              () => {
-                resolve();
-              }
-            );
-          } //The list item is the first item in completed
-          else {
-            this.setLastIdToFocus(false);
-          }
-          break;
-        }
-      }
-    });
-  };
-
-  setPreviousNoncompletedIdToFocus = (oldID) => {
-    return new Promise((resolve, reject) => {
-      const listItems = [].concat(this.props.listItems);
-      var nonCompletedListItems = listItems.filter((listItem) => {
-        return !listItem.completed;
-      });
-      var previousListID = null;
-      //Iterate through the list items to find the next one
-      for (var i = 0; i < nonCompletedListItems.length; i++) {
-        //Match found
-        if (nonCompletedListItems[i].id === oldID) {
-          //The list item is not the last item in noncompleted
-          if (i > 0) {
-            //Set the next focus to the next list item
-            previousListID = nonCompletedListItems[i - 1].id;
-            this.setState(
-              {
-                idToFocus: previousListID,
-              },
-              () => {
-                resolve();
-              }
-            );
-          } //The list item is the last item in completed and it is not being deleted
-          else {
-            this.setLastIdToFocus();
-          }
-          break;
-        }
-      }
-    });
-  };
-
-  setNextIdToFocus = (oldID, isCompleted = null, isDeleting = false) => {
+  setNextListItemToFocus = (oldID, isCompleted = null, isDeleting = false) => {
     return new Promise((resolve, reject) => {
       const listItems = [].concat(this.props.listItems);
       //If there are list items
       if (listItems.length > 1) {
         //If the completed status of the list item is defined
-        if (typeof isCompleted === "boolean") {
+        if (typeof isCompleted !== "boolean") {
+          isCompleted = this.findCompletedStatusOfListItem(oldID);
+        }
+        //Filter list items based on completed status
+        const filteredListItems = listItems.filter((listItem) => {
           if (isCompleted) {
-            this.setNextCompletedIdToFocus(oldID, isDeleting);
-          } else {
-            this.setNextNoncompletedIdToFocus(oldID, isDeleting);
+            return listItem.completed;
           }
-        } else {
-          //Iterate through all the list items
-          for (var i = 0; i < listItems.length; i++) {
-            //Match found
-            if (listItems[i].id === oldID) {
-              if (listItems[i].completed) {
-                //If completed, set next completed to focus
-                this.setNextCompletedIdToFocus(oldID, isDeleting);
-              } else {
-                //If noncompleted, set next noncompleted to focus
-                this.setNextNoncompletedIdToFocus(oldID, isDeleting);
-              }
-              break;
+          return !listItem.completed;
+        });
+        //Iterate through filtered list items
+        for (let i = 0; i < filteredListItems.length; i++) {
+          //Match found
+          if (filteredListItems[i].id === oldID) {
+            if (i < filteredListItems.length - 1) {
+              let nextListItemID = filteredListItems[i + 1].id;
+              this.setState(
+                {
+                  idToFocus: nextListItemID,
+                },
+                () => {
+                  resolve();
+                }
+              );
+            } else if (isDeleting) {
+              this.setPreviousListItemToFocus(oldID, isCompleted);
+            } else {
+              this.setFirstListItemToFocus(!isCompleted);
             }
+            break;
           }
         }
       } else {
@@ -160,87 +132,16 @@ class List extends React.Component {
     });
   };
 
-  setNextCompletedIdToFocus = (oldID, isDeleting = false) => {
+  setFirstListItemToFocus = (focusFirstCompleted = false) => {
     return new Promise((resolve, reject) => {
       const listItems = [].concat(this.props.listItems);
-      var completedListItems = listItems.filter((listItem) => {
-        return listItem.completed;
-      });
-      var nextListItemID = null;
-      //Iterate through the completed list items to find the next one
-      for (var i = 0; i < completedListItems.length; i++) {
-        //Match found
-        if (completedListItems[i].id === oldID) {
-          //The list item is not the last item in completed
-          if (i < completedListItems.length - 1) {
-            //Set the next focus to the next list item
-            nextListItemID = completedListItems[i + 1].id;
-            this.setState(
-              {
-                idToFocus: nextListItemID,
-              },
-              () => {
-                resolve();
-              }
-            );
-          } //The list item is the last item in completed and it is being deleted
-          else if (isDeleting) {
-            this.setPreviousCompletedIdToFocus(oldID);
-          } //The list item is the last item in completed and it is not being deleted
-          else {
-            this.setFirstIdToFocus();
-          }
-          break;
-        }
-      }
-    });
-  };
-
-  setNextNoncompletedIdToFocus = (oldID, isDeleting = false) => {
-    return new Promise((resolve, reject) => {
-      const listItems = [].concat(this.props.listItems);
-      var nonCompletedListItems = listItems.filter((listItem) => {
-        return !listItem.completed;
-      });
-      var nextListItemID = null;
-      //Iterate through the list items to find the next one
-      for (var i = 0; i < nonCompletedListItems.length; i++) {
-        //Match found
-        if (nonCompletedListItems[i].id === oldID) {
-          //The list item is not the last item in noncompleted
-          if (i < nonCompletedListItems.length - 1) {
-            //Set the next focus to the next list item
-            nextListItemID = nonCompletedListItems[i + 1].id;
-            this.setState(
-              {
-                idToFocus: nextListItemID,
-              },
-              () => {
-                resolve();
-              }
-            );
-          } //The list item is the last item in noncompleted and it is being deleted
-          else if (isDeleting) {
-            this.setPreviousNoncompletedIdToFocus(oldID);
-          } //The list item is the last item in completed and it is not being deleted
-          else {
-            this.setFirstIdToFocus(true);
-          }
-          break;
-        }
-      }
-    });
-  };
-
-  setFirstIdToFocus = (focusFirstCompleted = false) => {
-    return new Promise((resolve, reject) => {
-      const listItems = [].concat(this.props.listItems);
+      let filteredListItems;
       if (focusFirstCompleted) {
-        var filteredListItems = listItems.filter((listItem) => {
+        filteredListItems = listItems.filter((listItem) => {
           return listItem.completed;
         });
       } else {
-        var filteredListItems = listItems.filter((listItem) => {
+        filteredListItems = listItems.filter((listItem) => {
           return !listItem.completed;
         });
       }
@@ -269,15 +170,16 @@ class List extends React.Component {
     });
   };
 
-  setLastIdToFocus = (focusLastCompleted = true) => {
+  setLastListItemToFocus = (focusLastCompleted = true) => {
     return new Promise((resolve, reject) => {
       const listItems = [].concat(this.props.listItems);
+      let filteredListItems;
       if (focusLastCompleted) {
-        var filteredListItems = listItems.filter((listItem) => {
+        filteredListItems = listItems.filter((listItem) => {
           return listItem.completed;
         });
       } else {
-        var filteredListItems = listItems.filter((listItem) => {
+        filteredListItems = listItems.filter((listItem) => {
           return !listItem.completed;
         });
       }
@@ -304,41 +206,6 @@ class List extends React.Component {
         resolve();
       }
     });
-  };
-
-  handleTitleChange = (event) => {
-    this.setState(
-      {
-        title: event.target.value,
-        errorResponse: null,
-      },
-      this.updateListTitle
-    );
-  };
-
-  updateListTitle = () => {
-    axios
-      .put(
-        `http://127.0.0.1:8000/api/v1/lists/${this.props.id}/`,
-        {
-          title: this.state.title,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `JWT ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      .then((response) => {
-        this.setState({
-          title: response.data.title,
-          errorResponse: null,
-        });
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
   };
 
   deleteList = () => {
@@ -405,17 +272,38 @@ class List extends React.Component {
     );
   };
 
-  renderDeleteButton = () => {
-    return (
-      <Button
-        size="sm"
-        variant="light"
-        onClick={() => {
-          this.toggleDeleteModal();
-        }}
-      >
-        <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
-      </Button>
+  updateListTitle = () => {
+    axios
+      .put(
+        `http://127.0.0.1:8000/api/v1/lists/${this.props.id}/`,
+        {
+          title: this.state.title,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `JWT ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        this.setState({
+          title: response.data.title,
+          errorResponse: null,
+        });
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
+
+  handleTitleChange = (event) => {
+    this.setState(
+      {
+        title: event.target.value,
+        errorResponse: null,
+      },
+      this.updateListTitle
     );
   };
 
@@ -482,6 +370,28 @@ class List extends React.Component {
       });
   };
 
+  renderAddListItemButton = () => {
+    return (
+      <Button
+        variant="outline-primary"
+        style={{
+          width: "wrap-content",
+          margin: "6px 6px",
+          display: "flex",
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          this.createListItem();
+        }}
+      >
+        <FaPlus style={{ margin: "2px" }}></FaPlus>
+        {" Add list item"}
+      </Button>
+    );
+  };
+
   renderListItem = (listItem) => {
     return (
       <ListItem
@@ -492,15 +402,30 @@ class List extends React.Component {
         list_id={this.props.id}
         refresh={this.props.refresh}
         idToFocus={this.state.idToFocus}
-        setPreviousIdToFocus={this.setPreviousIdToFocus}
-        setNextIdToFocus={this.setNextIdToFocus}
+        setPreviousListItemToFocus={this.setPreviousListItemToFocus}
+        setNextListItemToFocus={this.setNextListItemToFocus}
+        setCurrentListItemToFocus={this.setCurrentListItemToFocus}
         createListItem={this.createListItem}
       ></ListItem>
     );
   };
 
+  renderNoncompletedListItems = (listItems) => {
+    return (
+      <>
+        {listItems
+          .filter((listItem) => {
+            return !listItem.completed;
+          })
+          .map((listItem) => {
+            return this.renderListItem(listItem);
+          })}
+      </>
+    );
+  };
+
   renderCompletedListItems = (listItems) => {
-    var completedListItems = listItems.filter((listItem) => {
+    let completedListItems = listItems.filter((listItem) => {
       return listItem.completed;
     });
     if (completedListItems.length > 0) {
@@ -526,42 +451,6 @@ class List extends React.Component {
     return null;
   };
 
-  renderNoncompletedListItems = (listItems) => {
-    return (
-      <>
-        {listItems
-          .filter((listItem) => {
-            return !listItem.completed;
-          })
-          .map((listItem) => {
-            return this.renderListItem(listItem);
-          })}
-      </>
-    );
-  };
-
-  renderAddListItemButton = () => {
-    return (
-      <Button
-        variant="outline-primary"
-        style={{
-          width: "wrap-content",
-          margin: "6px 6px",
-          display: "flex",
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        onClick={() => {
-          this.createListItem();
-        }}
-      >
-        <FaPlus style={{ margin: "2px" }}></FaPlus>
-        {" Add list item"}
-      </Button>
-    );
-  };
-
   renderListItems = () => {
     const listItems = [].concat(this.props.listItems);
     return (
@@ -573,7 +462,21 @@ class List extends React.Component {
     );
   };
 
-  renderDateCreated = () => {
+  renderDeleteButton = () => {
+    return (
+      <Button
+        size="sm"
+        variant="light"
+        onClick={() => {
+          this.toggleDeleteModal();
+        }}
+      >
+        <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
+      </Button>
+    );
+  };
+
+  renderListFooter = () => {
     return (
       <Card.Footer
         style={{
@@ -613,7 +516,7 @@ class List extends React.Component {
             >
               {this.renderListTitle()}
               {this.renderListItems()}
-              {this.renderDateCreated()}
+              {this.renderListFooter()}
             </Card>
           }
           insideCallback={() => {
