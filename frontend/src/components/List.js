@@ -7,6 +7,7 @@ import { FaRegTrashAlt, FaPlus } from "react-icons/fa";
 import ListItem from "./ListItem";
 import TextareaAutosize from "react-textarea-autosize";
 import * as Mousetrap from "Mousetrap";
+import OutsideInsideAlerter from "./OutsideInsideAlerter";
 
 class List extends React.Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class List extends React.Component {
       errorResponse: null,
       showDeleteModal: false,
       idToFocus: null,
+      clickedInsideList: false,
     };
   }
 
@@ -397,11 +399,36 @@ class List extends React.Component {
     return (
       <>
         {this.renderDeleteModal()}
-        <Card style={{ margin: "10px", width: "315px" }}>
-          {this.renderListTitle()}
-          {this.renderListItems()}
-          {this.renderDateCreated()}
-        </Card>
+        <OutsideInsideAlerter
+          children={
+            <Card
+              style={{
+                margin: "10px",
+                width: "315px",
+              }}
+            >
+              {this.renderListTitle()}
+              {this.renderListItems()}
+              {this.renderDateCreated()}
+            </Card>
+          }
+          insideCallback={() => {
+            if (!this.state.clickedInsideList) {
+              console.log("Inside a list");
+              this.setState({
+                clickedInsideList: true,
+              });
+            }
+          }}
+          outsideCallback={() => {
+            if (this.state.clickedInsideList) {
+              console.log("OUUTSIDE");
+              this.setState({
+                clickedInsideList: false,
+              });
+            }
+          }}
+        />
       </>
     );
   };
