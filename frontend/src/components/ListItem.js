@@ -195,7 +195,7 @@ class ListItem extends React.Component {
     if (this.state.focused) {
       Mousetrap.unbind(["enter", "backspace", "down", "up", "tab"]);
       //Mousetrap.reset()
-      this.props.setNextIdToFocus(this.props.id, true);
+      this.props.setNextIdToFocus(this.props.id, this.state.completed, true);
     }
     axios
       .delete(`http://127.0.0.1:8000/api/v1/list_item/${this.props.id}/`, {
@@ -243,11 +243,17 @@ class ListItem extends React.Component {
               });
               Mousetrap.bind(["down", "tab"], (event) => {
                 event.preventDefault();
-                this.props.setNextIdToFocus(this.props.id);
+                this.props.setNextIdToFocus(
+                  this.props.id,
+                  this.state.completed
+                );
               });
               Mousetrap.bind("up", (event) => {
                 event.preventDefault();
-                this.props.setPreviousIdToFocus(this.props.id);
+                this.props.setPreviousIdToFocus(
+                  this.props.id,
+                  this.state.completed
+                );
               });
             }
           );

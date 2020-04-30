@@ -21,7 +21,7 @@
 - refactor App.js and Home.js
 - Layout of lists still wanky
 - Set focus to list item when updated
-- Focus on list items using completed/not
+- Set up inside/outside list
 
 ## Advanced Features:
 
