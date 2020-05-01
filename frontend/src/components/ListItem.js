@@ -10,17 +10,17 @@ import {
 } from "react-icons/fa";
 import * as Mousetrap from "Mousetrap";
 import onClickOutside from "react-onclickoutside";
+import CustomButton from "./CustomButton.js";
 
 class ListItem extends React.Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
+    this.deleteIconRef = React.createRef();
     this.state = {
       content: this.props.content,
       completed: this.props.completed,
       errorResponse: null,
-      hoveringCheckbox: false,
-      hoveringDelete: false,
       idToFocus: this.props.idToFocus,
       focused: false,
     };
@@ -117,12 +117,6 @@ class ListItem extends React.Component {
     );
   };
 
-  toggleCheckboxHover = (bool) => {
-    this.setState({
-      hoveringCheckbox: bool,
-    });
-  };
-
   renderCheckbox = () => {
     return (
       <div
@@ -132,32 +126,27 @@ class ListItem extends React.Component {
           justifyContent: "center",
         }}
       >
-        <Button
+        <CustomButton
           size="sm"
-          variant={null}
           style={{
             borderColor: "transparent",
           }}
           onClick={this.toggleCompleted}
-          onMouseEnter={() => {
-            this.toggleCheckboxHover(true);
-          }}
-          onMouseLeave={() => {
-            this.toggleCheckboxHover(false);
-          }}
-        >
-          {this.state.completed ? (
-            <FaRegCheckSquare
-              color={this.state.hoveringCheckbox ? "black" : "gray"}
-              size={20}
-            ></FaRegCheckSquare>
-          ) : (
-            <FaRegSquare
-              color={this.state.hoveringCheckbox ? "black" : "gray"}
-              size={20}
-            ></FaRegSquare>
-          )}
-        </Button>
+          icon={
+            this.state.completed ? (
+              <FaRegCheckSquare color="gray" size={20}></FaRegCheckSquare>
+            ) : (
+              <FaRegSquare color="gray" size={20}></FaRegSquare>
+            )
+          }
+          iconOnHover={
+            this.state.completed ? (
+              <FaRegCheckSquare color="black" size={20}></FaRegCheckSquare>
+            ) : (
+              <FaRegSquare color="black" size={20}></FaRegSquare>
+            )
+          }
+        />
       </div>
     );
   };
@@ -229,12 +218,6 @@ class ListItem extends React.Component {
       });
   };
 
-  toggleDeleteHover = (bool) => {
-    this.setState({
-      hoveringDelete: bool,
-    });
-  };
-
   handleClickOutsideDelete = () => {
     this.setState({
       focused: false,
@@ -242,7 +225,7 @@ class ListItem extends React.Component {
   };
 
   renderDeleteButton = () => {
-    var ButtonWithClickOutside = onClickOutside(CustomButton);
+    let ButtonWithClickOutside = onClickOutside(CustomButton);
     return (
       <div
         style={{
@@ -259,7 +242,6 @@ class ListItem extends React.Component {
           style={{ borderColor: "transparent" }}
           onClick={this.deleteListItem}
           onClickOutside={this.handleClickOutsideDelete}
-          variant={null}
           variantOnHover="light"
           icon={<FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>}
         />
@@ -292,64 +274,7 @@ class ListItem extends React.Component {
   }
 }
 
-class CustomButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isHovering: false,
-    };
-    this.variantOnHover = this.props.variantOnHover;
-    this.styleOnHover = this.props.styleOnHover;
-  }
-
-  handleClickOutside = (event) => {
-    if (this.props.onClickOutside) {
-      this.props.onClickOutside();
-    }
-  };
-
-  toggleHover = (bool) => {
-    this.setState({
-      isHovering: bool,
-    });
-  };
-
-  setAttributes = () => {
-    if (!this.variantOnHover) {
-      this.variantOnHover = this.props.variant;
-    }
-    if (!this.styleOnHover) {
-      this.styleOnHover = this.props.style;
-    }
-  };
-
-  render() {
-    this.setAttributes();
-    return (
-      <Button
-        style={this.state.isHovering ? this.styleOnHover : this.props.style}
-        size={this.props.size ? this.props.size : "sm"}
-        onClick={this.props.onClick ? this.props.onClick : null}
-        variant={
-          this.state.isHovering ? this.variantOnHover : this.props.variant
-        }
-        onMouseEnter={() => {
-          this.toggleHover(true);
-        }}
-        onMouseLeave={() => {
-          this.toggleHover(false);
-        }}
-      >
-        {this.props.icon ? this.props.icon : null}
-        {this.props.text ? this.props.text : null}
-      </Button>
-    );
-  }
-}
-
 export default ListItem;
-
-CustomButton.propTypes = {};
 
 ListItem.propTypes = {
   content: PropTypes.string.isRequired,
