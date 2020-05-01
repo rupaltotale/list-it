@@ -113,9 +113,9 @@ class App extends Component {
                     onClick={this.showPassword}
                   >
                     {this.state.isPasswordShowing ? (
-                      <FaEye size={20} />
-                    ) : (
                       <FaEyeSlash size={20} />
+                    ) : (
+                      <FaEye size={20} />
                     )}
                   </Button>
                 </InputGroup.Append>
@@ -155,9 +155,9 @@ class App extends Component {
                     onClick={this.showPassword}
                   >
                     {this.state.isPasswordShowing ? (
-                      <FaEye size={20} />
-                    ) : (
                       <FaEyeSlash size={20} />
+                    ) : (
+                      <FaEye size={20} />
                     )}
                   </Button>
                 </InputGroup.Append>

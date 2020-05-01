@@ -56,165 +56,119 @@ class List extends React.Component {
   };
 
   setPreviousListItemToFocus = (oldID, isCompleted = null) => {
-    return new Promise((resolve, reject) => {
-      const listItems = [].concat(this.props.listItems);
-      //If there are list items
-      if (listItems.length > 1) {
-        //If the completed status of the list item is defined
-        if (typeof isCompleted !== "boolean") {
-          isCompleted = this.findCompletedStatusOfListItem(oldID);
-        }
-        //Filter list items based on completed status
-        const filteredListItems = listItems.filter((listItem) => {
-          if (isCompleted) {
-            return listItem.completed;
-          }
-          return !listItem.completed;
-        });
-        //Iterate filtered list items
-        for (let i = 0; i < filteredListItems.length; i++) {
-          //Match found
-          if (filteredListItems[i].id === oldID) {
-            if (i > 0) {
-              let previousListID = filteredListItems[i - 1].id;
-              this.setState(
-                {
-                  idToFocus: previousListID,
-                },
-                () => {
-                  resolve();
-                }
-              );
-            } else {
-              this.setLastListItemToFocus(!isCompleted);
-            }
-            break;
-          }
-        }
-      } else {
-        resolve();
+    const listItems = [].concat(this.props.listItems);
+    //If there are list items
+    if (listItems.length > 1) {
+      //If the completed status of the list item is defined
+      if (typeof isCompleted !== "boolean") {
+        isCompleted = this.findCompletedStatusOfListItem(oldID);
       }
-    });
+      //Filter list items based on completed status
+      const filteredListItems = listItems.filter((listItem) => {
+        if (isCompleted) {
+          return listItem.completed;
+        }
+        return !listItem.completed;
+      });
+      //Iterate filtered list items
+      for (let i = 0; i < filteredListItems.length; i++) {
+        //Match found
+        if (filteredListItems[i].id === oldID) {
+          if (i > 0) {
+            let previousListID = filteredListItems[i - 1].id;
+            this.setState({
+              idToFocus: previousListID,
+            });
+          } else {
+            this.setLastListItemToFocus(!isCompleted);
+          }
+          break;
+        }
+      }
+    }
   };
 
   setNextListItemToFocus = (oldID, isCompleted = null, isDeleting = false) => {
-    return new Promise((resolve, reject) => {
-      const listItems = [].concat(this.props.listItems);
-      //If there are list items
-      if (listItems.length > 1) {
-        //If the completed status of the list item is defined
-        if (typeof isCompleted !== "boolean") {
-          isCompleted = this.findCompletedStatusOfListItem(oldID);
-        }
-        //Filter list items based on completed status
-        const filteredListItems = listItems.filter((listItem) => {
-          if (isCompleted) {
-            return listItem.completed;
-          }
-          return !listItem.completed;
-        });
-        //Iterate through filtered list items
-        for (let i = 0; i < filteredListItems.length; i++) {
-          //Match found
-          if (filteredListItems[i].id === oldID) {
-            if (i < filteredListItems.length - 1) {
-              let nextListItemID = filteredListItems[i + 1].id;
-              this.setState(
-                {
-                  idToFocus: nextListItemID,
-                },
-                () => {
-                  resolve();
-                }
-              );
-            } else if (isDeleting) {
-              this.setPreviousListItemToFocus(oldID, isCompleted);
-            } else {
-              this.setFirstListItemToFocus(!isCompleted);
-            }
-            break;
-          }
-        }
-      } else {
-        resolve();
+    const listItems = [].concat(this.props.listItems);
+    //If there are list items
+    if (listItems.length > 1) {
+      //If the completed status of the list item is defined
+      if (typeof isCompleted !== "boolean") {
+        isCompleted = this.findCompletedStatusOfListItem(oldID);
       }
-    });
+      //Filter list items based on completed status
+      const filteredListItems = listItems.filter((listItem) => {
+        if (isCompleted) {
+          return listItem.completed;
+        }
+        return !listItem.completed;
+      });
+      //Iterate through filtered list items
+      for (let i = 0; i < filteredListItems.length; i++) {
+        //Match found
+        if (filteredListItems[i].id === oldID) {
+          if (i < filteredListItems.length - 1) {
+            let nextListItemID = filteredListItems[i + 1].id;
+            this.setState({
+              idToFocus: nextListItemID,
+            });
+          } else if (isDeleting) {
+            this.setPreviousListItemToFocus(oldID, isCompleted);
+          } else {
+            this.setFirstListItemToFocus(!isCompleted);
+          }
+          break;
+        }
+      }
+    }
   };
 
   setFirstListItemToFocus = (focusFirstCompleted = false) => {
-    return new Promise((resolve, reject) => {
-      const listItems = [].concat(this.props.listItems);
-      let filteredListItems;
-      if (focusFirstCompleted) {
-        filteredListItems = listItems.filter((listItem) => {
-          return listItem.completed;
-        });
-      } else {
-        filteredListItems = listItems.filter((listItem) => {
-          return !listItem.completed;
-        });
-      }
+    const listItems = [].concat(this.props.listItems);
+    let filteredListItems;
+    if (focusFirstCompleted) {
+      filteredListItems = listItems.filter((listItem) => {
+        return listItem.completed;
+      });
+    } else {
+      filteredListItems = listItems.filter((listItem) => {
+        return !listItem.completed;
+      });
+    }
 
-      if (filteredListItems.length > 0) {
-        this.setState(
-          {
-            idToFocus: filteredListItems[0].id,
-          },
-          () => {
-            resolve();
-          }
-        );
-      } else if (listItems.length > 0) {
-        this.setState(
-          {
-            idToFocus: listItems[0].id,
-          },
-          () => {
-            resolve();
-          }
-        );
-      } else {
-        resolve();
-      }
-    });
+    if (filteredListItems.length > 0) {
+      this.setState({
+        idToFocus: filteredListItems[0].id,
+      });
+    } else if (listItems.length > 0) {
+      this.setState({
+        idToFocus: listItems[0].id,
+      });
+    }
   };
 
   setLastListItemToFocus = (focusLastCompleted = true) => {
-    return new Promise((resolve, reject) => {
-      const listItems = [].concat(this.props.listItems);
-      let filteredListItems;
-      if (focusLastCompleted) {
-        filteredListItems = listItems.filter((listItem) => {
-          return listItem.completed;
-        });
-      } else {
-        filteredListItems = listItems.filter((listItem) => {
-          return !listItem.completed;
-        });
-      }
+    const listItems = [].concat(this.props.listItems);
+    let filteredListItems;
+    if (focusLastCompleted) {
+      filteredListItems = listItems.filter((listItem) => {
+        return listItem.completed;
+      });
+    } else {
+      filteredListItems = listItems.filter((listItem) => {
+        return !listItem.completed;
+      });
+    }
 
-      if (filteredListItems.length > 0) {
-        this.setState(
-          {
-            idToFocus: filteredListItems.slice(-1)[0].id,
-          },
-          () => {
-            resolve();
-          }
-        );
-      } else if (listItems.length > 0) {
-        this.setState(
-          {
-            idToFocus: listItems.slice(-1)[0].id,
-          },
-          () => {
-            resolve();
-          }
-        );
-      } else {
-        resolve();
-      }
-    });
+    if (filteredListItems.length > 0) {
+      this.setState({
+        idToFocus: filteredListItems.slice(-1)[0].id,
+      });
+    } else if (listItems.length > 0) {
+      this.setState({
+        idToFocus: listItems.slice(-1)[0].id,
+      });
+    }
   };
 
   deleteList = () => {
