@@ -9,7 +9,7 @@ import {
   FaRegCheckSquare,
 } from "react-icons/fa";
 import * as Mousetrap from "Mousetrap";
-import OutsideInsideAlerter from "./OutsideInsideAlerter";
+import onClickOutside from "react-onclickoutside";
 
 class ListItem extends React.Component {
   constructor(props) {
@@ -197,8 +197,7 @@ class ListItem extends React.Component {
           );
         }}
         onBlur={() => {
-          Mousetrap.unbind(["enter", "backspace", "down", "up", "tab"]);
-          //Mousetrap.reset()
+          Mousetrap.reset();
         }}
         rows={1}
         placeholder="List Item"
@@ -209,8 +208,7 @@ class ListItem extends React.Component {
 
   deleteListItem = () => {
     if (this.state.focused) {
-      Mousetrap.unbind(["enter", "backspace", "down", "up", "tab"]);
-      //Mousetrap.reset()
+      Mousetrap.reset();
       this.props.setNextListItemToFocus(
         this.props.id,
         this.state.completed,
@@ -237,41 +235,35 @@ class ListItem extends React.Component {
     });
   };
 
+  handleClickOutsideDelete = () => {
+    this.setState({
+      focused: false,
+    });
+  };
+
   renderDeleteButton = () => {
-    const divStyle = {
-      marginLeft: "3px",
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "flex-center",
-      justifyContent: "center",
-    };
+    var ButtonWithClickOutside = onClickOutside(CustomButton);
     return (
-      <OutsideInsideAlerter
-        divStyle={divStyle}
-        children={
-          <Button
-            size="sm"
-            style={{ borderColor: "transparent" }}
-            onClick={this.deleteListItem}
-            onMouseEnter={() => {
-              this.toggleDeleteHover(true);
-            }}
-            onMouseLeave={() => {
-              this.toggleDeleteHover(false);
-            }}
-            variant={this.state.hoveringDelete ? "light" : null}
-          >
-            <FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>
-          </Button>
-        }
-        outsideCallback={() => {
-          if (this.state.focused) {
-            this.setState({
-              focused: false,
-            });
-          }
+      <div
+        style={{
+          marginLeft: "3px",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-center",
+          justifyContent: "center",
         }}
-      />
+      >
+        <ButtonWithClickOutside
+          eventTypes={["click", "mousedown"]}
+          size="sm"
+          style={{ borderColor: "transparent" }}
+          onClick={this.deleteListItem}
+          onClickOutside={this.handleClickOutsideDelete}
+          variant={null}
+          variantOnHover="light"
+          icon={<FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>}
+        />
+      </div>
     );
   };
 
@@ -300,7 +292,64 @@ class ListItem extends React.Component {
   }
 }
 
+class CustomButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isHovering: false,
+    };
+    this.variantOnHover = this.props.variantOnHover;
+    this.styleOnHover = this.props.styleOnHover;
+  }
+
+  handleClickOutside = (event) => {
+    if (this.props.onClickOutside) {
+      this.props.onClickOutside();
+    }
+  };
+
+  toggleHover = (bool) => {
+    this.setState({
+      isHovering: bool,
+    });
+  };
+
+  setAttributes = () => {
+    if (!this.variantOnHover) {
+      this.variantOnHover = this.props.variant;
+    }
+    if (!this.styleOnHover) {
+      this.styleOnHover = this.props.style;
+    }
+  };
+
+  render() {
+    this.setAttributes();
+    return (
+      <Button
+        style={this.state.isHovering ? this.styleOnHover : this.props.style}
+        size={this.props.size ? this.props.size : "sm"}
+        onClick={this.props.onClick ? this.props.onClick : null}
+        variant={
+          this.state.isHovering ? this.variantOnHover : this.props.variant
+        }
+        onMouseEnter={() => {
+          this.toggleHover(true);
+        }}
+        onMouseLeave={() => {
+          this.toggleHover(false);
+        }}
+      >
+        {this.props.icon ? this.props.icon : null}
+        {this.props.text ? this.props.text : null}
+      </Button>
+    );
+  }
+}
+
 export default ListItem;
+
+CustomButton.propTypes = {};
 
 ListItem.propTypes = {
   content: PropTypes.string.isRequired,

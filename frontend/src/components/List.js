@@ -7,7 +7,7 @@ import { FaRegTrashAlt, FaPlus } from "react-icons/fa";
 import ListItem from "./ListItem";
 import TextareaAutosize from "react-textarea-autosize";
 import * as Mousetrap from "Mousetrap";
-import OutsideInsideAlerter from "./OutsideInsideAlerter";
+import onClickOutside from "react-onclickoutside";
 
 class List extends React.Component {
   constructor(props) {
@@ -20,11 +20,20 @@ class List extends React.Component {
       idToFocus: null,
       clickedInsideList: false,
     };
+    console.log(this.state);
   }
 
   componentDidMount() {}
 
   componentDidUpdate() {}
+
+  handleClickOutside = (event) => {
+    if (this.state.clickedInsideList) {
+      this.setState({
+        clickedInsideList: false,
+      });
+    }
+  };
 
   findCompletedStatusOfListItem = (id) => {
     const listItems = [].concat(this.props.listItems);
@@ -240,12 +249,12 @@ class List extends React.Component {
         onShow={() => {
           Mousetrap.bind("enter", () => {
             this.deleteList();
-            Mousetrap.unbind("enter");
+            Mousetrap.reset();
           });
         }}
         onHide={() => {
           this.toggleDeleteModal();
-          Mousetrap.unbind("enter");
+          Mousetrap.reset();
         }}
       >
         <Modal.Header closeButton>
@@ -262,7 +271,7 @@ class List extends React.Component {
             variant="danger"
             onClick={() => {
               this.deleteList();
-              Mousetrap.unbind("enter");
+              Mousetrap.reset();
             }}
           >
             Delete
@@ -326,13 +335,13 @@ class List extends React.Component {
           rows={1}
           inputRef={this.listTitle}
           onFocus={() => {
-            Mousetrap.bind(["enter", "escape"], (event) => {
+            Mousetrap.bind("enter", (event) => {
               event.preventDefault();
               this.listTitle.current.blur();
             });
           }}
           onBlur={() => {
-            Mousetrap.unbind(["enter", "escape"]);
+            Mousetrap.reset();
           }}
         ></TextareaAutosize>
       </Card.Header>
@@ -356,14 +365,8 @@ class List extends React.Component {
         }
       )
       .then((response) => {
-        this.setState(
-          {
-            idToFocus: response.data.id,
-          },
-          () => {
-            this.props.refresh();
-          }
-        );
+        this.setCurrentListItemToFocus(response.data.id);
+        this.props.refresh();
       })
       .catch((error) => {
         console.log(error.response);
@@ -506,36 +509,21 @@ class List extends React.Component {
     return (
       <>
         {this.renderDeleteModal()}
-        <OutsideInsideAlerter
-          children={
-            <Card
-              style={{
-                margin: "10px",
-                width: "315px",
-              }}
-            >
-              {this.renderListTitle()}
-              {this.renderListItems()}
-              {this.renderListFooter()}
-            </Card>
-          }
-          insideCallback={() => {
-            if (!this.state.clickedInsideList) {
-              console.log("Inside a list");
-              this.setState({
-                clickedInsideList: true,
-              });
-            }
+        <Card
+          style={{
+            margin: "10px",
+            width: "315px",
           }}
-          outsideCallback={() => {
-            if (this.state.clickedInsideList) {
-              console.log("OUUTSIDE");
-              this.setState({
-                clickedInsideList: false,
-              });
-            }
+          onClick={() => {
+            this.setState({
+              clickedInsideList: true,
+            });
           }}
-        />
+        >
+          {this.renderListTitle()}
+          {this.renderListItems()}
+          {this.renderListFooter()}
+        </Card>
       </>
     );
   };
@@ -545,7 +533,7 @@ class List extends React.Component {
   }
 }
 
-export default List;
+export default onClickOutside(List);
 
 List.propTypes = {
   id: PropTypes.number.isRequired,

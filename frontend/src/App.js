@@ -1,4 +1,4 @@
-import { Button, InputGroup, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import { Button, InputGroup } from "react-bootstrap";
 import {
   FaAt,
   FaEnvelope,
@@ -27,7 +27,6 @@ class App extends Component {
     this.state = {
       loggedIn: localStorage.getItem("token") ? true : false,
       username: "",
-      isNavDropdownOpen: false,
       isPasswordShowing: false,
     };
   }

@@ -34,6 +34,7 @@
     "react-keybind": "^0.7.0",
     "react-keybinding-component": "^1.0.0",
     "react-moment": "^0.9.7",
+    "react-onclickoutside": "^6.9.0",
     "react-router-dom": "^5.1.2",
     "react-textarea-autosize": "^7.1.2",
     "yup": "^0.28.3"
