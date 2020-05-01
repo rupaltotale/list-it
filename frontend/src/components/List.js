@@ -17,10 +17,10 @@ class List extends React.Component {
       title: this.props.title,
       errorResponse: null,
       showDeleteModal: false,
+      focusedOnListTitle: false,
       idToFocus: null,
       clickedInsideList: false,
     };
-    console.log(this.state);
   }
 
   componentDidMount() {}
@@ -318,7 +318,7 @@ class List extends React.Component {
 
   renderListTitle = () => {
     return (
-      <Card.Header className="bg-light">
+      <Card.Header className="bg-light" style={{}}>
         <TextareaAutosize
           style={{
             resize: "none",
@@ -327,6 +327,9 @@ class List extends React.Component {
             fontSize: "large",
             textAlign: "center",
             boxShadow: "none",
+            textShadow: this.state.focusedOnListTitle
+              ? "1px 1px 2px lightGray"
+              : "none",
           }}
           value={this.state.title}
           className="form-control bg-light mousetrap"
@@ -335,12 +338,18 @@ class List extends React.Component {
           rows={1}
           inputRef={this.listTitle}
           onFocus={() => {
+            this.setState({
+              focusedOnListTitle: true,
+            });
             Mousetrap.bind("enter", (event) => {
               event.preventDefault();
               this.listTitle.current.blur();
             });
           }}
           onBlur={() => {
+            this.setState({
+              focusedOnListTitle: false,
+            });
             Mousetrap.reset();
           }}
         ></TextareaAutosize>
