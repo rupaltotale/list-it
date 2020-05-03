@@ -12,12 +12,6 @@ class CustomButton extends React.Component {
     this.variantOnHover = this.props.variantOnHover
       ? this.props.variantOnHover
       : this.variant;
-    this.styleOnHover = this.props.styleOnHover
-      ? this.props.styleOnHover
-      : this.props.style;
-    this.iconOnHover = this.props.iconOnHover
-      ? this.props.iconOnHover
-      : this.props.icon;
   }
 
   handleClickOutside = (event) => {
@@ -32,12 +26,25 @@ class CustomButton extends React.Component {
     });
   };
 
+  renderHoveringIcon = () => {
+    if (this.props.icon) {
+      return React.cloneElement(this.props.icon, this.props.iconOnHover);
+    }
+  };
+
+  renderHoveringStyle = () => {
+    return { ...this.props.style, ...this.props.styleOnHover };
+  };
+
   render() {
     return (
       <Button
-        style={this.state.isHovering ? this.styleOnHover : this.props.style}
-        size={this.props.size ? this.props.size : "sm"}
-        onClick={this.props.onClick ? this.props.onClick : null}
+        style={
+          this.state.isHovering ? this.renderHoveringStyle() : this.props.style
+        }
+        size={this.props.size}
+        block={this.props.block}
+        onClick={this.props.onClick}
         variant={this.state.isHovering ? this.variantOnHover : this.variant}
         onMouseEnter={() => {
           this.toggleHover(true);
@@ -46,7 +53,7 @@ class CustomButton extends React.Component {
           this.toggleHover(false);
         }}
       >
-        {this.state.isHovering ? this.iconOnHover : this.props.icon}
+        {this.state.isHovering ? this.renderHoveringIcon() : this.props.icon}
         {this.props.text}
       </Button>
     );

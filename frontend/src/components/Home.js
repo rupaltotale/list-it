@@ -2,10 +2,8 @@ import React from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { Button, Container } from "react-bootstrap";
-import { Redirect, BrowserRouter as Router } from "react-router-dom";
 import List from "./List";
 import { FaPlus } from "react-icons/fa";
-import moment from "moment";
 
 class Home extends React.Component {
   constructor(props) {

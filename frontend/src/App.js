@@ -8,7 +8,6 @@ import {
   FaPortrait,
 } from "react-icons/fa";
 import {
-  NavLink,
   Redirect,
   Route,
   BrowserRouter as Router,
@@ -19,6 +18,7 @@ import NavBar from "./components/Nav";
 import CustomForm from "./components/CustomForm";
 import { render } from "react-dom";
 import Home from "./components/Home";
+import Profile from "./Profile";
 import axios from "axios";
 
 class App extends Component {
@@ -176,6 +176,10 @@ class App extends Component {
     );
   };
 
+  renderProfilePage = () => {
+    return <Profile />;
+  };
+
   render() {
     return (
       <Router>
@@ -196,6 +200,10 @@ class App extends Component {
           </Route>
           <Route path="/terms">
             <div>Lol, no terms and services</div>
+          </Route>
+          <Route path="/profile">
+            {this.state.loggedIn && this.renderProfilePage()}
+            {!this.state.loggedIn && <Redirect to="/" />}
           </Route>
           <Route path="/">{this.renderHomePage()}</Route>
         </Switch>

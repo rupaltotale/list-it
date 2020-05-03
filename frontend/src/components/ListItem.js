@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
-import PropTypes from "prop-types";
-import { ListGroupItem, InputGroup, Form, Button } from "react-bootstrap";
+import PropTypes, { element } from "prop-types";
+import { ListGroupItem } from "react-bootstrap";
 import TextareaAutosize from "react-textarea-autosize";
 import {
   FaRegTimesCircle,
@@ -132,18 +132,14 @@ class ListItem extends React.Component {
             borderColor: "transparent",
           }}
           onClick={this.toggleCompleted}
+          iconOnHover={{
+            color: "black",
+          }}
           icon={
             this.state.completed ? (
               <FaRegCheckSquare color="gray" size={20}></FaRegCheckSquare>
             ) : (
               <FaRegSquare color="gray" size={20}></FaRegSquare>
-            )
-          }
-          iconOnHover={
-            this.state.completed ? (
-              <FaRegCheckSquare color="black" size={20}></FaRegCheckSquare>
-            ) : (
-              <FaRegSquare color="black" size={20}></FaRegSquare>
             )
           }
         />

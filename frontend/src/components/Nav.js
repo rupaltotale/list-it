@@ -1,13 +1,12 @@
 import { Nav, Navbar, Button, Dropdown, NavDropdown } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import onClickOutside from "react-onclickoutside";
 
 class NavBar extends React.Component {
   constructor(props) {
     super(props);
-    console.log(localStorage.getItem("token"));
     this.state = {
       loggedIn: localStorage.getItem("token") ? true : false,
       username: this.props.username,
@@ -103,9 +102,6 @@ class CustomNavDropdown extends React.Component {
 
   handleLogout = () => {
     localStorage.removeItem("token");
-    this.setState({
-      isNavDropdownHovering: false,
-    });
     this.props.setUsername("", false);
   };
 
@@ -148,10 +144,16 @@ class CustomNavDropdown extends React.Component {
   renderNavDropdown = () => {
     return (
       <>
-        <Dropdown.Item>Your Profile</Dropdown.Item>
+        <Dropdown.Item as="button">
+          <NavLink style={{ color: "black" }} exact to="/profile">
+            My Profile
+          </NavLink>
+        </Dropdown.Item>
+        <Dropdown.Divider></Dropdown.Divider>
         <Dropdown.Item
           style={{
             fontWeight: "bold",
+            color: "red",
           }}
           onClick={this.handleLogout}
         >
@@ -170,10 +172,12 @@ class CustomNavDropdown extends React.Component {
         onMouseLeave={() => {
           this.toggleNavDropdownHover(false);
         }}
-        onClick={this.toggleNavDropdownClicked}
+        onSelect={this.handleClickOutside}
         show={this.state.isNavDropdownOpen}
       >
-        <Dropdown.Toggle>{this.props.username}</Dropdown.Toggle>
+        <Dropdown.Toggle onClick={this.toggleNavDropdownClicked}>
+          {this.props.username}
+        </Dropdown.Toggle>
         <Dropdown.Menu style={{ right: 0, left: "auto" }}>
           {this.renderNavDropdown()}
         </Dropdown.Menu>
