@@ -144,11 +144,9 @@ class CustomNavDropdown extends React.Component {
   renderNavDropdown = () => {
     return (
       <>
-        <Dropdown.Item as="button">
-          <NavLink style={{ color: "black" }} exact to="/profile">
-            My Profile
-          </NavLink>
-        </Dropdown.Item>
+        <NavLink style={{ color: "black" }} exact to="/profile">
+          <Dropdown.Item as="button">My Profile</Dropdown.Item>
+        </NavLink>
         <Dropdown.Divider></Dropdown.Divider>
         <Dropdown.Item
           style={{
