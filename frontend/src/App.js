@@ -15,10 +15,10 @@ import {
 } from "react-router-dom";
 import React, { Component } from "react";
 import NavBar from "./components/Nav";
-import CustomForm from "./components/CustomForm";
+import CustomForm from "./components/CustomComponents/CustomForm";
 import { render } from "react-dom";
-import Home from "./components/Home";
-import Profile from "./Profile";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
 import axios from "axios";
 
 class App extends Component {

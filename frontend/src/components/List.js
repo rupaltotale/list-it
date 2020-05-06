@@ -8,7 +8,7 @@ import onClickOutside from "react-onclickoutside";
 import { Card, ListGroup, Button, Modal, Alert } from "react-bootstrap";
 import { FaRegTrashAlt, FaPlus } from "react-icons/fa";
 import ListItem from "./ListItem";
-import CustomButton from "./CustomButton";
+import CustomButton from "./CustomComponents/CustomButton";
 
 class List extends React.Component {
   constructor(props) {

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import onClickOutside from "react-onclickoutside";
 import { Nav, Navbar, Dropdown } from "react-bootstrap";
-import CustomDropdown from "./CustomDropdown";
+import CustomDropdown from "./CustomComponents/CustomDropdown";
 
 class NavBar extends React.Component {
   constructor(props) {

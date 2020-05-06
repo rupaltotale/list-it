@@ -10,7 +10,7 @@ import {
   FaRegSquare,
   FaRegCheckSquare,
 } from "react-icons/fa";
-import CustomButton from "./CustomButton";
+import CustomButton from "./CustomComponents/CustomButton";
 
 class ListItem extends React.Component {
   constructor(props) {
