@@ -79,7 +79,9 @@ class NavBar extends React.Component {
   renderNavBar = () => {
     return (
       <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
-        <Navbar.Brand href="/">To-Do List</Navbar.Brand>
+        <NavLink exact to="/">
+          <Navbar.Brand>To-Do List</Navbar.Brand>
+        </NavLink>
         <Navbar.Toggle />
         <Navbar.Collapse>
           <Nav className="mr-auto">
