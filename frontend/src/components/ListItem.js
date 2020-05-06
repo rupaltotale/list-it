@@ -16,7 +16,6 @@ class ListItem extends React.Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
-    this.deleteIconRef = React.createRef();
     this.state = {
       content: this.props.content,
       completed: this.props.completed,
@@ -133,17 +132,18 @@ class ListItem extends React.Component {
           style={{
             borderColor: "transparent",
             borderRadius: "50%",
+            opacity: "0.7",
+          }}
+          styleOnHover={{
+            opacity: "1",
           }}
           onClick={this.toggleCompleted}
           variantOnHover="light"
-          iconOnHover={{
-            color: "black",
-          }}
           icon={
             this.state.completed ? (
-              <FaRegCheckSquare color="gray" size={20}></FaRegCheckSquare>
+              <FaRegCheckSquare color="black" size={20}></FaRegCheckSquare>
             ) : (
-              <FaRegSquare color="gray" size={20}></FaRegSquare>
+              <FaRegSquare color="black" size={20}></FaRegSquare>
             )
           }
         />
@@ -239,7 +239,14 @@ class ListItem extends React.Component {
         <ButtonWithClickOutside
           eventTypes={["click", "mousedown"]}
           size="sm"
-          style={{ borderColor: "transparent", borderRadius: "50%" }}
+          style={{
+            borderColor: "transparent",
+            borderRadius: "50%",
+            opacity: "0.7",
+          }}
+          styleOnHover={{
+            opacity: "1",
+          }}
           onClick={this.deleteListItem}
           onClickOutside={this.handleClickOutsideDelete}
           variantOnHover="light"
