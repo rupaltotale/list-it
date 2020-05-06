@@ -69,7 +69,7 @@ CustomButton.propTypes = {
   variantOnHover: PropTypes.string,
   style: PropTypes.object,
   styleOnHover: PropTypes.object,
-  text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   icon: PropTypes.object,
   iconOnHover: PropTypes.object,
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };

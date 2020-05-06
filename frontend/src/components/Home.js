@@ -1,9 +1,9 @@
 import React from "react";
-import axios from "axios";
 import PropTypes from "prop-types";
+import axios from "axios";
 import { Button, Container } from "react-bootstrap";
-import List from "./List";
 import { FaPlus } from "react-icons/fa";
+import List from "./List";
 
 class Home extends React.Component {
   constructor(props) {

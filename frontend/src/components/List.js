@@ -1,13 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { Card, ListGroup, Button, Modal, Alert } from "react-bootstrap";
 import moment from "moment";
-import { FaRegTrashAlt, FaPlus } from "react-icons/fa";
-import ListItem from "./ListItem";
 import TextareaAutosize from "react-textarea-autosize";
 import * as Mousetrap from "Mousetrap";
 import onClickOutside from "react-onclickoutside";
+import { Card, ListGroup, Button, Modal, Alert } from "react-bootstrap";
+import { FaRegTrashAlt, FaPlus } from "react-icons/fa";
+import ListItem from "./ListItem";
+import CustomButton from "./CustomButton";
 
 class List extends React.Component {
   constructor(props) {
@@ -272,7 +273,7 @@ class List extends React.Component {
 
   renderListTitle = () => {
     return (
-      <Card.Header className="bg-light" style={{}}>
+      <Card.Header className="bg-light">
         <TextareaAutosize
           style={{
             resize: "none",
@@ -365,7 +366,6 @@ class List extends React.Component {
         content={listItem.content}
         id={listItem.id}
         completed={listItem.completed}
-        list_id={this.props.id}
         refresh={this.props.refresh}
         idToFocus={this.state.idToFocus}
         setPreviousListItemToFocus={this.setPreviousListItemToFocus}
@@ -430,15 +430,33 @@ class List extends React.Component {
 
   renderDeleteButton = () => {
     return (
-      <Button
-        size="sm"
-        variant="light"
-        onClick={() => {
-          this.toggleDeleteModal();
+      <div
+        style={{
+          marginLeft: "auto",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-center",
+          justifyContent: "center",
         }}
       >
-        <FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>
-      </Button>
+        <CustomButton
+          size="sm"
+          style={{ borderColor: "transparent", borderRadius: "50%" }}
+          onClick={() => {
+            this.toggleDeleteModal();
+          }}
+          variantOnHover="light"
+          icon={<FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>}
+        />
+      </div>
+    );
+  };
+
+  renderDateCreated = () => {
+    return (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {moment(this.props.dateCreated).format("[Created on] MMMM Do, YYYY")}
+      </div>
     );
   };
 
@@ -448,22 +466,13 @@ class List extends React.Component {
         style={{
           display: "flex",
           flexDirection: "row",
-          alignContent: "flex-center",
-          alignItems: "flex-center",
-          height: "100%",
+          minHeight: "54px",
+          paddingTop: "9px",
+          paddingBottom: "9px",
         }}
       >
-        {moment(this.props.dateCreated).format("[Created on] MMMM Do, YYYY")}
-        <div
-          style={{
-            marginLeft: "auto",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "flex-center",
-          }}
-        >
-          {this.renderDeleteButton()}
-        </div>
+        {this.renderDateCreated()}
+        {this.renderDeleteButton()}
       </Card.Footer>
     );
   };

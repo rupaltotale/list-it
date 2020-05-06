@@ -1,8 +1,9 @@
-import { Nav, Navbar, Button, Dropdown, NavDropdown } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
 import React from "react";
 import PropTypes from "prop-types";
+import { NavLink } from "react-router-dom";
 import onClickOutside from "react-onclickoutside";
+import { Nav, Navbar, Dropdown } from "react-bootstrap";
+import CustomDropdown from "./CustomDropdown";
 
 class NavBar extends React.Component {
   constructor(props) {
@@ -39,14 +40,36 @@ class NavBar extends React.Component {
     );
   };
 
+  handleLogout = () => {
+    localStorage.removeItem("token");
+    this.props.setUsername("", false);
+  };
+
   renderNavLoggedIn = () => {
-    var DropdownWithClickOutside = onClickOutside(CustomNavDropdown);
+    var DropdownWithClickOutside = onClickOutside(CustomDropdown);
     return (
       <>
         <Nav>
           <DropdownWithClickOutside
-            username={this.props.username}
-            setUsername={this.props.setUsername}
+            title={this.state.username}
+            dropdownItems={
+              <>
+                <NavLink style={{ color: "black" }} exact to="/profile">
+                  <Dropdown.Item as="button">My Profile</Dropdown.Item>
+                </NavLink>
+                <Dropdown.Divider></Dropdown.Divider>
+                <Dropdown.Item
+                  style={{
+                    fontWeight: "bold",
+                    color: "red",
+                  }}
+                  onClick={this.handleLogout}
+                >
+                  Logout
+                </Dropdown.Item>
+              </>
+            }
+            menuStyle={{ right: 0, left: "auto" }}
           />
         </Nav>
       </>
@@ -80,116 +103,7 @@ class NavBar extends React.Component {
   }
 }
 
-class CustomNavDropdown extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isNavDropdownOpen: false,
-      isNavDropdownHovering: false,
-      isNavDropdownClicked: false,
-      haveClickedNavDropdown: false,
-    };
-  }
-
-  handleClickOutside = (event) => {
-    this.setState({
-      isNavDropdownClicked: false,
-      isNavDropdownHovering: false,
-      haveClickedNavDropdown: false,
-      isNavDropdownOpen: false,
-    });
-  };
-
-  handleLogout = () => {
-    localStorage.removeItem("token");
-    this.props.setUsername("", false);
-  };
-
-  toggleNavDropdownHover = (bool) => {
-    this.setState({ isNavDropdownHovering: bool }, () => {
-      this.setState({
-        isNavDropdownOpen: this.toggleNavDropdown(),
-      });
-    });
-  };
-
-  toggleNavDropdownClicked = () => {
-    this.setState(
-      {
-        isNavDropdownClicked: !this.state.isNavDropdownClicked,
-        haveClickedNavDropdown: true,
-      },
-      () => {
-        this.setState({
-          isNavDropdownOpen: this.toggleNavDropdown(),
-        });
-      }
-    );
-  };
-
-  toggleNavDropdown = () => {
-    if (this.state.isNavDropdownClicked) {
-      return true;
-    } else {
-      if (this.state.haveClickedNavDropdown) {
-        return false;
-      }
-      if (this.state.isNavDropdownHovering) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  renderNavDropdown = () => {
-    return (
-      <>
-        <NavLink style={{ color: "black" }} exact to="/profile">
-          <Dropdown.Item as="button">My Profile</Dropdown.Item>
-        </NavLink>
-        <Dropdown.Divider></Dropdown.Divider>
-        <Dropdown.Item
-          style={{
-            fontWeight: "bold",
-            color: "red",
-          }}
-          onClick={this.handleLogout}
-        >
-          Logout
-        </Dropdown.Item>
-      </>
-    );
-  };
-
-  render() {
-    return (
-      <Dropdown
-        onMouseEnter={() => {
-          this.toggleNavDropdownHover(true);
-        }}
-        onMouseLeave={() => {
-          this.toggleNavDropdownHover(false);
-        }}
-        onSelect={this.handleClickOutside}
-        show={this.state.isNavDropdownOpen}
-      >
-        <Dropdown.Toggle onClick={this.toggleNavDropdownClicked}>
-          {this.props.username}
-        </Dropdown.Toggle>
-        <Dropdown.Menu style={{ right: 0, left: "auto" }}>
-          {this.renderNavDropdown()}
-        </Dropdown.Menu>
-      </Dropdown>
-    );
-  }
-}
-
 export default NavBar;
-
-CustomNavDropdown.propTypes = {
-  username: PropTypes.string.isRequired,
-  setUsername: PropTypes.func.isRequired,
-};
 
 NavBar.propTypes = {
   username: PropTypes.string.isRequired,

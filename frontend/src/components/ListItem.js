@@ -1,16 +1,16 @@
 import React from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
-import PropTypes, { element } from "prop-types";
-import { ListGroupItem } from "react-bootstrap";
 import TextareaAutosize from "react-textarea-autosize";
+import * as Mousetrap from "Mousetrap";
+import onClickOutside from "react-onclickoutside";
+import { ListGroupItem } from "react-bootstrap";
 import {
   FaRegTimesCircle,
   FaRegSquare,
   FaRegCheckSquare,
 } from "react-icons/fa";
-import * as Mousetrap from "Mousetrap";
-import onClickOutside from "react-onclickoutside";
-import CustomButton from "./CustomButton.js";
+import CustomButton from "./CustomButton";
 
 class ListItem extends React.Component {
   constructor(props) {
@@ -122,16 +122,20 @@ class ListItem extends React.Component {
       <div
         style={{
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
           justifyContent: "center",
+          alignItems: "flex-center",
+          margin: "0px 3px 0px 3px",
         }}
       >
         <CustomButton
           size="sm"
           style={{
             borderColor: "transparent",
+            borderRadius: "50%",
           }}
           onClick={this.toggleCompleted}
+          variantOnHover="light"
           iconOnHover={{
             color: "black",
           }}
@@ -235,7 +239,7 @@ class ListItem extends React.Component {
         <ButtonWithClickOutside
           eventTypes={["click", "mousedown"]}
           size="sm"
-          style={{ borderColor: "transparent" }}
+          style={{ borderColor: "transparent", borderRadius: "50%" }}
           onClick={this.deleteListItem}
           onClickOutside={this.handleClickOutsideDelete}
           variantOnHover="light"
@@ -276,8 +280,8 @@ ListItem.propTypes = {
   content: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   completed: PropTypes.bool.isRequired,
-  list_id: PropTypes.number.isRequired,
   refresh: PropTypes.func.isRequired,
+  idToFocus: PropTypes.number,
   setPreviousListItemToFocus: PropTypes.func.isRequired,
   setNextListItemToFocus: PropTypes.func.isRequired,
   setCurrentListItemToFocus: PropTypes.func.isRequired,
