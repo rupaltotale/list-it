@@ -18,7 +18,6 @@ class List extends React.Component {
       title: this.props.title,
       errorResponse: null,
       showDeleteModal: false,
-      focusedOnListTitle: false,
       idToFocus: null,
       clickedInsideList: false,
     };
@@ -275,36 +274,18 @@ class List extends React.Component {
     return (
       <Card.Header className="bg-light">
         <TextareaAutosize
-          style={{
-            resize: "none",
-            border: "none",
-            fontWeight: "bold",
-            fontSize: "large",
-            textAlign: "center",
-            boxShadow: "none",
-            textShadow: this.state.focusedOnListTitle
-              ? "1px 1px 2px lightGray"
-              : "none",
-          }}
           value={this.state.title}
-          className="form-control bg-light mousetrap"
+          className="form-control bg-light mousetrap list-title"
           onChange={this.handleTitleChange}
           placeholder="List Title"
-          rows={1}
           inputRef={this.listTitle}
           onFocus={() => {
-            this.setState({
-              focusedOnListTitle: true,
-            });
             Mousetrap.bind("enter", (event) => {
               event.preventDefault();
               this.listTitle.current.blur();
             });
           }}
           onBlur={() => {
-            this.setState({
-              focusedOnListTitle: false,
-            });
             Mousetrap.reset();
           }}
         ></TextareaAutosize>
@@ -397,17 +378,7 @@ class List extends React.Component {
     if (completedListItems.length > 0) {
       return (
         <>
-          <Alert
-            style={{
-              borderRadius: "0px",
-              marginTop: "0px",
-              marginBottom: "0px",
-              paddingBottom: "10px",
-              fontWeight: "bold",
-            }}
-          >
-            Completed Items
-          </Alert>
+          <Alert className="completed-items-alert">Completed Items</Alert>
           {completedListItems.map((listItem) => {
             return this.renderListItem(listItem);
           })}
@@ -441,7 +412,7 @@ class List extends React.Component {
       >
         <CustomButton
           size="sm"
-          style={{ borderColor: "transparent", borderRadius: "50%" }}
+          className="btn-round btn-no-border"
           onClick={() => {
             this.toggleDeleteModal();
           }}
@@ -482,10 +453,7 @@ class List extends React.Component {
       <>
         {this.renderDeleteModal()}
         <Card
-          style={{
-            margin: "10px",
-            width: "315px",
-          }}
+          className="card-list"
           onClick={() => {
             this.setState({
               clickedInsideList: true,

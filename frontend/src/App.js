@@ -13,15 +13,16 @@ import {
   BrowserRouter as Router,
   Switch,
 } from "react-router-dom";
-import React, { Component } from "react";
-import NavBar from "./components/Nav";
+import React from "react";
+import CustomNavBar from "./components/Nav";
 import CustomForm from "./components/CustomComponents/CustomForm";
 import { render } from "react-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import axios from "axios";
+import "./scss/_index.scss";
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -61,7 +62,10 @@ class App extends Component {
 
   renderNav() {
     return (
-      <NavBar username={this.state.username} setUsername={this.setUsername} />
+      <CustomNavBar
+        username={this.state.username}
+        setUsername={this.setUsername}
+      />
     );
   }
 

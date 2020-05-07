@@ -129,14 +129,7 @@ class ListItem extends React.Component {
       >
         <CustomButton
           size="sm"
-          style={{
-            borderColor: "transparent",
-            borderRadius: "50%",
-            opacity: "0.7",
-          }}
-          styleOnHover={{
-            opacity: "1",
-          }}
+          className="btn-round btn-no-border btn-opaque-hover"
           onClick={this.toggleCompleted}
           variantOnHover="light"
           icon={
@@ -228,25 +221,15 @@ class ListItem extends React.Component {
     let ButtonWithClickOutside = onClickOutside(CustomButton);
     return (
       <div
+        className="d-flex flex-row justify-content-center"
         style={{
           marginLeft: "3px",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-center",
-          justifyContent: "center",
         }}
       >
         <ButtonWithClickOutside
           eventTypes={["click", "mousedown"]}
           size="sm"
-          style={{
-            borderColor: "transparent",
-            borderRadius: "50%",
-            opacity: "0.7",
-          }}
-          styleOnHover={{
-            opacity: "1",
-          }}
+          className="btn-round btn-no-border btn-opaque-hover"
           onClick={this.deleteListItem}
           onClickOutside={this.handleClickOutsideDelete}
           variantOnHover="light"

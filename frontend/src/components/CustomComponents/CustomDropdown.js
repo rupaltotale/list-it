@@ -78,7 +78,7 @@ class CustomDropdown extends React.Component {
         <Dropdown.Toggle onClick={this.toggleDropdownClicked}>
           {this.props.title}
         </Dropdown.Toggle>
-        <Dropdown.Menu style={this.props.menuStyle}>
+        <Dropdown.Menu className={this.props.menuClass}>
           {this.renderDropdown()}
         </Dropdown.Menu>
       </Dropdown>
@@ -91,5 +91,5 @@ export default CustomDropdown;
 CustomDropdown.propTypes = {
   title: PropTypes.string.isRequired,
   dropdownItems: PropTypes.object.isRequired,
-  menuStyle: PropTypes.object,
+  menuClass: PropTypes.string,
 };

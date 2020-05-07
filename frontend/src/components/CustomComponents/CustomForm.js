@@ -1,6 +1,5 @@
 import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 import { Redirect, BrowserRouter as Router } from "react-router-dom";
-
 import PropTypes from "prop-types";
 import React from "react";
 import axios from "axios";
@@ -150,7 +149,7 @@ class CustomForm extends React.Component {
             onChange={this.handleChange}
             required
           />
-          {renderRightIcon ? renderRightIcon() : null}
+          {renderRightIcon()}
           <Form.Control.Feedback type="invalid">
             {this.state.error[fieldName].map((item, i) => {
               return <Form.Label key={i}>{item}</Form.Label>;
@@ -180,13 +179,11 @@ class CustomForm extends React.Component {
     return (
       <Container>
         <Row className="justify-content-center align-items-center">
-          <Col md={5} className="mx-auto">
+          <Col md={5}>
             <h1 className="text-center">{this.props.pageTitle}</h1>
             <Form noValidate onSubmit={this.handleSubmit}>
               {this.renderFields()}
-              <Button type="submit" className="btn btn-primary">
-                Submit
-              </Button>
+              <Button type="submit">Submit</Button>
             </Form>
           </Col>
         </Row>

@@ -1,0 +1,8 @@
+@import "~bootstrap/scss/bootstrap";
+@import "globalVariables";
+@import "Button", "List", "Nav";
+
+body {
+  color: $primary-color;
+  background-color: $background-color;
+}

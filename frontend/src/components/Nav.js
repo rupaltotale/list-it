@@ -5,7 +5,7 @@ import onClickOutside from "react-onclickoutside";
 import { Nav, Navbar, Dropdown } from "react-bootstrap";
 import CustomDropdown from "./CustomComponents/CustomDropdown";
 
-class NavBar extends React.Component {
+class CustomNavBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,29 +54,23 @@ class NavBar extends React.Component {
             title={this.state.username}
             dropdownItems={
               <>
-                <NavLink style={{ color: "black" }} exact to="/profile">
+                <NavLink className="black" exact to="/profile">
                   <Dropdown.Item as="button">My Profile</Dropdown.Item>
                 </NavLink>
                 <Dropdown.Divider></Dropdown.Divider>
-                <Dropdown.Item
-                  style={{
-                    fontWeight: "bold",
-                    color: "red",
-                  }}
-                  onClick={this.handleLogout}
-                >
+                <Dropdown.Item className="logout" onClick={this.handleLogout}>
                   Logout
                 </Dropdown.Item>
               </>
             }
-            menuStyle={{ right: 0, left: "auto" }}
+            menuClass="menu-left"
           />
         </Nav>
       </>
     );
   };
 
-  renderNavBar = () => {
+  renderCustomNavBar = () => {
     return (
       <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
         <NavLink exact to="/">
@@ -101,13 +95,13 @@ class NavBar extends React.Component {
   };
 
   render() {
-    return this.renderNavBar();
+    return this.renderCustomNavBar();
   }
 }
 
-export default NavBar;
+export default CustomNavBar;
 
-NavBar.propTypes = {
+CustomNavBar.propTypes = {
   username: PropTypes.string.isRequired,
   setUsername: PropTypes.func.isRequired,
 };

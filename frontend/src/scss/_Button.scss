@@ -1,0 +1,15 @@
+.btn-round {
+  border-radius: 50%;
+}
+
+.btn-no-border {
+  border-color: transparent;
+}
+
+.btn-opaque-hover {
+  opacity: 0.7;
+}
+
+.btn-opaque-hover:hover {
+  opacity: 1;
+}
