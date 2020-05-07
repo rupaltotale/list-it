@@ -1,6 +1,6 @@
 @import "~bootstrap/scss/bootstrap";
 @import "globalVariables";
-@import "Button", "List", "Nav";
+@import "components/Button", "components/List", "components/Nav";
 
 body {
   color: $primary-color;
