@@ -121,9 +121,8 @@ class ListItem extends React.Component {
       <div className="btn-div mx-1">
         <CustomButton
           size="sm"
-          className="btn-round btn-no-border btn-opaque-hover"
+          className="btn-round btn-no-border btn-light-hover btn-opaque-hover"
           onClick={this.toggleCompleted}
-          variantOnHover="light"
           icon={
             this.state.completed ? (
               <FaRegCheckSquare color="black" size={20}></FaRegCheckSquare>
@@ -206,14 +205,13 @@ class ListItem extends React.Component {
   renderDeleteButton = () => {
     let ButtonWithClickOutside = onClickOutside(CustomButton);
     return (
-      <div className="btn-div ml-1">
+      <div className="btn-div mx-1">
         <ButtonWithClickOutside
           eventTypes={["click", "mousedown"]}
           size="sm"
-          className="btn-round btn-no-border btn-opaque-hover"
+          className="btn-round btn-no-border btn-light-hover btn-opaque-hover"
           onClick={this.deleteListItem}
           onClickOutside={this.handleClickOutsideDelete}
-          variantOnHover="light"
           icon={<FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>}
         />
       </div>
@@ -222,10 +220,7 @@ class ListItem extends React.Component {
 
   renderListItem = () => {
     return (
-      <ListGroupItem
-        className="list-item"
-        variant={this.state.completed ? "light" : null}
-      >
+      <ListGroupItem className="list-item">
         {this.renderCheckbox()}
         {this.renderListItemContent()}
         {this.renderDeleteButton()}

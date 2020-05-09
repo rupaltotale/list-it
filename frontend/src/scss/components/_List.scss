@@ -1,6 +1,11 @@
 .list-card {
-  margin: 10px;
-  width: 315px;
+  margin: 15px;
+  width: 289px;
+  &:hover .list-footer {
+    & .btn-div {
+      display: flex;
+    }
+  }
 }
 
 .list-header {
@@ -25,7 +30,11 @@
 
 .list-item {
   display: flex;
+  place-content: center;
+  align-items: center;
   padding-left: 0px;
+  padding-right: 0px;
+  border: none;
 }
 
 .list-item-content {
@@ -46,10 +55,12 @@
 }
 
 .list-footer {
+  background-color: $background-color;
+  border-top: none;
   display: flex;
-  min-height: 54px;
-  padding-top: 9px;
-  padding-bottom: 9px;
+  place-content: center space-around;
+  align-items: center;
+  height: 40px;
 }
 
 .list-date-created {

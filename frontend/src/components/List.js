@@ -6,7 +6,14 @@ import TextareaAutosize from "react-textarea-autosize";
 import * as Mousetrap from "Mousetrap";
 import onClickOutside from "react-onclickoutside";
 import { Card, ListGroup, Button, Modal, Alert } from "react-bootstrap";
-import { FaRegTrashAlt, FaPlus } from "react-icons/fa";
+import {
+  FaTrashAlt,
+  FaPlus,
+  FaPalette,
+  FaBell,
+  FaUserPlus,
+  FaImages,
+} from "react-icons/fa";
 import ListItem from "./ListItem";
 import CustomButton from "./CustomComponents/CustomButton";
 
@@ -392,34 +399,53 @@ class List extends React.Component {
     );
   };
 
-  renderDeleteButton = () => {
-    return (
-      <div className="btn-div ml-auto">
+  renderFooterButtons = (buttons) => {
+    let createdButtons = [];
+    buttons.forEach((button) => {
+      createdButtons.push(
         <CustomButton
-          className="btn-round btn-no-border btn-sm"
-          onClick={() => {
-            this.toggleDeleteModal();
-          }}
-          variantOnHover="light"
-          icon={<FaRegTrashAlt size={20} color="red"></FaRegTrashAlt>}
+          className="btn-round btn-no-border btn-sm btn-light-hover btn-opaque-hover"
+          onClick={button.onClick}
+          icon={button.icon}
         />
-      </div>
+      );
+    });
+    return (
+      <>
+        {createdButtons.map((createdButton, i) => {
+          return (
+            <div key={i} className="btn-div">
+              {createdButton}
+            </div>
+          );
+        })}
+      </>
     );
   };
 
-  renderDateCreated = () => {
-    return (
-      <div className="list-date-created">
-        {moment(this.props.dateCreated).format("[Created on] MMMM Do, YYYY")}
-      </div>
-    );
-  };
+  // renderDateCreated = () => {
+  //   return (
+  //     <div className="list-date-created">
+  //       {moment(this.props.dateCreated).format("[Created on] MMMM Do, YYYY")}
+  //     </div>
+  //   );
+  // };
 
   renderListFooter = () => {
     return (
       <Card.Footer className="list-footer">
-        {this.renderDateCreated()}
-        {this.renderDeleteButton()}
+        {this.renderFooterButtons([
+          { icon: <FaBell size={18}></FaBell> },
+          { icon: <FaUserPlus size={18}></FaUserPlus> },
+          { icon: <FaPalette size={18}></FaPalette> },
+          { icon: <FaImages size={18}></FaImages> },
+          {
+            icon: <FaTrashAlt size={18}></FaTrashAlt>,
+            onClick: () => {
+              this.toggleDeleteModal();
+            },
+          },
+        ])}
       </Card.Footer>
     );
   };

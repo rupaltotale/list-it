@@ -5,10 +5,14 @@
 .btn-div {
   display: flex;
   justify-content: center;
+  .list-footer & {
+    display: none;
+  }
 }
 
 .btn-round {
   border-radius: 50%;
+  padding: 6px;
 }
 
 .btn-no-border {
@@ -20,6 +24,10 @@
   &:hover {
     opacity: 1;
   }
+}
+
+.btn-light-hover:hover {
+  @extend .btn-light;
 }
 
 .btn-add {

@@ -57,7 +57,7 @@ class Home extends React.Component {
   };
 
   setColumnAmount = () => {
-    const listWidth = 335;
+    const listWidth = 319;
     const numberOfColumns = Math.floor(this.state.windowWidth / listWidth);
     if (numberOfColumns < this.state.lists.length) {
       this.setState({
@@ -130,9 +130,9 @@ class Home extends React.Component {
       }
       return (
         <div className="home-lists">
-          {newLists.map((listArray) => {
+          {newLists.map((listArray, i) => {
             return (
-              <div className="home-lists-col">
+              <div key={i} className="home-lists-col">
                 {listArray.map((list) => {
                   return (
                     <List

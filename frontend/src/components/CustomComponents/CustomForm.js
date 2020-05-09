@@ -163,12 +163,16 @@ class CustomForm extends React.Component {
   renderFields = () => {
     return (
       <React.Fragment>
-        {this.props.formFields.map((field) => {
-          return this.renderField(
-            field.fieldName,
-            field.type,
-            field.leftIcon,
-            field.rightIcon
+        {this.props.formFields.map((field, i) => {
+          return (
+            <React.Fragment key={i}>
+              {this.renderField(
+                field.fieldName,
+                field.type,
+                field.leftIcon,
+                field.rightIcon
+              )}
+            </React.Fragment>
           );
         })}
       </React.Fragment>
