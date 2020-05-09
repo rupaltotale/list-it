@@ -272,10 +272,10 @@ class List extends React.Component {
 
   renderListTitle = () => {
     return (
-      <Card.Header className="bg-light">
+      <Card.Header className="list-header">
         <TextareaAutosize
           value={this.state.title}
-          className="form-control bg-light mousetrap list-title"
+          className="list-title mousetrap"
           onChange={this.handleTitleChange}
           placeholder="List Title"
           inputRef={this.listTitle}
@@ -322,19 +322,12 @@ class List extends React.Component {
     return (
       <Button
         variant="outline-primary"
-        style={{
-          width: "wrap-content",
-          margin: "6px 6px",
-          display: "flex",
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        className="btn-add"
         onClick={() => {
           this.createListItem();
         }}
       >
-        <FaPlus style={{ margin: "2px" }}></FaPlus>
+        <FaPlus></FaPlus>
         {" Add list item"}
       </Button>
     );
@@ -378,7 +371,7 @@ class List extends React.Component {
     if (completedListItems.length > 0) {
       return (
         <>
-          <Alert className="completed-items-alert">Completed Items</Alert>
+          <Alert className="list-completed-items-alert">Completed Items</Alert>
           {completedListItems.map((listItem) => {
             return this.renderListItem(listItem);
           })}
@@ -401,18 +394,9 @@ class List extends React.Component {
 
   renderDeleteButton = () => {
     return (
-      <div
-        style={{
-          marginLeft: "auto",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-center",
-          justifyContent: "center",
-        }}
-      >
+      <div className="btn-div ml-auto">
         <CustomButton
-          size="sm"
-          className="btn-round btn-no-border"
+          className="btn-round btn-no-border btn-sm"
           onClick={() => {
             this.toggleDeleteModal();
           }}
@@ -425,7 +409,7 @@ class List extends React.Component {
 
   renderDateCreated = () => {
     return (
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="list-date-created">
         {moment(this.props.dateCreated).format("[Created on] MMMM Do, YYYY")}
       </div>
     );
@@ -433,15 +417,7 @@ class List extends React.Component {
 
   renderListFooter = () => {
     return (
-      <Card.Footer
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          minHeight: "54px",
-          paddingTop: "9px",
-          paddingBottom: "9px",
-        }}
-      >
+      <Card.Footer className="list-footer">
         {this.renderDateCreated()}
         {this.renderDeleteButton()}
       </Card.Footer>
@@ -453,7 +429,7 @@ class List extends React.Component {
       <>
         {this.renderDeleteModal()}
         <Card
-          className="card-list"
+          className="list-card"
           onClick={() => {
             this.setState({
               clickedInsideList: true,

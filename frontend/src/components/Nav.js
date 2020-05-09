@@ -54,16 +54,19 @@ class CustomNavBar extends React.Component {
             title={this.state.username}
             dropdownItems={
               <>
-                <NavLink className="black" exact to="/profile">
+                <NavLink className="dropdown-nav-link" exact to="/profile">
                   <Dropdown.Item as="button">My Profile</Dropdown.Item>
                 </NavLink>
                 <Dropdown.Divider></Dropdown.Divider>
-                <Dropdown.Item className="logout" onClick={this.handleLogout}>
+                <Dropdown.Item
+                  className="dropdown-logout"
+                  onClick={this.handleLogout}
+                >
                   Logout
                 </Dropdown.Item>
               </>
             }
-            menuClass="menu-left"
+            menuClass="dropdown-menu-left"
           />
         </Nav>
       </>

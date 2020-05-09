@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { Button, Container } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import List from "../components/List";
 
@@ -11,6 +11,8 @@ class Home extends React.Component {
     this.state = {
       loggedIn: this.props.loggedIn,
       username: this.props.username,
+      windowWidth: window.innerWidth,
+      numberOfColumns: null,
       lists: [],
     };
   }
@@ -18,6 +20,11 @@ class Home extends React.Component {
   //On mount, get the user's list and update lists
   componentDidMount() {
     this.getUserLists();
+    window.addEventListener("resize", this.updateWindowWidth);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateWindowWidth);
   }
 
   //If the username has changed (user logged in/out), then run render lists again
@@ -39,6 +46,29 @@ class Home extends React.Component {
 
     return null;
   }
+
+  updateWindowWidth = () => {
+    this.setState(
+      {
+        windowWidth: window.innerWidth,
+      },
+      this.setColumnAmount
+    );
+  };
+
+  setColumnAmount = () => {
+    const listWidth = 335;
+    const numberOfColumns = Math.floor(this.state.windowWidth / listWidth);
+    if (numberOfColumns < this.state.lists.length) {
+      this.setState({
+        numberOfColumns: numberOfColumns,
+      });
+    } else if (this.state.numberOfColumns !== this.state.lists.length) {
+      this.setState({
+        numberOfColumns: this.state.lists.length,
+      });
+    }
+  };
 
   refresh = () => {
     this.getUserLists();
@@ -75,37 +105,47 @@ class Home extends React.Component {
           },
         })
         .then((response) => {
-          this.setState({
-            lists: response.data,
-          });
+          this.setState(
+            {
+              lists: response.data,
+            },
+            this.setColumnAmount
+          );
         });
     }
   };
 
   renderLists = () => {
     if (this.state.loggedIn) {
+      let lists = [].concat(this.state.lists);
+      let newLists = [];
+      for (let i = 0; i < this.state.numberOfColumns; i++) {
+        let j = i;
+        let listArray = [];
+        while (j < lists.length) {
+          listArray.push(lists[j]);
+          j += this.state.numberOfColumns;
+        }
+        newLists.push(listArray);
+      }
       return (
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            alignContent: "flex-start",
-            minHeight: "80%",
-          }}
-        >
-          {this.state.lists.map((list) => {
+        <div className="home-lists">
+          {newLists.map((listArray) => {
             return (
-              <List
-                key={list.id}
-                id={list.id}
-                title={list.title}
-                dateCreated={list.date_created}
-                listItems={list.list_items}
-                refresh={this.refresh}
-              />
+              <div className="home-lists-col">
+                {listArray.map((list) => {
+                  return (
+                    <List
+                      key={list.id}
+                      id={list.id}
+                      title={list.title}
+                      dateCreated={list.date_created}
+                      listItems={list.list_items}
+                      refresh={this.refresh}
+                    />
+                  );
+                })}
+              </div>
             );
           })}
         </div>
@@ -118,17 +158,10 @@ class Home extends React.Component {
     return (
       <Button
         variant="outline-success"
-        style={{
-          width: "wrap-content",
-          margin: "6px 6px",
-          display: "flex",
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+        className="btn-add"
         onClick={this.createNewList}
       >
-        <FaPlus style={{ margin: "2px" }}></FaPlus>
+        <FaPlus></FaPlus>
         {" Add list"}
       </Button>
     );
@@ -136,16 +169,8 @@ class Home extends React.Component {
 
   renderHeading = () => {
     return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignContent: "stretch",
-          alignItems: "center",
-        }}
-      >
-        <h1 className="text-center display-4">My Lists</h1>
+      <div className="home-heading">
+        <h1>My Lists</h1>
         {this.renderAddListButton()}
       </div>
     );
@@ -153,15 +178,19 @@ class Home extends React.Component {
 
   renderLoggedInHome = () => {
     return (
-      <Container>
+      <div className="home">
         {this.renderHeading()}
         {this.renderLists()}
-      </Container>
+      </div>
     );
   };
 
   renderLoggedOutHome = () => {
-    return <h1 className="text-center">You must log in to create lists</h1>;
+    return (
+      <div className="home-heading">
+        <h1>You must log in to create lists</h1>
+      </div>
+    );
   };
 
   render() {

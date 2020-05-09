@@ -1,17 +1,15 @@
-.card-list {
+.list-card {
   margin: 10px;
   width: 315px;
 }
 
-.completed-items-alert {
-  border-radius: 0px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  padding-bottom: 10px;
-  font-weight: bold;
+.list-header {
+  @extend .bg-light;
 }
 
 .list-title {
+  @extend .form-control;
+  @extend .bg-light;
   resize: none;
   border: none;
   font-weight: bold;
@@ -23,4 +21,38 @@
     text-shadow: 1px 1px 2px lightGray;
     box-shadow: none;
   }
+}
+
+.list-item {
+  display: flex;
+  padding-left: 0px;
+}
+
+.list-item-content {
+  @extend .form-control;
+  resize: none;
+  &-completed {
+    @extend .list-item-content;
+    text-decoration-line: line-through;
+  }
+}
+
+.list-completed-items-alert {
+  border-radius: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-bottom: 10px;
+  font-weight: bold;
+}
+
+.list-footer {
+  display: flex;
+  min-height: 54px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+}
+
+.list-date-created {
+  display: flex;
+  align-items: center;
 }

@@ -1,3 +1,12 @@
+.btn:focus {
+  box-shadow: none;
+}
+
+.btn-div {
+  display: flex;
+  justify-content: center;
+}
+
 .btn-round {
   border-radius: 50%;
 }
@@ -8,8 +17,17 @@
 
 .btn-opaque-hover {
   opacity: 0.7;
+  &:hover {
+    opacity: 1;
+  }
 }
 
-.btn-opaque-hover:hover {
-  opacity: 1;
+.btn-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6px;
+  svg {
+    margin: 2px;
+  }
 }

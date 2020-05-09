@@ -118,15 +118,7 @@ class ListItem extends React.Component {
 
   renderCheckbox = () => {
     return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "flex-center",
-          margin: "0px 3px 0px 3px",
-        }}
-      >
+      <div className="btn-div mx-1">
         <CustomButton
           size="sm"
           className="btn-round btn-no-border btn-opaque-hover"
@@ -159,16 +151,10 @@ class ListItem extends React.Component {
   renderListItemContent = () => {
     return (
       <TextareaAutosize
-        style={{
-          resize: "none",
-          width: "85%",
-          textDecorationLine:
-            this.state.completed && this.state.content
-              ? "line-through"
-              : "none",
-        }}
         value={this.state.content}
-        className="form-control mousetrap"
+        className={`list-item-content${
+          this.state.completed && this.state.content ? `-completed` : ``
+        } mousetrap`}
         onChange={this.handleContentChange}
         onFocus={() => {
           this.setState(
@@ -220,12 +206,7 @@ class ListItem extends React.Component {
   renderDeleteButton = () => {
     let ButtonWithClickOutside = onClickOutside(CustomButton);
     return (
-      <div
-        className="d-flex flex-row justify-content-center"
-        style={{
-          marginLeft: "3px",
-        }}
-      >
+      <div className="btn-div ml-1">
         <ButtonWithClickOutside
           eventTypes={["click", "mousedown"]}
           size="sm"
@@ -242,14 +223,7 @@ class ListItem extends React.Component {
   renderListItem = () => {
     return (
       <ListGroupItem
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignContent: "flex-center",
-          alignItems: "flex-center",
-          height: "100%",
-          paddingLeft: "0px",
-        }}
+        className="list-item"
         variant={this.state.completed ? "light" : null}
       >
         {this.renderCheckbox()}

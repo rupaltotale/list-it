@@ -1,13 +1,19 @@
-.black {
+.dropdown-nav-link {
   color: black;
+  &:hover {
+    text-decoration: none;
+  }
 }
 
-.logout {
+.dropdown-logout {
   color: red;
   font-weight: bold;
+  &:hover {
+    color: red;
+  }
 }
 
-.menu-left {
+.dropdown-menu-left {
   right: 0;
   left: auto;
 }

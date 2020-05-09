@@ -1,0 +1,33 @@
+.home {
+  @extend .mx-0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: flex-start;
+}
+
+.home-heading {
+  display: flex;
+  flex-direction: column;
+  place-content: stretch center;
+  align-items: center;
+  h1 {
+    text-align: center;
+    @extend .display-4;
+  }
+}
+
+.home-lists-col {
+  display: flex;
+  flex-direction: column;
+  place-content: flex-start center;
+  align-items: flex-start;
+}
+
+.home-lists {
+  display: flex;
+  flex-flow: row wrap;
+  place-content: flex-start center;
+  align-items: flex-start;
+  min-height: 80%;
+}
