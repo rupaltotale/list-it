@@ -17,17 +17,15 @@
   }
 }
 
-.home-lists-col {
-  display: flex;
-  flex-direction: column;
-  place-content: flex-start center;
-  align-items: flex-start;
-}
-
 .home-lists {
   display: flex;
   flex-flow: row wrap;
   place-content: flex-start center;
   align-items: flex-start;
-  min-height: 80%;
+}
+.home-lists-col {
+  display: flex;
+  flex-direction: column;
+  place-content: flex-start center;
+  align-items: flex-start;
 }

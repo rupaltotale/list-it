@@ -156,11 +156,7 @@ class Home extends React.Component {
 
   renderAddListButton = () => {
     return (
-      <Button
-        variant="outline-success"
-        className="btn-add"
-        onClick={this.createNewList}
-      >
+      <Button variant={null} className="btn-add" onClick={this.createNewList}>
         <FaPlus></FaPlus>
         {" Add list"}
       </Button>

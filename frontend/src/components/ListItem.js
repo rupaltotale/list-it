@@ -121,7 +121,7 @@ class ListItem extends React.Component {
       <div className="btn-div mx-1">
         <CustomButton
           size="sm"
-          className="btn-round btn-no-border btn-light-hover btn-opaque-hover"
+          className="btn-icon"
           onClick={this.toggleCompleted}
           icon={
             this.state.completed ? (
@@ -210,7 +210,7 @@ class ListItem extends React.Component {
         <ButtonWithClickOutside
           eventTypes={["click", "mousedown"]}
           size="sm"
-          className="btn-round btn-no-border btn-light-hover btn-opaque-hover"
+          className="btn-icon"
           onClick={this.deleteListItem}
           onClickOutside={this.handleClickOutsideDelete}
           icon={<FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>}

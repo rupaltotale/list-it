@@ -5,6 +5,15 @@
 .btn-div {
   display: flex;
   justify-content: center;
+  visibility: visible;
+  opacity: 1;
+}
+
+.btn-icon {
+  @extend .btn-round;
+  @extend .btn-no-border;
+  @extend .btn-light-hover;
+  @extend .btn-opaque-hover;
 }
 
 .btn-round {
@@ -23,11 +32,15 @@
   }
 }
 
-.btn-light-hover:hover {
-  @extend .btn-light;
+.btn-light-hover {
+  &:hover {
+    @extend .btn-light;
+  }
 }
 
 .btn-add {
+  @extend .btn-outline-dark;
+  background-color: $background-color;
   display: flex;
   align-items: center;
   justify-content: center;

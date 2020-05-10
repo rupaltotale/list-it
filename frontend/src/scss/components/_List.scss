@@ -1,25 +1,35 @@
 .list-card {
   margin: 15px;
   width: 289px;
+  background-color: $background-color;
   &:hover {
     .list-select {
-      @extend .btn-div;
+      @include transition-fade(true);
     }
     .list-footer {
-      & .btn-div {
-        display: flex;
+      .btn-div {
+        @include transition-fade(true);
+      }
+    }
+  }
+  &:not(:hover) {
+    .list-select {
+      @include transition-fade(false);
+    }
+    .list-footer {
+      .btn-div {
+        @include transition-fade(false);
       }
     }
   }
 }
 
 .list-header {
-  @extend .bg-light;
+  background-color: $background-color;
 }
 
 .list-title {
   @extend .form-control;
-  @extend .bg-light;
   resize: none;
   border: none;
   font-weight: bold;
@@ -36,11 +46,16 @@
 .list-select {
   @extend .btn;
   @extend .btn-round;
-  display: none;
-  background-color: black;
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
+  background-color: $primary-color;
   position: absolute;
   left: -10px;
   top: -10px;
+  svg {
+    color: $background-color;
+  }
 }
 
 .list-item {
@@ -77,7 +92,8 @@
   align-items: center;
   height: 40px;
   & .btn-div {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
   }
 }
 

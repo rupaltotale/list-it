@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import ListItem from "./ListItem";
 import CustomButton from "./CustomComponents/CustomButton";
+import CustomModal from "./CustomComponents/CustomModal";
 
 class List extends React.Component {
   constructor(props) {
@@ -206,8 +207,8 @@ class List extends React.Component {
 
   renderDeleteModal = () => {
     return (
-      <Modal
-        show={this.state.showDeleteModal}
+      <CustomModal
+        showModal={this.state.showDeleteModal}
         onShow={() => {
           Mousetrap.bind("enter", () => {
             this.deleteList();
@@ -218,17 +219,16 @@ class List extends React.Component {
           this.toggleDeleteModal();
           Mousetrap.reset();
         }}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            Delete <em>{this.state.title}</em>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete this list? This action cannot be
-          undone.
-        </Modal.Body>
-        <Modal.Footer>
+        title={
+          <>
+            {"Delete "}
+            <em>{this.state.title}</em>{" "}
+          </>
+        }
+        body={
+          "Are you sure you want to delete this list? This action cannot be undone."
+        }
+        footer={
           <Button
             variant="danger"
             onClick={() => {
@@ -238,8 +238,8 @@ class List extends React.Component {
           >
             Delete
           </Button>
-        </Modal.Footer>
-      </Modal>
+        }
+      ></CustomModal>
     );
   };
 
@@ -271,7 +271,7 @@ class List extends React.Component {
   renderSelectIcon = () => {
     return (
       <div className="list-select">
-        <FaCheck size={16} color="white"></FaCheck>
+        <FaCheck size={16}></FaCheck>
       </div>
     );
   };
@@ -337,8 +337,8 @@ class List extends React.Component {
   renderAddListItemButton = () => {
     return (
       <Button
-        variant="outline-primary"
         className="btn-add"
+        variant={null}
         onClick={() => {
           this.createListItem();
         }}
@@ -413,7 +413,7 @@ class List extends React.Component {
     buttons.forEach((button) => {
       createdButtons.push(
         <CustomButton
-          className="btn-round btn-no-border btn-sm btn-light-hover btn-opaque-hover"
+          className="btn-icon"
           onClick={button.onClick}
           icon={button.icon}
         />
