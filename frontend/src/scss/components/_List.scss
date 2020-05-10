@@ -1,9 +1,14 @@
 .list-card {
   margin: 15px;
   width: 289px;
-  &:hover .list-footer {
-    & .btn-div {
-      display: flex;
+  &:hover {
+    .list-select {
+      @extend .btn-div;
+    }
+    .list-footer {
+      & .btn-div {
+        display: flex;
+      }
     }
   }
 }
@@ -26,6 +31,16 @@
     text-shadow: 1px 1px 2px lightGray;
     box-shadow: none;
   }
+}
+
+.list-select {
+  @extend .btn;
+  @extend .btn-round;
+  display: none;
+  background-color: black;
+  position: absolute;
+  left: -10px;
+  top: -10px;
 }
 
 .list-item {

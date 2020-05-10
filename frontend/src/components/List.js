@@ -13,6 +13,7 @@ import {
   FaBell,
   FaUserPlus,
   FaImages,
+  FaCheck,
 } from "react-icons/fa";
 import ListItem from "./ListItem";
 import CustomButton from "./CustomComponents/CustomButton";
@@ -267,6 +268,14 @@ class List extends React.Component {
       });
   };
 
+  renderSelectIcon = () => {
+    return (
+      <div className="list-select">
+        <FaCheck size={16} color="white"></FaCheck>
+      </div>
+    );
+  };
+
   handleTitleChange = (event) => {
     this.setState(
       {
@@ -462,6 +471,7 @@ class List extends React.Component {
             });
           }}
         >
+          {this.renderSelectIcon()}
           {this.renderListTitle()}
           {this.renderListItems()}
           {this.renderListFooter()}
