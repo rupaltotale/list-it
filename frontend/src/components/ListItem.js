@@ -162,6 +162,7 @@ class ListItem extends React.Component {
             },
             this.bindKeys
           );
+          this.props.setCurrentListItemToFocus(this.props.id);
         }}
         onBlur={() => {
           Mousetrap.reset();
