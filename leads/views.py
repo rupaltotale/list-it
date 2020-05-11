@@ -4,7 +4,6 @@
 # Delete a list, listItem
 # Create user
 
-
 from rest_framework import generics
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
@@ -17,15 +16,12 @@ from rest_framework.generics import ListAPIView, CreateAPIView, \
     RetrieveUpdateDestroyAPIView, GenericAPIView
 from rest_framework.exceptions import ValidationError
 
-
 from .serializers import UserSerializer, UserSerializerWithToken, \
     ListSerializer, ListItemSerializer
 from .models import List, ListItem
 from django.utils import timezone
 
-
 ########################### List endpoints ########################################
-
 
 class ListGet(ListAPIView):
     queryset = List.objects.all()

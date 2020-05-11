@@ -31,150 +31,10 @@ class List extends React.Component {
     };
   }
 
-  componentDidMount() {}
-
-  componentDidUpdate() {}
-
   handleClickOutside = (event) => {
     if (this.state.clickedInsideList) {
       this.setState({
         clickedInsideList: false,
-      });
-    }
-  };
-
-  findCompletedStatusOfListItem = (id) => {
-    const listItems = [].concat(this.props.listItems);
-    for (let i = 0; i < listItems.length; i++) {
-      //Match found
-      if (listItems[i].id === id) {
-        if (listItems[i].completed) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-  };
-
-  setCurrentListItemToFocus = (id) => {
-    this.setState({
-      idToFocus: id,
-    });
-  };
-
-  setPreviousListItemToFocus = (oldID, isCompleted = null) => {
-    const listItems = [].concat(this.props.listItems);
-    //If there are list items
-    if (listItems.length > 1) {
-      //If the completed status of the list item is defined
-      if (typeof isCompleted !== "boolean") {
-        isCompleted = this.findCompletedStatusOfListItem(oldID);
-      }
-      //Filter list items based on completed status
-      const filteredListItems = listItems.filter((listItem) => {
-        if (isCompleted) {
-          return listItem.completed;
-        }
-        return !listItem.completed;
-      });
-      //Iterate filtered list items
-      for (let i = 0; i < filteredListItems.length; i++) {
-        //Match found
-        if (filteredListItems[i].id === oldID) {
-          if (i > 0) {
-            let previousListID = filteredListItems[i - 1].id;
-            this.setState({
-              idToFocus: previousListID,
-            });
-          } else {
-            this.setLastListItemToFocus(!isCompleted);
-          }
-          break;
-        }
-      }
-    }
-  };
-
-  setNextListItemToFocus = (oldID, isCompleted = null, isDeleting = false) => {
-    const listItems = [].concat(this.props.listItems);
-    //If there are list items
-    if (listItems.length > 1) {
-      //If the completed status of the list item is defined
-      if (typeof isCompleted !== "boolean") {
-        isCompleted = this.findCompletedStatusOfListItem(oldID);
-      }
-      //Filter list items based on completed status
-      const filteredListItems = listItems.filter((listItem) => {
-        if (isCompleted) {
-          return listItem.completed;
-        }
-        return !listItem.completed;
-      });
-      //Iterate through filtered list items
-      for (let i = 0; i < filteredListItems.length; i++) {
-        //Match found
-        if (filteredListItems[i].id === oldID) {
-          if (i < filteredListItems.length - 1) {
-            let nextListItemID = filteredListItems[i + 1].id;
-            this.setState({
-              idToFocus: nextListItemID,
-            });
-          } else if (isDeleting) {
-            this.setPreviousListItemToFocus(oldID, isCompleted);
-          } else {
-            this.setFirstListItemToFocus(!isCompleted);
-          }
-          break;
-        }
-      }
-    }
-  };
-
-  setFirstListItemToFocus = (focusFirstCompleted = false) => {
-    const listItems = [].concat(this.props.listItems);
-    let filteredListItems;
-    if (focusFirstCompleted) {
-      filteredListItems = listItems.filter((listItem) => {
-        return listItem.completed;
-      });
-    } else {
-      filteredListItems = listItems.filter((listItem) => {
-        return !listItem.completed;
-      });
-    }
-
-    if (filteredListItems.length > 0) {
-      this.setState({
-        idToFocus: filteredListItems[0].id,
-      });
-    } else if (listItems.length > 0) {
-      this.setState({
-        idToFocus: listItems[0].id,
-      });
-    }
-  };
-
-  setLastListItemToFocus = (focusLastCompleted = true) => {
-    const listItems = [].concat(this.props.listItems);
-    let filteredListItems;
-    if (focusLastCompleted) {
-      filteredListItems = listItems.filter((listItem) => {
-        return listItem.completed;
-      });
-    } else {
-      filteredListItems = listItems.filter((listItem) => {
-        return !listItem.completed;
-      });
-    }
-
-    if (filteredListItems.length > 0) {
-      this.setState({
-        idToFocus: filteredListItems.slice(-1)[0].id,
-      });
-    } else if (listItems.length > 0) {
-      this.setState({
-        idToFocus: listItems.slice(-1)[0].id,
       });
     }
   };
@@ -298,7 +158,7 @@ class List extends React.Component {
   createListItem = (isCompleted = false) => {
     createNewListItem(
       (response) => {
-        this.setCurrentListItemToFocus(response.data.id);
+        this.setNewListItemToFocus(response.data.id);
         this.props.refresh();
       },
       (error) => {
@@ -323,19 +183,25 @@ class List extends React.Component {
     );
   };
 
-  renderListItem = (listItem) => {
+  setNewListItemToFocus = (id) => {
+    this.setState({
+      idToFocus: id,
+    });
+  };
+
+  renderListItem = (listItem, index) => {
     return (
       <ListItem
         key={listItem.id}
         content={listItem.content}
         id={listItem.id}
         completed={listItem.completed}
+        listID={this.props.id}
         refresh={this.props.refresh}
         idToFocus={this.state.idToFocus}
-        setPreviousListItemToFocus={this.setPreviousListItemToFocus}
-        setNextListItemToFocus={this.setNextListItemToFocus}
-        setCurrentListItemToFocus={this.setCurrentListItemToFocus}
-        createListItem={this.createListItem}
+        listItems={this.props.listItems}
+        index={index}
+        setNewListItemToFocus={this.setNewListItemToFocus}
       ></ListItem>
     );
   };
@@ -347,8 +213,8 @@ class List extends React.Component {
           .filter((listItem) => {
             return !listItem.completed;
           })
-          .map((listItem) => {
-            return this.renderListItem(listItem);
+          .map((listItem, i) => {
+            return this.renderListItem(listItem, i);
           })}
       </>
     );
@@ -362,8 +228,11 @@ class List extends React.Component {
       return (
         <>
           <Alert className="list-completed-items-alert">Completed Items</Alert>
-          {completedListItems.map((listItem) => {
-            return this.renderListItem(listItem);
+          {completedListItems.map((listItem, i) => {
+            return this.renderListItem(
+              listItem,
+              i + (listItems.length - completedListItems.length)
+            );
           })}
         </>
       );
@@ -405,14 +274,6 @@ class List extends React.Component {
       </>
     );
   };
-
-  // renderDateCreated = () => {
-  //   return (
-  //     <div className="list-date-created">
-  //       {moment(this.props.dateCreated).format("[Created on] MMMM Do, YYYY")}
-  //     </div>
-  //   );
-  // };
 
   renderListFooter = () => {
     return (

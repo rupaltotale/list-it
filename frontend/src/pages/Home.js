@@ -130,13 +130,20 @@ class Home extends React.Component {
             return (
               <div key={i} className="home-lists-col">
                 {listArray.map((list) => {
+                  let listItems = list.list_items.sort((x, y) => {
+                    return x.completed === y.completed
+                      ? 0
+                      : x.completed
+                      ? 1
+                      : -1;
+                  });
                   return (
                     <List
                       key={list.id}
                       id={list.id}
                       title={list.title}
                       dateCreated={list.date_created}
-                      listItems={list.list_items}
+                      listItems={listItems}
                       refresh={this.refresh}
                     />
                   );

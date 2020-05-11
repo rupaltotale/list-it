@@ -10,7 +10,8 @@ import {
   FaRegCheckSquare,
 } from "react-icons/fa";
 import CustomButton from "./CustomComponents/CustomButton";
-import { updateListItem, deleteListItem } from "../API";
+import { updateListItem, deleteListItem, createNewListItem } from "../API";
+import * as focus from "../Focus";
 
 class ListItem extends React.Component {
   constructor(props) {
@@ -60,7 +61,20 @@ class ListItem extends React.Component {
   bindKeys = () => {
     Mousetrap.bind("enter", (event) => {
       event.preventDefault();
-      this.props.createListItem(this.state.completed);
+      createNewListItem(
+        (response) => {
+          this.props.setNewListItemToFocus(response.data.id);
+          this.props.refresh();
+        },
+        (error) => {
+          console.log(error.response);
+        },
+        {
+          content: "",
+          completed: this.state.completed,
+          list_id: this.props.listID,
+        }
+      );
     });
     Mousetrap.bind("backspace", (event) => {
       if (this.state.content.length === 0) {
@@ -70,20 +84,25 @@ class ListItem extends React.Component {
     });
     Mousetrap.bind(["down", "tab"], (event) => {
       event.preventDefault();
-      this.props.setNextListItemToFocus(this.props.id, this.state.completed);
+      let newID = focus.setNextListItemToFocus(
+        this.props.index,
+        this.props.listItems
+      );
+      this.props.setNewListItemToFocus(newID);
     });
     Mousetrap.bind("up", (event) => {
       event.preventDefault();
-      this.props.setPreviousListItemToFocus(
-        this.props.id,
-        this.state.completed
+      let newID = focus.setPreviousListItemToFocus(
+        this.props.index,
+        this.props.listItems
       );
+      this.props.setNewListItemToFocus(newID);
     });
   };
 
   updateListItem = () => {
     if (this.props.idToFocus !== this.props.id) {
-      this.props.setCurrentListItemToFocus(this.props.id);
+      this.props.setNewListItemToFocus(this.props.id);
     }
     updateListItem(
       (response) => {
@@ -155,7 +174,7 @@ class ListItem extends React.Component {
             },
             this.bindKeys
           );
-          this.props.setCurrentListItemToFocus(this.props.id);
+          this.props.setNewListItemToFocus(this.props.id);
         }}
         onBlur={() => {
           Mousetrap.reset();
@@ -170,11 +189,11 @@ class ListItem extends React.Component {
   deleteListItem = () => {
     if (this.state.focused) {
       Mousetrap.reset();
-      this.props.setNextListItemToFocus(
-        this.props.id,
-        this.state.completed,
-        true
+      let newID = focus.setPreviousListItemToFocus(
+        this.props.index,
+        this.props.listItems
       );
+      this.props.setNewListItemToFocus(newID);
     }
     deleteListItem(
       (response) => {
@@ -230,10 +249,10 @@ ListItem.propTypes = {
   content: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   completed: PropTypes.bool.isRequired,
+  listID: PropTypes.number.isRequired,
   refresh: PropTypes.func.isRequired,
   idToFocus: PropTypes.number,
-  setPreviousListItemToFocus: PropTypes.func.isRequired,
-  setNextListItemToFocus: PropTypes.func.isRequired,
-  setCurrentListItemToFocus: PropTypes.func.isRequired,
-  createListItem: PropTypes.func.isRequired,
+  listItems: PropTypes.array.isRequired,
+  index: PropTypes.number.isRequired,
+  setNewListItemToFocus: PropTypes.func.isRequired,
 };
