@@ -21,6 +21,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import "./scss/_index.scss";
 import { getUser } from "./API";
+import globalStylesheet from "./globalStylesheet";
 
 class App extends React.Component {
   constructor(props) {
@@ -29,10 +30,19 @@ class App extends React.Component {
       loggedIn: localStorage.getItem("token") ? true : false,
       username: "",
       isPasswordShowing: false,
+      primaryColor: "#212529",
+      backgroundColor: "#fff",
     };
   }
 
   componentDidMount() {
+    let container = document.getElementById("app");
+    let style = globalStylesheet.body(
+      this.state.primaryColor,
+      this.state.backgroundColor
+    );
+    container.style.color = style.color;
+    container.style.backgroundColor = style.backgroundColor;
     if (this.state.loggedIn) {
       console.log("JWT", localStorage.getItem("token"));
       getUser(
@@ -43,6 +53,21 @@ class App extends React.Component {
           console.log(error);
         }
       );
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevState.primaryColor !== this.state.primaryColor ||
+      prevState.backgroundColor !== this.state.backgroundColor
+    ) {
+      let container = document.getElementById("app");
+      let style = globalStylesheet.body(
+        this.state.primaryColor,
+        this.state.backgroundColor
+      );
+      container.style.color = style.color;
+      container.style.backgroundColor = style.backgroundColor;
     }
   }
 
@@ -215,5 +240,5 @@ class App extends React.Component {
   }
 }
 
-const container = document.getElementById("app");
+let container = document.getElementById("app");
 render(<App />, container);
