@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
 import TextareaAutosize from "react-textarea-autosize";
 import * as Mousetrap from "Mousetrap";
 import onClickOutside from "react-onclickoutside";
@@ -11,6 +10,7 @@ import {
   FaRegCheckSquare,
 } from "react-icons/fa";
 import CustomButton from "./CustomComponents/CustomButton";
+import { updateListItem, deleteListItem } from "../API";
 
 class ListItem extends React.Component {
   constructor(props) {
@@ -85,26 +85,19 @@ class ListItem extends React.Component {
     if (this.props.idToFocus !== this.props.id) {
       this.props.setCurrentListItemToFocus(this.props.id);
     }
-    axios
-      .put(
-        `http://127.0.0.1:8000/api/v1/list_item/${this.props.id}/`,
-        {
-          content: this.state.content,
-          completed: this.state.completed,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `JWT ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      .then((response) => {
+    updateListItem(
+      (response) => {
         this.props.refresh();
-      })
-      .catch((error) => {
+      },
+      (error) => {
         console.log(error.response);
-      });
+      },
+      {
+        id: this.props.id,
+        content: this.state.content,
+        completed: this.state.completed,
+      }
+    );
   };
 
   toggleCompleted = () => {
@@ -183,18 +176,15 @@ class ListItem extends React.Component {
         true
       );
     }
-    axios
-      .delete(`http://127.0.0.1:8000/api/v1/list_item/${this.props.id}/`, {
-        headers: {
-          Authorization: `JWT ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
+    deleteListItem(
+      (response) => {
         this.props.refresh();
-      })
-      .catch((error) => {
+      },
+      (error) => {
         console.log(error.response);
-      });
+      },
+      { id: this.props.id }
+    );
   };
 
   handleClickOutsideDelete = () => {

@@ -19,8 +19,8 @@ import CustomForm from "./components/CustomComponents/CustomForm";
 import { render } from "react-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
-import axios from "axios";
 import "./scss/_index.scss";
+import { getUser } from "./API";
 
 class App extends React.Component {
   constructor(props) {
@@ -35,15 +35,14 @@ class App extends React.Component {
   componentDidMount() {
     if (this.state.loggedIn) {
       console.log("JWT", localStorage.getItem("token"));
-      axios
-        .get("http://localhost:8000/current_user/", {
-          headers: {
-            Authorization: `JWT ${localStorage.getItem("token")}`,
-          },
-        })
-        .then((response) => {
+      getUser(
+        (response) => {
           this.setState({ username: response.data.username });
-        });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
     }
   }
 

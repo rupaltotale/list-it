@@ -1,7 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
-import moment from "moment";
 import TextareaAutosize from "react-textarea-autosize";
 import * as Mousetrap from "Mousetrap";
 import onClickOutside from "react-onclickoutside";
@@ -18,6 +16,7 @@ import {
 import ListItem from "./ListItem";
 import CustomButton from "./CustomComponents/CustomButton";
 import CustomModal from "./CustomComponents/CustomModal";
+import { createNewListItem, deleteList, updateList } from "../API";
 
 class List extends React.Component {
   constructor(props) {
@@ -181,19 +180,16 @@ class List extends React.Component {
   };
 
   deleteList = () => {
-    axios
-      .delete(`http://127.0.0.1:8000/api/v1/lists/${this.props.id}/`, {
-        headers: {
-          Authorization: `JWT ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
+    deleteList(
+      (response) => {
         this.toggleDeleteModal();
         this.props.refresh();
-      })
-      .catch((error) => {
+      },
+      (error) => {
         console.log(error.response);
-      });
+      },
+      { id: this.props.id }
+    );
   };
 
   toggleDeleteModal = () => {
@@ -244,28 +240,18 @@ class List extends React.Component {
   };
 
   updateListTitle = () => {
-    axios
-      .put(
-        `http://127.0.0.1:8000/api/v1/lists/${this.props.id}/`,
-        {
-          title: this.state.title,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `JWT ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      .then((response) => {
+    updateList(
+      (response) => {
         this.setState({
           title: response.data.title,
           errorResponse: null,
         });
-      })
-      .catch((error) => {
+      },
+      (error) => {
         console.log(error.response);
-      });
+      },
+      { id: this.props.id, title: this.state.title }
+    );
   };
 
   renderSelectIcon = () => {
@@ -310,28 +296,16 @@ class List extends React.Component {
   };
 
   createListItem = (isCompleted = false) => {
-    axios
-      .post(
-        "http://127.0.0.1:8000/api/v1/list_item/new",
-        {
-          content: "",
-          completed: isCompleted,
-          list_id: this.props.id,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `JWT ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      .then((response) => {
+    createNewListItem(
+      (response) => {
         this.setCurrentListItemToFocus(response.data.id);
         this.props.refresh();
-      })
-      .catch((error) => {
+      },
+      (error) => {
         console.log(error.response);
-      });
+      },
+      { content: "", completed: isCompleted, list_id: this.props.id }
+    );
   };
 
   renderAddListItemButton = () => {

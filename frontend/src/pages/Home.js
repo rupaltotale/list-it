@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
 import { Button } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import List from "../components/List";
+import { createNewList, createNewListItem, getLists } from "../API";
 
 class Home extends React.Component {
   constructor(props) {
@@ -74,44 +74,40 @@ class Home extends React.Component {
     this.getUserLists();
   };
 
-  createNewList = () => {
-    axios
-      .post(
-        "http://127.0.0.1:8000/api/v1/lists/new",
-        {
-          title: "",
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `JWT ${localStorage.getItem("token")}`,
+  createList = () => {
+    createNewList(
+      (response) => {
+        createNewListItem(
+          (response) => {
+            this.getUserLists();
           },
-        }
-      )
-      .then((response) => {
-        this.getUserLists();
-      })
-      .catch((error) => {
+          (error) => {
+            console.log(error.response);
+          },
+          { content: "", completed: false, list_id: response.data.id }
+        );
+      },
+      (error) => {
         console.log(error.response);
-      });
+      }
+    );
   };
 
   getUserLists = () => {
     if (this.state.loggedIn) {
-      axios
-        .get("http://localhost:8000/api/v1/lists/", {
-          headers: {
-            Authorization: `JWT ${localStorage.getItem("token")}`,
-          },
-        })
-        .then((response) => {
+      getLists(
+        (response) => {
           this.setState(
             {
               lists: response.data,
             },
             this.setColumnAmount
           );
-        });
+        },
+        (error) => {
+          console.log(error.response);
+        }
+      );
     }
   };
 
@@ -156,7 +152,13 @@ class Home extends React.Component {
 
   renderAddListButton = () => {
     return (
-      <Button variant={null} className="btn-add" onClick={this.createNewList}>
+      <Button
+        variant={null}
+        className="btn-add"
+        onClick={() => {
+          this.createList();
+        }}
+      >
         <FaPlus></FaPlus>
         {" Add list"}
       </Button>

@@ -1,7 +1,7 @@
 import React from "react";
-import axios from "axios";
 import PropTypes from "prop-types";
 import { Container, Button, Image } from "react-bootstrap";
+import { getUser } from "../API";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -15,13 +15,8 @@ class Profile extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get("http://localhost:8000/current_user/", {
-        headers: {
-          Authorization: `JWT ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
+    getUser(
+      (response) => {
         console.log(response.data);
         this.setState({
           username: response.data.username,
@@ -29,7 +24,11 @@ class Profile extends React.Component {
           lastName: response.data.last_name,
           email: response.data.email,
         });
-      });
+      },
+      (error) => {
+        console.log(error.response);
+      }
+    );
   }
 
   renderProfileOptions = () => {

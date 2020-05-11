@@ -2,11 +2,21 @@ import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 import { Redirect, BrowserRouter as Router } from "react-router-dom";
 import PropTypes from "prop-types";
 import React from "react";
-import axios from "axios";
+import { postUser } from "../../API";
 
 class CustomForm extends React.Component {
   constructor(props) {
     super(props);
+    this.state = Object.assign(
+      {},
+      {
+        redirect: null,
+        submitted: false,
+        error: CustomForm.getFields([], this.props),
+        pageTitle: this.props.pageTitle,
+      },
+      CustomForm.getFields("", this.props)
+    );
   }
   componentDidMount() {}
 
@@ -35,17 +45,6 @@ class CustomForm extends React.Component {
     });
     return returnDict;
   }
-
-  state = Object.assign(
-    {},
-    {
-      redirect: null,
-      submitted: false,
-      error: CustomForm.getFields([], this.props),
-      pageTitle: this.props.pageTitle,
-    },
-    CustomForm.getFields("", this.props)
-  );
 
   handleChange = (e) => {
     const name = e.target.name;
@@ -96,16 +95,8 @@ class CustomForm extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    axios({
-      method: "post",
-      // TODO: Abstract root url: http://localhost:8000/
-      url: this.props.postUrl,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify(this.state),
-    })
-      .then((response) => {
+    postUser(
+      (response) => {
         localStorage.setItem("token", response.data.token);
         // TODO: Have same username location for login and signup
         const username = response.data.username
@@ -117,8 +108,12 @@ class CustomForm extends React.Component {
           redirect: "/",
         });
         this.props.setUsername(username, true);
-      })
-      .catch(this.setInvalidFeedback);
+      },
+      (error) => {
+        this.setInvalidFeedback(error);
+      },
+      { url: this.props.postUrl, data: JSON.stringify(this.state) }
+    );
     this.setState({
       submitted: true,
     });
