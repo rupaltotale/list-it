@@ -9,9 +9,10 @@ import {
   FaRegSquare,
   FaRegCheckSquare,
 } from "react-icons/fa";
-import CustomButton from "./CustomComponents/CustomButton";
-import { updateListItem, deleteListItem, createNewListItem } from "../API";
-import * as focus from "../Focus";
+import CustomButton from "../CustomComponents/Button/CustomButton";
+import { updateListItem, deleteListItem, createNewListItem } from "../../API";
+import * as focus from "../../Focus";
+import listStyle from "./ListStyle";
 
 class ListItem extends React.Component {
   constructor(props) {
@@ -130,10 +131,12 @@ class ListItem extends React.Component {
 
   renderCheckbox = () => {
     return (
-      <div className="btn-div mx-1">
+      <div style={listStyle.listItemButtonDiv}>
         <CustomButton
           size="sm"
-          className="btn-icon"
+          style={listStyle.listIconButton}
+          styleOnHover={listStyle.listIconButtonHover}
+          variantOnHover="light"
           onClick={this.toggleCompleted}
           icon={
             this.state.completed ? (
@@ -163,9 +166,15 @@ class ListItem extends React.Component {
     return (
       <TextareaAutosize
         value={this.state.content}
-        className={`list-item-content${
-          this.state.completed && this.state.content ? `-completed` : ``
-        } mousetrap`}
+        style={
+          this.state.completed && this.state.content
+            ? {
+                ...listStyle.listItemContent,
+                ...listStyle.listItemContentCompleted,
+              }
+            : listStyle.listItemContent
+        }
+        className="form-control mousetrap"
         onChange={this.handleContentChange}
         onFocus={() => {
           this.setState(
@@ -215,11 +224,13 @@ class ListItem extends React.Component {
   renderDeleteButton = () => {
     let ButtonWithClickOutside = onClickOutside(CustomButton);
     return (
-      <div className="btn-div mx-1">
+      <div style={listStyle.listItemButtonDiv}>
         <ButtonWithClickOutside
           eventTypes={["click", "mousedown"]}
           size="sm"
-          className="btn-icon"
+          style={listStyle.listIconButton}
+          styleOnHover={listStyle.listIconButtonHover}
+          variantOnHover="light"
           onClick={this.deleteListItem}
           onClickOutside={this.handleClickOutsideDelete}
           icon={<FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>}
@@ -230,7 +241,7 @@ class ListItem extends React.Component {
 
   renderListItem = () => {
     return (
-      <ListGroupItem className="list-item">
+      <ListGroupItem style={listStyle.listItem}>
         {this.renderCheckbox()}
         {this.renderListItemContent()}
         {this.renderDeleteButton()}

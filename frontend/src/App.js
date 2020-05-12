@@ -14,12 +14,11 @@ import {
   Switch,
 } from "react-router-dom";
 import React from "react";
-import CustomNavBar from "./components/Nav";
+import CustomNavBar from "./components/Nav/Nav";
 import CustomForm from "./components/CustomComponents/CustomForm";
 import { render } from "react-dom";
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile";
-import "./scss/_index.scss";
 import { getUser } from "./API";
 import globalStylesheet from "./globalStylesheet";
 
@@ -36,13 +35,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    let container = document.getElementById("app");
-    let style = globalStylesheet.body(
-      this.state.primaryColor,
-      this.state.backgroundColor
-    );
-    container.style.color = style.color;
-    container.style.backgroundColor = style.backgroundColor;
     if (this.state.loggedIn) {
       console.log("JWT", localStorage.getItem("token"));
       getUser(

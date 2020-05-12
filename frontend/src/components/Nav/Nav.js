@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import onClickOutside from "react-onclickoutside";
 import { Nav, Navbar, Dropdown } from "react-bootstrap";
-import CustomDropdown from "./CustomComponents/CustomDropdown";
+import CustomDropdown from "../CustomComponents/CustomDropdown";
+import navStyle from "./NavStyle";
 
 class CustomNavBar extends React.Component {
   constructor(props) {
@@ -54,19 +55,19 @@ class CustomNavBar extends React.Component {
             title={this.state.username}
             dropdownItems={
               <>
-                <NavLink className="dropdown-nav-link" exact to="/profile">
+                <NavLink style={navStyle.navDropdownLink} exact to="/profile">
                   <Dropdown.Item as="button">My Profile</Dropdown.Item>
                 </NavLink>
                 <Dropdown.Divider></Dropdown.Divider>
                 <Dropdown.Item
-                  className="dropdown-logout"
+                  style={navStyle.navDropdownLogout}
                   onClick={this.handleLogout}
                 >
                   Logout
                 </Dropdown.Item>
               </>
             }
-            menuClass="dropdown-menu-left"
+            menuStyle={navStyle.navDropdownMenu}
           />
         </Nav>
       </>

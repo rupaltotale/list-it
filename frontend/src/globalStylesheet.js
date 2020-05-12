@@ -1,7 +1,7 @@
 let globalStylesheet;
 export default globalStylesheet = {
-  primaryColor: null,
-  backgroundColor: null,
+  primaryColor: "#212529",
+  backgroundColor: "#fff",
   body: (primaryColor, backgroundColor) => {
     globalStylesheet.primaryColor = primaryColor;
     globalStylesheet.backgroundColor = backgroundColor;

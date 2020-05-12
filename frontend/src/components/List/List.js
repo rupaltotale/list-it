@@ -14,9 +14,10 @@ import {
   FaCheck,
 } from "react-icons/fa";
 import ListItem from "./ListItem";
-import CustomButton from "./CustomComponents/CustomButton";
-import CustomModal from "./CustomComponents/CustomModal";
-import { createNewListItem, deleteList, updateList } from "../API";
+import CustomButton from "../CustomComponents/Button/CustomButton";
+import CustomModal from "../CustomComponents/CustomModal";
+import { createNewListItem, deleteList, updateList } from "../../API";
+import listStyle from "./ListStyle";
 
 class List extends React.Component {
   constructor(props) {
@@ -27,7 +28,9 @@ class List extends React.Component {
       errorResponse: null,
       showDeleteModal: false,
       idToFocus: null,
+      focusedOnListTitle: false,
       clickedInsideList: false,
+      hoveringList: false,
     };
   }
 
@@ -116,9 +119,14 @@ class List extends React.Component {
 
   renderSelectIcon = () => {
     return (
-      <div className="list-select">
-        <FaCheck size={16}></FaCheck>
-      </div>
+      <CustomButton
+        style={
+          this.state.hoveringList
+            ? { ...listStyle.listSelectHide, ...listStyle.listSelectShow }
+            : listStyle.listSelectHide
+        }
+        icon={<FaCheck style={listStyle.listSelectIcon} size={16}></FaCheck>}
+      ></CustomButton>
     );
   };
 
@@ -134,20 +142,31 @@ class List extends React.Component {
 
   renderListTitle = () => {
     return (
-      <Card.Header className="list-header">
+      <Card.Header style={listStyle.listHeader}>
         <TextareaAutosize
           value={this.state.title}
-          className="list-title mousetrap"
+          className="form-control mousetrap"
+          style={
+            this.state.focusedOnListTitle
+              ? { ...listStyle.listTitle, ...listStyle.listTitleHover }
+              : listStyle.listTitle
+          }
           onChange={this.handleTitleChange}
           placeholder="List Title"
           inputRef={this.listTitle}
           onFocus={() => {
+            this.setState({
+              focusedOnListTitle: true,
+            });
             Mousetrap.bind("enter", (event) => {
               event.preventDefault();
               this.listTitle.current.blur();
             });
           }}
           onBlur={() => {
+            this.setState({
+              focusedOnListTitle: false,
+            });
             Mousetrap.reset();
           }}
         ></TextareaAutosize>
@@ -171,13 +190,13 @@ class List extends React.Component {
   renderAddListItemButton = () => {
     return (
       <Button
-        className="btn-add"
-        variant={null}
+        style={listStyle.listAddButton}
+        variant="outline-dark"
         onClick={() => {
           this.createListItem();
         }}
       >
-        <FaPlus></FaPlus>
+        <FaPlus style={listStyle.listAddIcon}></FaPlus>
         {" Add list item"}
       </Button>
     );
@@ -227,7 +246,9 @@ class List extends React.Component {
     if (completedListItems.length > 0) {
       return (
         <>
-          <Alert className="list-completed-items-alert">Completed Items</Alert>
+          <Alert style={listStyle.listCompletedItemsAlert}>
+            Completed Items
+          </Alert>
           {completedListItems.map((listItem, i) => {
             return this.renderListItem(
               listItem,
@@ -256,7 +277,9 @@ class List extends React.Component {
     buttons.forEach((button) => {
       createdButtons.push(
         <CustomButton
-          className="btn-icon"
+          style={listStyle.listIconButton}
+          styleOnHover={listStyle.listIconButtonHover}
+          variantOnHover="light"
           onClick={button.onClick}
           icon={button.icon}
         />
@@ -266,7 +289,17 @@ class List extends React.Component {
       <>
         {createdButtons.map((createdButton, i) => {
           return (
-            <div key={i} className="btn-div">
+            <div
+              key={i}
+              style={
+                this.state.hoveringList
+                  ? {
+                      ...listStyle.listFooterButtonDivHide,
+                      ...listStyle.listFooterButtonDivShow,
+                    }
+                  : listStyle.listFooterButtonDivHide
+              }
+            >
               {createdButton}
             </div>
           );
@@ -277,7 +310,7 @@ class List extends React.Component {
 
   renderListFooter = () => {
     return (
-      <Card.Footer className="list-footer">
+      <Card.Footer style={listStyle.listFooter}>
         {this.renderFooterButtons([
           { icon: <FaBell size={18}></FaBell> },
           { icon: <FaUserPlus size={18}></FaUserPlus> },
@@ -299,10 +332,22 @@ class List extends React.Component {
       <>
         {this.renderDeleteModal()}
         <Card
-          className="list-card"
+          style={listStyle.listCard}
           onClick={() => {
             this.setState({
               clickedInsideList: true,
+            });
+          }}
+          onMouseOver={() => {
+            if (!this.state.hoveringList) {
+              this.setState({
+                hoveringList: true,
+              });
+            }
+          }}
+          onMouseLeave={() => {
+            this.setState({
+              hoveringList: false,
             });
           }}
         >

@@ -2,8 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
-import List from "../components/List";
-import { createNewList, createNewListItem, getLists } from "../API";
+import List from "../../components/List/List";
+import { createNewList, createNewListItem, getLists } from "../../API";
+import homeStyle from "./HomeStyle";
 
 class Home extends React.Component {
   constructor(props) {
@@ -125,10 +126,10 @@ class Home extends React.Component {
         newLists.push(listArray);
       }
       return (
-        <div className="home-lists">
+        <div style={homeStyle.homeRow}>
           {newLists.map((listArray, i) => {
             return (
-              <div key={i} className="home-lists-col">
+              <div key={i} style={homeStyle.homeCol}>
                 {listArray.map((list) => {
                   let listItems = list.list_items.sort((x, y) => {
                     return x.completed === y.completed
@@ -160,13 +161,13 @@ class Home extends React.Component {
   renderAddListButton = () => {
     return (
       <Button
-        variant={null}
-        className="btn-add"
+        variant="outline-dark"
+        style={homeStyle.homeAdd}
         onClick={() => {
           this.createList();
         }}
       >
-        <FaPlus></FaPlus>
+        <FaPlus style={homeStyle.homeAddIcon}></FaPlus>
         {" Add list"}
       </Button>
     );
@@ -174,8 +175,10 @@ class Home extends React.Component {
 
   renderHeading = () => {
     return (
-      <div className="home-heading">
-        <h1>My Lists</h1>
+      <div style={homeStyle.homeHeading}>
+        <h1 className="display-4" style={homeStyle.homeTitle}>
+          My Lists
+        </h1>
         {this.renderAddListButton()}
       </div>
     );
@@ -183,7 +186,7 @@ class Home extends React.Component {
 
   renderLoggedInHome = () => {
     return (
-      <div className="home">
+      <div style={homeStyle.home}>
         {this.renderHeading()}
         {this.renderLists()}
       </div>
@@ -192,8 +195,10 @@ class Home extends React.Component {
 
   renderLoggedOutHome = () => {
     return (
-      <div className="home-heading">
-        <h1>You must log in to create lists</h1>
+      <div style={homeStyle.homeHeading}>
+        <h1 className="display-4" style={homeStyle.homeTitle}>
+          You must log in to create lists
+        </h1>
       </div>
     );
   };
