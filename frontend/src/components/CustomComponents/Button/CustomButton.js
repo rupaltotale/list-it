@@ -61,8 +61,10 @@ class CustomButton extends React.Component {
         block={this.props.block}
         onClick={this.props.onClick}
         variant={this.renderVariant()}
-        onMouseEnter={() => {
-          this.toggleHover(true);
+        onMouseOver={() => {
+          if (!this.state.isHovering) {
+            this.toggleHover(true);
+          }
         }}
         onMouseLeave={() => {
           this.toggleHover(false);
