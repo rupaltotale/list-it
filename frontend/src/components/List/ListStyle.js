@@ -71,6 +71,12 @@ export default list = {
     backgroundColor: globalStyle.backgroundColor,
     borderTop: "none",
     display: "flex",
+    flexDirection: "column",
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+  listFooterButtonRow: {
+    display: "flex",
     placeContent: "center space-around",
     alignItems: "center",
     height: "40px",

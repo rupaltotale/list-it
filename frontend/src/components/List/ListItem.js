@@ -222,10 +222,9 @@ class ListItem extends React.Component {
   };
 
   renderDeleteButton = () => {
-    let ButtonWithClickOutside = onClickOutside(CustomButton);
     return (
       <div style={listStyle.listItemButtonDiv}>
-        <ButtonWithClickOutside
+        <CustomButton
           eventTypes={["click", "mousedown"]}
           size="sm"
           style={listStyle.listIconButton}

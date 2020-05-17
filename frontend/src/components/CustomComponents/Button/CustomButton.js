@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
+import onClickOutside from "react-onclickoutside";
 
 class CustomButton extends React.Component {
   constructor(props) {
@@ -17,9 +18,16 @@ class CustomButton extends React.Component {
   };
 
   toggleHover = (bool) => {
-    this.setState({
-      isHovering: bool,
-    });
+    this.setState(
+      {
+        isHovering: bool,
+      },
+      () => {
+        if (this.props.onHover) {
+          this.props.onHover(bool);
+        }
+      }
+    );
   };
 
   renderIcon = () => {
@@ -76,11 +84,11 @@ class CustomButton extends React.Component {
     );
   }
 }
-
-export default CustomButton;
+export default onClickOutside(CustomButton);
 
 CustomButton.propTypes = {
   onClickOutside: PropTypes.func,
+  onHover: PropTypes.func,
   size: PropTypes.string,
   className: PropTypes.string,
   classNameOnHover: PropTypes.string,

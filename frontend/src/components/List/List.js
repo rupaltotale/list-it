@@ -3,21 +3,13 @@ import PropTypes from "prop-types";
 import TextareaAutosize from "react-textarea-autosize";
 import * as Mousetrap from "Mousetrap";
 import onClickOutside from "react-onclickoutside";
-import { Card, ListGroup, Button, Modal, Alert } from "react-bootstrap";
-import {
-  FaTrashAlt,
-  FaPlus,
-  FaPalette,
-  FaBell,
-  FaUserPlus,
-  FaImages,
-  FaCheck,
-} from "react-icons/fa";
+import { Card, ListGroup, Button, Alert } from "react-bootstrap";
+import { FaPlus, FaCheck } from "react-icons/fa";
 import ListItem from "./ListItem";
 import CustomButton from "../CustomComponents/Button/CustomButton";
-import CustomModal from "../CustomComponents/CustomModal";
 import { createNewListItem, deleteList, updateList } from "../../API";
 import listStyle from "./ListStyle";
+import ListFooter from "./ListFooter";
 
 class List extends React.Component {
   constructor(props) {
@@ -26,7 +18,6 @@ class List extends React.Component {
     this.state = {
       title: this.props.title,
       errorResponse: null,
-      showDeleteModal: false,
       idToFocus: null,
       focusedOnListTitle: false,
       clickedInsideList: false,
@@ -45,60 +36,12 @@ class List extends React.Component {
   deleteList = () => {
     deleteList(
       (response) => {
-        this.toggleDeleteModal();
         this.props.refresh();
       },
       (error) => {
         console.log(error.response);
       },
       { id: this.props.id }
-    );
-  };
-
-  toggleDeleteModal = () => {
-    this.setState(
-      {
-        showDeleteModal: !this.state.showDeleteModal,
-      },
-      this.renderDeleteModal
-    );
-  };
-
-  renderDeleteModal = () => {
-    return (
-      <CustomModal
-        showModal={this.state.showDeleteModal}
-        onShow={() => {
-          Mousetrap.bind("enter", () => {
-            this.deleteList();
-            Mousetrap.reset();
-          });
-        }}
-        onHide={() => {
-          this.toggleDeleteModal();
-          Mousetrap.reset();
-        }}
-        title={
-          <>
-            {"Delete "}
-            <em>{this.state.title}</em>{" "}
-          </>
-        }
-        body={
-          "Are you sure you want to delete this list? This action cannot be undone."
-        }
-        footer={
-          <Button
-            variant="danger"
-            onClick={() => {
-              this.deleteList();
-              Mousetrap.reset();
-            }}
-          >
-            Delete
-          </Button>
-        }
-      ></CustomModal>
     );
   };
 
@@ -272,65 +215,18 @@ class List extends React.Component {
     );
   };
 
-  renderFooterButtons = (buttons) => {
-    let createdButtons = [];
-    buttons.forEach((button) => {
-      createdButtons.push(
-        <CustomButton
-          style={listStyle.listIconButton}
-          styleOnHover={listStyle.listIconButtonHover}
-          variantOnHover="light"
-          onClick={button.onClick}
-          icon={button.icon}
-        />
-      );
-    });
-    return (
-      <>
-        {createdButtons.map((createdButton, i) => {
-          return (
-            <div
-              key={i}
-              style={
-                this.state.hoveringList
-                  ? {
-                      ...listStyle.listFooterButtonDivHide,
-                      ...listStyle.listFooterButtonDivShow,
-                    }
-                  : listStyle.listFooterButtonDivHide
-              }
-            >
-              {createdButton}
-            </div>
-          );
-        })}
-      </>
-    );
-  };
-
   renderListFooter = () => {
     return (
-      <Card.Footer style={listStyle.listFooter}>
-        {this.renderFooterButtons([
-          { icon: <FaBell size={18}></FaBell> },
-          { icon: <FaUserPlus size={18}></FaUserPlus> },
-          { icon: <FaPalette size={18}></FaPalette> },
-          { icon: <FaImages size={18}></FaImages> },
-          {
-            icon: <FaTrashAlt size={18}></FaTrashAlt>,
-            onClick: () => {
-              this.toggleDeleteModal();
-            },
-          },
-        ])}
-      </Card.Footer>
+      <ListFooter
+        deleteList={this.deleteList}
+        hoveringList={this.state.hoveringList}
+      ></ListFooter>
     );
   };
 
   renderList = () => {
     return (
       <>
-        {this.renderDeleteModal()}
         <Card
           style={listStyle.listCard}
           onClick={() => {

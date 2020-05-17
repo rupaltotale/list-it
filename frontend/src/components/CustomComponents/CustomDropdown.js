@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Dropdown } from "react-bootstrap";
+import onClickOutside from "react-onclickoutside";
 
 class CustomDropdown extends React.Component {
   constructor(props) {
@@ -63,6 +64,20 @@ class CustomDropdown extends React.Component {
     return this.props.dropdownItems;
   };
 
+  renderDropdownToggle = () => {
+    if (this.props.dropdownToggle) {
+      return React.cloneElement(this.props.dropdownToggle, {
+        onClick: this.toggleDropdownClicked,
+      });
+    } else {
+      return (
+        <Dropdown.Toggle onClick={this.toggleDropdownClicked}>
+          {this.props.title}
+        </Dropdown.Toggle>
+      );
+    }
+  };
+
   render() {
     return (
       <Dropdown
@@ -74,11 +89,10 @@ class CustomDropdown extends React.Component {
         }}
         onSelect={this.handleClickOutside}
         show={this.state.isDropdownOpen}
+        {...this.props.dropdownProps}
       >
-        <Dropdown.Toggle onClick={this.toggleDropdownClicked}>
-          {this.props.title}
-        </Dropdown.Toggle>
-        <Dropdown.Menu style={this.props.menuStyle}>
+        {this.renderDropdownToggle()}
+        <Dropdown.Menu {...this.props.menuProps} style={this.props.menuStyle}>
           {this.renderDropdown()}
         </Dropdown.Menu>
       </Dropdown>
@@ -86,10 +100,13 @@ class CustomDropdown extends React.Component {
   }
 }
 
-export default CustomDropdown;
+export default onClickOutside(CustomDropdown);
 
 CustomDropdown.propTypes = {
-  title: PropTypes.string.isRequired,
-  dropdownItems: PropTypes.object.isRequired,
+  title: PropTypes.string,
+  dropdownItems: PropTypes.object,
   menuStyle: PropTypes.object,
+  menuProps: PropTypes.object,
+  dropdownToggle: PropTypes.object,
+  dropdownProps: PropTypes.object,
 };

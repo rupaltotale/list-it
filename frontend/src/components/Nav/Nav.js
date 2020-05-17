@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
-import onClickOutside from "react-onclickoutside";
 import { Nav, Navbar, Dropdown } from "react-bootstrap";
 import CustomDropdown from "../CustomComponents/CustomDropdown";
 import navStyle from "./NavStyle";
@@ -47,11 +46,10 @@ class CustomNavBar extends React.Component {
   };
 
   renderNavLoggedIn = () => {
-    var DropdownWithClickOutside = onClickOutside(CustomDropdown);
     return (
       <>
         <Nav>
-          <DropdownWithClickOutside
+          <CustomDropdown
             title={this.state.username}
             dropdownItems={
               <>
