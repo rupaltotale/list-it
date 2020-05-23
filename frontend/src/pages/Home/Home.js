@@ -4,11 +4,12 @@ import { Button } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import List from "../../components/List/List";
 import { createNewList, createNewListItem, getLists } from "../../API";
-import homeStyle from "./HomeStyle";
+import HomeStyle from "./HomeStyle";
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
+    this.homeStyle = new HomeStyle();
     this.state = {
       loggedIn: this.props.loggedIn,
       username: this.props.username,
@@ -126,10 +127,10 @@ class Home extends React.Component {
         newLists.push(listArray);
       }
       return (
-        <div style={homeStyle.homeRow}>
+        <div style={this.homeStyle.homeRow}>
           {newLists.map((listArray, i) => {
             return (
-              <div key={i} style={homeStyle.homeCol}>
+              <div key={i} style={this.homeStyle.homeCol}>
                 {listArray.map((list) => {
                   let listItems = list.list_items.sort((x, y) => {
                     return x.completed === y.completed
@@ -162,12 +163,12 @@ class Home extends React.Component {
     return (
       <Button
         variant="outline-dark"
-        style={homeStyle.homeAdd}
+        style={this.homeStyle.homeAdd}
         onClick={() => {
           this.createList();
         }}
       >
-        <FaPlus style={homeStyle.homeAddIcon}></FaPlus>
+        <FaPlus style={this.homeStyle.homeAddIcon}></FaPlus>
         {" Add list"}
       </Button>
     );
@@ -175,8 +176,8 @@ class Home extends React.Component {
 
   renderHeading = () => {
     return (
-      <div style={homeStyle.homeHeading}>
-        <h1 className="display-4" style={homeStyle.homeTitle}>
+      <div style={this.homeStyle.homeHeading}>
+        <h1 className="display-4" style={this.homeStyle.homeTitle}>
           My Lists
         </h1>
         {this.renderAddListButton()}
@@ -186,7 +187,7 @@ class Home extends React.Component {
 
   renderLoggedInHome = () => {
     return (
-      <div style={homeStyle.home}>
+      <div style={this.homeStyle.home}>
         {this.renderHeading()}
         {this.renderLists()}
       </div>
@@ -195,8 +196,8 @@ class Home extends React.Component {
 
   renderLoggedOutHome = () => {
     return (
-      <div style={homeStyle.homeHeading}>
-        <h1 className="display-4" style={homeStyle.homeTitle}>
+      <div style={this.homeStyle.homeHeading}>
+        <h1 className="display-4" style={this.homeStyle.homeTitle}>
           You must log in to create lists
         </h1>
       </div>

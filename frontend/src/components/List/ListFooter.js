@@ -1,5 +1,5 @@
 import React from "react";
-import listStyle from "./ListStyle";
+import ListStyle from "./ListStyle";
 import PropTypes from "prop-types";
 import * as Mousetrap from "Mousetrap";
 import CustomButton from "../CustomComponents/Button/CustomButton";
@@ -12,13 +12,15 @@ import {
   FaImages,
   FaTrashAlt,
 } from "react-icons/fa";
-import { CirclePicker } from "react-color";
 
 class ListFooter extends React.Component {
   constructor(props) {
     super(props);
+    this.listStyle = new ListStyle();
     this.state = {
-      clickedColorIcon: false,
+      focusingColorIcon: false,
+      hoveringColorIcon: false,
+      hoveringFooter: false,
       showDeleteModal: false,
       hoveringList: this.props.hoveringList,
     };
@@ -85,16 +87,27 @@ class ListFooter extends React.Component {
     );
   };
 
+  shouldShowColors = () => {
+    if (this.state.focusingColorIcon) {
+      return true;
+    } else if (this.state.hoveringColorIcon) {
+      return true;
+    }
+    return false;
+  };
+
   renderFooterButtons = (buttons) => {
     let createdButtons = [];
     buttons.forEach((button) => {
       createdButtons.push(
         <CustomButton
-          style={listStyle.listIconButton}
-          styleOnHover={listStyle.listIconButtonHover}
+          style={this.listStyle.listIconButton}
+          styleOnHover={this.listStyle.listIconButtonHover}
           variantOnHover="light"
           onClick={button.onClick}
           onClickOutside={button.onClickOutside}
+          onFocus={button.onFocus}
+          onBlur={button.onBlur}
           icon={button.icon}
           onHover={button.onHover}
         />
@@ -109,10 +122,10 @@ class ListFooter extends React.Component {
               style={
                 this.state.hoveringList
                   ? {
-                      ...listStyle.listFooterButtonDivHide,
-                      ...listStyle.listFooterButtonDivShow,
+                      ...this.listStyle.listFooterButtonDivHide,
+                      ...this.listStyle.listFooterButtonDivShow,
                     }
-                  : listStyle.listFooterButtonDivHide
+                  : this.listStyle.listFooterButtonDivHide
               }
             >
               {createdButton}
@@ -127,24 +140,41 @@ class ListFooter extends React.Component {
     return (
       <>
         {this.renderDeleteModal()}
-        <Card.Footer style={listStyle.listFooter}>
-          <div style={listStyle.listFooterButtonRow}>
+        <Card.Footer
+          style={this.listStyle.listFooter}
+          onMouseOver={() => {
+            if (!this.state.hoveringFooter) {
+              this.setState({
+                hoveringFooter: true,
+              });
+            }
+          }}
+          onMouseLeave={() => {
+            this.setState({
+              hoveringFooter: false,
+            });
+          }}
+        >
+          <div style={this.listStyle.listFooterButtonRow}>
             {this.renderFooterButtons([
               { icon: <FaBell size={18}></FaBell> },
               { icon: <FaUserPlus size={18}></FaUserPlus> },
               {
                 icon: <FaPalette size={18}></FaPalette>,
-                onClick: () => {
+                onFocus: () => {
                   this.setState({
-                    clickedColorIcon: true,
+                    focusingColorIcon: true,
                   });
                 },
-                onClickOutside: () => {
-                  if (this.state.clickedColorIcon) {
-                    this.setState({
-                      clickedColorIcon: false,
-                    });
-                  }
+                onBlur: () => {
+                  this.setState({
+                    focusingColorIcon: false,
+                  });
+                },
+                onHover: (bool) => {
+                  this.setState({
+                    hoveringColorIcon: bool,
+                  });
                 },
               },
               { icon: <FaImages size={18}></FaImages> },
@@ -156,9 +186,6 @@ class ListFooter extends React.Component {
               },
             ])}
           </div>
-          <div>
-            <CirclePicker></CirclePicker>
-          </div>
         </Card.Footer>
       </>
     );
@@ -169,4 +196,6 @@ export default ListFooter;
 
 ListFooter.propTypes = {
   deleteList: PropTypes.func.isRequired,
+  hoveringList: PropTypes.bool.isRequired,
+  shouldRenderColorDropDown: PropTypes.func,
 };

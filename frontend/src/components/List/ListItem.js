@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import TextareaAutosize from "react-textarea-autosize";
 import * as Mousetrap from "Mousetrap";
-import onClickOutside from "react-onclickoutside";
 import { ListGroupItem } from "react-bootstrap";
 import {
   FaRegTimesCircle,
@@ -12,11 +11,12 @@ import {
 import CustomButton from "../CustomComponents/Button/CustomButton";
 import { updateListItem, deleteListItem, createNewListItem } from "../../API";
 import * as focus from "../../Focus";
-import listStyle from "./ListStyle";
+import ListStyle from "./ListStyle";
 
 class ListItem extends React.Component {
   constructor(props) {
     super(props);
+    this.listStyle = new ListStyle();
     this.ref = React.createRef();
     this.state = {
       content: this.props.content,
@@ -131,11 +131,11 @@ class ListItem extends React.Component {
 
   renderCheckbox = () => {
     return (
-      <div style={listStyle.listItemButtonDiv}>
+      <div style={this.listStyle.listItemButtonDiv}>
         <CustomButton
           size="sm"
-          style={listStyle.listIconButton}
-          styleOnHover={listStyle.listIconButtonHover}
+          style={this.listStyle.listIconButton}
+          styleOnHover={this.listStyle.listIconButtonHover}
           variantOnHover="light"
           onClick={this.toggleCompleted}
           icon={
@@ -169,10 +169,10 @@ class ListItem extends React.Component {
         style={
           this.state.completed && this.state.content
             ? {
-                ...listStyle.listItemContent,
-                ...listStyle.listItemContentCompleted,
+                ...this.listStyle.listItemContent,
+                ...this.listStyle.listItemContentCompleted,
               }
-            : listStyle.listItemContent
+            : this.listStyle.listItemContent
         }
         className="form-control mousetrap"
         onChange={this.handleContentChange}
@@ -223,12 +223,12 @@ class ListItem extends React.Component {
 
   renderDeleteButton = () => {
     return (
-      <div style={listStyle.listItemButtonDiv}>
+      <div style={this.listStyle.listItemButtonDiv}>
         <CustomButton
           eventTypes={["click", "mousedown"]}
           size="sm"
-          style={listStyle.listIconButton}
-          styleOnHover={listStyle.listIconButtonHover}
+          style={this.listStyle.listIconButton}
+          styleOnHover={this.listStyle.listIconButtonHover}
           variantOnHover="light"
           onClick={this.deleteListItem}
           onClickOutside={this.handleClickOutsideDelete}
@@ -240,7 +240,7 @@ class ListItem extends React.Component {
 
   renderListItem = () => {
     return (
-      <ListGroupItem style={listStyle.listItem}>
+      <ListGroupItem style={this.listStyle.listItem}>
         {this.renderCheckbox()}
         {this.renderListItemContent()}
         {this.renderDeleteButton()}

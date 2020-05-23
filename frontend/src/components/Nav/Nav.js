@@ -3,11 +3,12 @@ import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import { Nav, Navbar, Dropdown } from "react-bootstrap";
 import CustomDropdown from "../CustomComponents/CustomDropdown";
-import navStyle from "./NavStyle";
+import NavStyle from "./NavStyle";
 
 class CustomNavBar extends React.Component {
   constructor(props) {
     super(props);
+    this.navStyle = new NavStyle();
     this.state = {
       loggedIn: localStorage.getItem("token") ? true : false,
       username: this.props.username,
@@ -53,19 +54,23 @@ class CustomNavBar extends React.Component {
             title={this.state.username}
             dropdownItems={
               <>
-                <NavLink style={navStyle.navDropdownLink} exact to="/profile">
+                <NavLink
+                  style={this.navStyle.navDropdownLink}
+                  exact
+                  to="/profile"
+                >
                   <Dropdown.Item as="button">My Profile</Dropdown.Item>
                 </NavLink>
                 <Dropdown.Divider></Dropdown.Divider>
                 <Dropdown.Item
-                  style={navStyle.navDropdownLogout}
+                  style={this.navStyle.navDropdownLogout}
                   onClick={this.handleLogout}
                 >
                   Logout
                 </Dropdown.Item>
               </>
             }
-            menuStyle={navStyle.navDropdownMenu}
+            menuStyle={this.navStyle.navDropdownMenu}
           />
         </Nav>
       </>

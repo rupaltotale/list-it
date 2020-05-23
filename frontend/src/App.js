@@ -25,12 +25,12 @@ import globalStylesheet from "./globalStylesheet";
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.container = document.getElementById("app");
+    this.globalStyle = new globalStylesheet("#212529", "#fff");
     this.state = {
       loggedIn: localStorage.getItem("token") ? true : false,
       username: "",
       isPasswordShowing: false,
-      primaryColor: "#212529",
-      backgroundColor: "#fff",
     };
   }
 
@@ -53,13 +53,12 @@ class App extends React.Component {
       prevState.primaryColor !== this.state.primaryColor ||
       prevState.backgroundColor !== this.state.backgroundColor
     ) {
-      let container = document.getElementById("app");
-      let style = globalStylesheet.body(
+      let style = this.globalStyle.setColors(
         this.state.primaryColor,
         this.state.backgroundColor
       );
-      container.style.color = style.color;
-      container.style.backgroundColor = style.backgroundColor;
+      this.container.style.color = style.color;
+      this.container.style.backgroundColor = style.backgroundColor;
     }
   }
 

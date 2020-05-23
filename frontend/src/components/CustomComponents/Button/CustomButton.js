@@ -8,6 +8,7 @@ class CustomButton extends React.Component {
     super(props);
     this.state = {
       isHovering: false,
+      isFocusing: false,
     };
   }
 
@@ -43,7 +44,9 @@ class CustomButton extends React.Component {
     this.variantOnHover = this.props.variantOnHover
       ? this.props.variantOnHover
       : this.variant;
-    return this.state.isHovering ? this.variantOnHover : this.variant;
+    return this.state.isHovering || this.state.isFocusing
+      ? this.variantOnHover
+      : this.variant;
   };
 
   renderStyle = () => {
@@ -63,6 +66,7 @@ class CustomButton extends React.Component {
   render() {
     return (
       <Button
+        {...this.props.syntheticEvents}
         className={this.renderClass()}
         style={this.renderStyle()}
         size={this.props.size}
@@ -77,6 +81,22 @@ class CustomButton extends React.Component {
         onMouseLeave={() => {
           this.toggleHover(false);
         }}
+        onFocus={() => {
+          if (this.props.onFocus) {
+            this.props.onFocus();
+          }
+          this.setState({
+            isFocusing: true,
+          });
+        }}
+        onBlur={() => {
+          if (this.props.onBlur) {
+            this.props.onBlur();
+          }
+          this.setState({
+            isFocusing: false,
+          });
+        }}
       >
         {this.renderIcon()}
         {this.props.text}
@@ -88,7 +108,10 @@ export default onClickOutside(CustomButton);
 
 CustomButton.propTypes = {
   onClickOutside: PropTypes.func,
+  syntheticEvents: PropTypes.object,
   onHover: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
   size: PropTypes.string,
   className: PropTypes.string,
   classNameOnHover: PropTypes.string,

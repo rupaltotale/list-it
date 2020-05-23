@@ -1,4 +1,4 @@
-# User
+# User: colors
 # List: id, title, owner (userId), dateCreated,
 # ListItem: id, listId, completed, content
 from django.db import models
