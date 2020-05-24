@@ -29,6 +29,8 @@ export default class ListStyle extends globalStylesheet {
       top: "-10px",
     };
     this.listSelectShow = {
+      ...this.fadeInTransition(),
+      ...this.listSelectHide,
       visibility: "visible",
       opacity: "1",
     };
@@ -100,6 +102,8 @@ export default class ListStyle extends globalStylesheet {
       opacity: "0",
     };
     this.listFooterButtonDivShow = {
+      ...this.fadeInTransition(),
+      ...this.listFooterButtonDivShow,
       visibility: "visible",
       opacity: "1",
     };
@@ -109,15 +113,46 @@ export default class ListStyle extends globalStylesheet {
       ...this.buttonStyle.buttonOpaque,
     };
     this.listIconButtonHover = this.buttonStyle.buttonOpaqueHover;
-    this.listColorDropDown = {
-      display: "flex",
-      alignSelf: "stretch",
-      justifyContent: "center",
+    this.listColorDropDownHide = {
+      transition: "max-height 1.3s, visibility 1s, opacity 1s ease-in-out",
+      visibility: "hidden",
+      opacity: 0.3,
+      maxHeight: 0,
+      maxWidth: 289,
       marginRight: "15px",
       marginLeft: "15px",
-      padding: "10px",
-      border: "1px solid rgba(0,0,0,.125)",
+      overflowY: "hidden",
       borderTop: "none",
+      border: "1px solid rgba(0,0,0,.125)",
+    };
+    this.listColorDropDownShow = {
+      ...this.listColorDropDownHide,
+      maxHeight: 200,
+      visibility: "visible",
+      opacity: 1,
+    };
+    this.listColors = {
+      display: "flex",
+      alignSelf: "stretch",
+      flexDirection: "row",
+      flexWrap: "wrap",
+      alignContent: "flex-start",
+      alignItems: "flex-start",
+      justifyContent: "center",
+    };
+    this.listColorButton = (color) => {
+      return {
+        ...this.buttonStyle.buttonNoBorder,
+        ...this.buttonStyle.buttonRound,
+        backgroundColor: color,
+        padding: 14,
+      };
+    };
+    this.listColorButtonHover = (color) => {
+      let style = this.listColorButton(color);
+      return {
+        ...style,
+      };
     };
   }
 

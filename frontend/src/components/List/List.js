@@ -7,7 +7,7 @@ import { createNewListItem, deleteList, updateList } from "../../API";
 import ListStyle from "./ListStyle";
 import ListFooter from "./ListFooter";
 import ListHeader from "./ListHeader";
-import ListColors from "./ListColorDropDown";
+import ListColors from "./ListColors";
 
 class List extends React.Component {
   constructor(props) {
@@ -163,36 +163,41 @@ class List extends React.Component {
     );
   };
 
+  toggleHoverList = (bool, callback) => {
+    if (bool && !this.state.hoveringList) {
+      this.setState(
+        {
+          hoveringList: bool,
+        },
+        callback ? callback : null
+      );
+    } else if (!bool) {
+      this.setState(
+        {
+          hoveringList: bool,
+        },
+        callback ? callback : null
+      );
+    }
+  };
+
   renderList = () => {
     return (
       <div style={this.listStyle.list}>
         <Card
           style={this.listStyle.listCard}
           onKeyDown={() => {
-            if (!this.state.hoveringList) {
-              this.setState(
-                {
-                  hoveringList: true,
-                },
-                () => {
-                  setTimeout(() => {
-                    this.setState({ hoveringList: false });
-                  }, 1000);
-                }
-              );
-            }
+            this.toggleHoverList(true, () => {
+              setTimeout(() => {
+                this.toggleHoverList(false);
+              }, 1000);
+            });
           }}
           onMouseOver={() => {
-            if (!this.state.hoveringList) {
-              this.setState({
-                hoveringList: true,
-              });
-            }
+            this.toggleHoverList(true);
           }}
           onMouseLeave={() => {
-            this.setState({
-              hoveringList: false,
-            });
+            this.toggleHoverList(false);
           }}
         >
           {this.renderListHeader()}
@@ -205,15 +210,30 @@ class List extends React.Component {
   };
 
   shouldRenderColorDropDown = (bool) => {
-    this.setState({
-      shouldRenderColorDropDown: bool,
-    });
+    if (bool && !this.state.shouldRenderColorDropDown) {
+      this.setState({
+        shouldRenderColorDropDown: bool,
+      });
+    } else if (!bool) {
+      this.setState({
+        shouldRenderColorDropDown: bool,
+      });
+    }
   };
 
   renderColorDropDown = () => {
     return (
-      <div style={this.listStyle.listColorDropDown}>
-        {/* <ListColors></ListColors> */}
+      <div
+        style={
+          this.state.shouldRenderColorDropDown
+            ? this.listStyle.listColorDropDownShow
+            : this.listStyle.listColorDropDownHide
+        }
+      >
+        <ListColors
+          shouldRenderColorDropDown={this.shouldRenderColorDropDown}
+          toggleHoverList={this.toggleHoverList}
+        ></ListColors>
       </div>
     );
   };

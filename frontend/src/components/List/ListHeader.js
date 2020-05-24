@@ -33,10 +33,7 @@ class ListHeader extends React.Component {
       <CustomButton
         style={
           this.state.hoveringList
-            ? {
-                ...this.listStyle.listSelectHide,
-                ...this.listStyle.listSelectShow,
-              }
+            ? this.listStyle.listSelectShow
             : this.listStyle.listSelectHide
         }
         icon={

@@ -20,7 +20,6 @@ class ListFooter extends React.Component {
     this.state = {
       focusingColorIcon: false,
       hoveringColorIcon: false,
-      hoveringFooter: false,
       showDeleteModal: false,
       hoveringList: this.props.hoveringList,
     };
@@ -88,12 +87,11 @@ class ListFooter extends React.Component {
   };
 
   shouldShowColors = () => {
-    if (this.state.focusingColorIcon) {
-      return true;
-    } else if (this.state.hoveringColorIcon) {
-      return true;
+    if (this.state.focusingColorIcon || this.state.hoveringColorIcon) {
+      this.props.shouldRenderColorDropDown(true);
+    } else {
+      this.props.shouldRenderColorDropDown(false);
     }
-    return false;
   };
 
   renderFooterButtons = (buttons) => {
@@ -121,10 +119,7 @@ class ListFooter extends React.Component {
               key={i}
               style={
                 this.state.hoveringList
-                  ? {
-                      ...this.listStyle.listFooterButtonDivHide,
-                      ...this.listStyle.listFooterButtonDivShow,
-                    }
+                  ? this.listStyle.listFooterButtonDivShow
                   : this.listStyle.listFooterButtonDivHide
               }
             >
@@ -140,21 +135,7 @@ class ListFooter extends React.Component {
     return (
       <>
         {this.renderDeleteModal()}
-        <Card.Footer
-          style={this.listStyle.listFooter}
-          onMouseOver={() => {
-            if (!this.state.hoveringFooter) {
-              this.setState({
-                hoveringFooter: true,
-              });
-            }
-          }}
-          onMouseLeave={() => {
-            this.setState({
-              hoveringFooter: false,
-            });
-          }}
-        >
+        <Card.Footer style={this.listStyle.listFooter}>
           <div style={this.listStyle.listFooterButtonRow}>
             {this.renderFooterButtons([
               { icon: <FaBell size={18}></FaBell> },
@@ -162,19 +143,28 @@ class ListFooter extends React.Component {
               {
                 icon: <FaPalette size={18}></FaPalette>,
                 onFocus: () => {
-                  this.setState({
-                    focusingColorIcon: true,
-                  });
+                  this.setState(
+                    {
+                      focusingColorIcon: true,
+                    },
+                    this.shouldShowColors
+                  );
                 },
                 onBlur: () => {
-                  this.setState({
-                    focusingColorIcon: false,
-                  });
+                  this.setState(
+                    {
+                      focusingColorIcon: false,
+                    },
+                    this.shouldShowColors
+                  );
                 },
                 onHover: (bool) => {
-                  this.setState({
-                    hoveringColorIcon: bool,
-                  });
+                  this.setState(
+                    {
+                      hoveringColorIcon: bool,
+                    },
+                    this.shouldShowColors
+                  );
                 },
               },
               { icon: <FaImages size={18}></FaImages> },
