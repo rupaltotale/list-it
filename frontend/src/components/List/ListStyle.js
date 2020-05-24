@@ -140,18 +140,28 @@ export default class ListStyle extends globalStylesheet {
       alignItems: "flex-start",
       justifyContent: "center",
     };
-    this.listColorButton = (color) => {
+    this.listColorButton = (color, IsDefault = false, isActive = false) => {
       return {
-        ...this.buttonStyle.buttonNoBorder,
         ...this.buttonStyle.buttonRound,
         backgroundColor: color,
-        padding: 14,
+        padding: isActive ? 7 : 12,
+        margin: 7,
+        boxShadow: "none",
+        transition: "transform 0.1s, box-shadow 0.1s ease-in-out",
+        borderWidth: "2px",
+        borderColor: isActive ? "black" : IsDefault ? "gray" : color,
       };
     };
-    this.listColorButtonHover = (color) => {
-      let style = this.listColorButton(color);
+    this.listColorButtonHover = (
+      color,
+      IsDefault = false,
+      isActive = false
+    ) => {
+      let style = this.listColorButton(color, IsDefault, isActive);
       return {
         ...style,
+        transform: "scale(1.2)",
+        boxShadow: `${color} 0px 0px 5px `,
       };
     };
   }

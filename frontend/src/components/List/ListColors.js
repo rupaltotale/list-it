@@ -2,43 +2,49 @@ import React from "react";
 import PropTypes from "prop-types";
 import CustomButton from "../CustomComponents/Button/CustomButton";
 import ListStyle from "./ListStyle";
+import { FaCheck } from "react-icons/fa";
 
 class ListColors extends React.Component {
   constructor(props) {
     super(props);
+    this.defaultColor = "#ffffff";
     this.colors = [
+      "#ffffff",
       "#f44336",
       "#e91e63",
-      "#9c27b0",
-      "#673ab7",
       "#3f51b5",
       "#2196f3",
-      "#03a9f4",
       "#00bcd4",
       "#009688",
       "#4caf50",
       "#8bc34a",
-      "#cddc39",
       "#ffeb3b",
       "#ffc107",
       "#ff9800",
-      "#ff5722",
-      "#795548",
-      "#607d8b",
     ];
     this.listStyle = new ListStyle();
     this.state = {
       hoveringDropdown: false,
+      activeColor: "#ffeb3b",
     };
   }
+
+  setActiveColor = (color) => {
+    this.setState({
+      activeColor: color,
+    });
+  };
 
   renderColors = (colors) => {
     let createdColors = [];
     colors.forEach((color) => {
-      let style = this.listStyle.listColorButton(color);
-      let hoveringStyle = this.listStyle.listColorButtonHover(color);
       createdColors.push(
-        <CustomButton style={style} styleOnHover={hoveringStyle} />
+        <ListColorButton
+          color={color}
+          isDefaultColor={this.defaultColor === color}
+          isActiveColor={this.state.activeColor === color}
+          setActiveColor={this.setActiveColor}
+        />
       );
     });
     return (
@@ -74,4 +80,62 @@ export default ListColors;
 ListColors.propTypes = {
   shouldRenderColorDropDown: PropTypes.func.isRequired,
   toggleHoverList: PropTypes.func.isRequired,
+};
+
+class ListColorButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.listStyle = new ListStyle();
+    this.state = {
+      hoveringColorButton: false,
+      isDefaultColor: this.props.isDefaultColor,
+      isActiveColor: this.props.isActiveColor,
+    };
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (
+      nextProps.isDefaultColor !== prevState.isDefaultColor ||
+      nextProps.isActiveColor !== prevState.isActiveColor
+    ) {
+      return {
+        isDefaultColor: nextProps.isDefaultColor,
+        isActiveColor: nextProps.isActiveColor,
+      };
+    }
+    return null;
+  }
+
+  render() {
+    return (
+      <CustomButton
+        style={this.listStyle.listColorButton(
+          this.props.color,
+          this.state.isDefaultColor,
+          this.state.isActiveColor
+        )}
+        styleOnHover={this.listStyle.listColorButtonHover(
+          this.props.color,
+          this.state.isDefaultColor,
+          this.state.isActiveColor
+        )}
+        onHover={(bool) => {
+          this.setState({
+            hoveringColorButton: bool,
+          });
+        }}
+        onClick={() => {
+          this.props.setActiveColor(this.props.color);
+        }}
+        icon={this.props.isActiveColor ? <FaCheck size={10}></FaCheck> : null}
+      />
+    );
+  }
+}
+
+ListColorButton.propTypes = {
+  color: PropTypes.string.isRequired,
+  isDefaultColor: PropTypes.bool.isRequired,
+  isActiveColor: PropTypes.bool.isRequired,
+  setActiveColor: PropTypes.func.isRequired,
 };

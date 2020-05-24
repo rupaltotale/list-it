@@ -198,15 +198,15 @@ class ListItem extends React.Component {
   deleteListItem = () => {
     if (this.state.focused) {
       Mousetrap.reset();
-      let newID = focus.setPreviousListItemToFocus(
+      var newID = focus.setPreviousListItemToFocus(
         this.props.index,
         this.props.listItems
       );
-      this.props.setNewListItemToFocus(newID);
     }
     deleteListItem(
       (response) => {
         this.props.refresh();
+        this.props.setNewListItemToFocus(newID);
       },
       (error) => {
         console.log(error.response);
