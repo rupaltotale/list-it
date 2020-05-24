@@ -1,8 +1,5 @@
-import globalStylesheet from "../../globalStylesheet";
-
-export default class NavStyle extends globalStylesheet {
+export default class NavStyle {
   constructor() {
-    super();
     this.navDropdownLink = {
       color: "black",
       textDecoration: "none",

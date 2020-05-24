@@ -20,17 +20,17 @@ import { render } from "react-dom";
 import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile";
 import { getUser } from "./API";
-import globalStylesheet from "./globalStylesheet";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.container = document.getElementById("app");
-    this.globalStyle = new globalStylesheet("#212529", "#fff");
     this.state = {
       loggedIn: localStorage.getItem("token") ? true : false,
       username: "",
       isPasswordShowing: false,
+      backgroundColor: "#ffffff",
+      primaryColor: "#212529",
     };
   }
 
@@ -53,12 +53,8 @@ class App extends React.Component {
       prevState.primaryColor !== this.state.primaryColor ||
       prevState.backgroundColor !== this.state.backgroundColor
     ) {
-      let style = this.globalStyle.setColors(
-        this.state.primaryColor,
-        this.state.backgroundColor
-      );
-      this.container.style.color = style.color;
-      this.container.style.backgroundColor = style.backgroundColor;
+      this.container.style.color = this.state.primaryColor;
+      this.container.style.backgroundColor = this.state.backgroundColor;
     }
   }
 

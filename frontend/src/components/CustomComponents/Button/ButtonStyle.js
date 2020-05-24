@@ -1,8 +1,5 @@
-import globalStylesheet from "../../../globalStylesheet";
-
-export default class ButtonStyle extends globalStylesheet {
+export default class ButtonStyle {
   constructor() {
-    super();
     this.buttonDiv = {
       display: "flex",
       justifyContent: "center",

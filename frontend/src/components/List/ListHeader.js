@@ -44,14 +44,11 @@ class ListHeader extends React.Component {
   };
 
   handleTitleChange = (event) => {
-    this.setState(
-      {
-        title: event.target.value,
-      },
-      () => {
-        this.setState({ title: this.props.updateList(this.state.title) });
-      }
-    );
+    this.props.updateListTitle(event.target.value, (returnedTitle) => {
+      this.setState({
+        title: returnedTitle,
+      });
+    });
   };
 
   renderListTitle = () => {
@@ -106,5 +103,5 @@ export default ListHeader;
 ListHeader.propTypes = {
   hoveringList: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
-  updateList: PropTypes.func.isRequired,
+  updateListTitle: PropTypes.func.isRequired,
 };

@@ -22,6 +22,7 @@ class ListItemSerializer(serializers.ModelSerializer):
 
 class ListSerializer(serializers.ModelSerializer):
     title = serializers.CharField(trim_whitespace=False, allow_blank=True)
+    color = serializers.CharField(allow_blank=True)
     date_created = serializers.DateTimeField(
         read_only=True,
     )
@@ -35,7 +36,7 @@ class ListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = List
-        fields = ('id', 'title', 'owner', 'date_created', "list_items")
+        fields = ('id', 'title', 'owner', 'date_created', 'list_items', 'color')
 
 
 class UserSerializer(serializers.ModelSerializer):

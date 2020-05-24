@@ -1,5 +1,6 @@
 import globalStylesheet from "../../globalStylesheet";
 import ButtonStyle from "../CustomComponents/Button/ButtonStyle";
+
 export default class ListStyle extends globalStylesheet {
   constructor() {
     super();
@@ -13,7 +14,7 @@ export default class ListStyle extends globalStylesheet {
     this.listCard = {
       margin: "15px 15px 0px 15px",
       width: "289px",
-      backgroundColor: this.backgroundColor,
+      backgroundColor: this.listBackground,
       borderRadius: "0",
     };
     this.listSelectHide = {
@@ -38,7 +39,7 @@ export default class ListStyle extends globalStylesheet {
       color: this.backgroundColor,
     };
     this.listHeader = {
-      backgroundColor: this.backgroundColor,
+      backgroundColor: this.listBackground,
     };
     this.listTitle = {
       resize: "none",
@@ -82,7 +83,7 @@ export default class ListStyle extends globalStylesheet {
       fontWeight: "bold",
     };
     this.listFooter = {
-      backgroundColor: this.backgroundColor,
+      backgroundColor: this.listBackground,
       borderTop: "none",
       display: "flex",
       flexDirection: "column",
@@ -166,7 +167,19 @@ export default class ListStyle extends globalStylesheet {
     };
   }
 
-  setListBackground = (backgroundColor) => {
-    this.setColors(this.primaryColor, backgroundColor);
+  setNewBackgroundColor = (backgroundColor) => {
+    this.listBackground = backgroundColor;
+    this.listCard = {
+      ...this.listCard,
+      backgroundColor: backgroundColor,
+    };
+    this.listHeader = {
+      ...this.listHeader,
+      backgroundColor: backgroundColor,
+    };
+    this.listFooter = {
+      ...this.listFooter,
+      backgroundColor: backgroundColor,
+    };
   };
 }

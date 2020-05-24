@@ -16,9 +16,11 @@ class List extends React.Component {
     this.state = {
       idToFocus: null,
       hoveringList: false,
-      backgroundColor: this.listStyle.listBackground,
       shouldRenderColorDropDown: false,
+      color: this.props.color,
+      title: this.props.title,
     };
+    this.listStyle.setNewBackgroundColor(this.state.color);
   }
 
   deleteList = () => {
@@ -33,15 +35,52 @@ class List extends React.Component {
     );
   };
 
-  updateList = (title) => {
-    updateList(
-      (response) => {
-        return response.data.title;
+  updateListTitle = (title, callback = null) => {
+    this.setState(
+      {
+        title: title,
       },
-      (error) => {
-        console.log(error.response);
+      () => {
+        updateList(
+          (response) => {
+            callback ? callback(response.data.title) : null;
+            return response.data.title;
+          },
+          (error) => {
+            console.log(error.response);
+          },
+          {
+            id: this.props.id,
+            title: this.state.title,
+            color: this.state.color,
+          }
+        );
+      }
+    );
+  };
+
+  updateListColor = (color, callback = null) => {
+    this.listStyle.setNewBackgroundColor(color);
+    this.setState(
+      {
+        color: color,
       },
-      { id: this.props.id, title: title }
+      () => {
+        updateList(
+          (response) => {
+            callback ? callback(response.data.color) : null;
+            return response.data.color;
+          },
+          (error) => {
+            console.log(error.response);
+          },
+          {
+            id: this.props.id,
+            title: this.state.title,
+            color: this.state.color,
+          }
+        );
+      }
     );
   };
 
@@ -58,10 +97,16 @@ class List extends React.Component {
     );
   };
 
+  setNewColor = (color) => {
+    this.setState({
+      color: color,
+    });
+  };
+
   renderListHeader = () => {
     return (
       <ListHeader
-        updateList={this.updateList}
+        updateListTitle={this.updateListTitle}
         hoveringList={this.state.hoveringList}
         title={this.props.title}
       ></ListHeader>
@@ -231,6 +276,8 @@ class List extends React.Component {
         }
       >
         <ListColors
+          currentColor={this.state.color}
+          updateListColor={this.updateListColor}
           shouldRenderColorDropDown={this.shouldRenderColorDropDown}
           toggleHoverList={this.toggleHoverList}
         ></ListColors>
@@ -250,5 +297,6 @@ List.propTypes = {
   title: PropTypes.string.isRequired,
   dateCreated: PropTypes.string.isRequired,
   listItems: PropTypes.array.isRequired,
+  color: PropTypes.string,
   refresh: PropTypes.func.isRequired,
 };

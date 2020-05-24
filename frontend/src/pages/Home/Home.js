@@ -116,7 +116,7 @@ class Home extends React.Component {
   renderLists = () => {
     if (this.state.loggedIn) {
       let lists = [].concat(this.state.lists);
-      let newLists = [];
+      let recreatedLists = [];
       for (let i = 0; i < this.state.numberOfColumns; i++) {
         let j = i;
         let listArray = [];
@@ -124,11 +124,11 @@ class Home extends React.Component {
           listArray.push(lists[j]);
           j += this.state.numberOfColumns;
         }
-        newLists.push(listArray);
+        recreatedLists.push(listArray);
       }
       return (
         <div style={this.homeStyle.homeRow}>
-          {newLists.map((listArray, i) => {
+          {recreatedLists.map((listArray, i) => {
             return (
               <div key={i} style={this.homeStyle.homeCol}>
                 {listArray.map((list) => {
@@ -146,6 +146,7 @@ class Home extends React.Component {
                       title={list.title}
                       dateCreated={list.date_created}
                       listItems={listItems}
+                      color={list.color}
                       refresh={this.refresh}
                     />
                   );
