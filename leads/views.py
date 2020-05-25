@@ -6,7 +6,7 @@
 
 from rest_framework import generics
 from django.http import HttpResponseRedirect
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -22,6 +22,7 @@ from .models import List, ListItem
 from django.utils import timezone
 
 ########################### List endpoints ########################################
+
 
 class ListGet(ListAPIView):
     queryset = List.objects.all()

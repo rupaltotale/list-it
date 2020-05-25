@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import List, ListItem
+from .models import List, ListItem, CustomUser
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 import sys
@@ -10,6 +10,7 @@ import django.contrib.auth.password_validation as validators
 class ListItemSerializer(serializers.ModelSerializer):
     list_id = serializers.IntegerField(write_only=True, required=False)
     content = serializers.CharField(trim_whitespace=False, allow_blank=True)
+
     class Meta:
         model = ListItem
         fields = ('id', 'completed', 'content', 'list_id')
@@ -41,8 +42,10 @@ class ListSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'date_joined')        
+        model = CustomUser
+        fields = ('username', 'first_name',
+                  'last_name', 'email', 'date_joined')
+
 
 class UserSerializerWithToken(serializers.ModelSerializer):
 
@@ -91,6 +94,6 @@ class UserSerializerWithToken(serializers.ModelSerializer):
         return super(UserSerializerWithToken, self).validate(data)
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('token', 'username', 'password',
                   'email', 'first_name', 'last_name')
