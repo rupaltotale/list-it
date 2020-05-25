@@ -10,7 +10,7 @@ import CustomButton from "../CustomComponents/Button/CustomButton";
 class ListHeader extends React.Component {
   constructor(props) {
     super(props);
-    this.listStyle = new ListStyle();
+    this.listStyle = this.props.style;
     this.listTitle = React.createRef();
     this.state = {
       hoveringList: this.props.hoveringList,

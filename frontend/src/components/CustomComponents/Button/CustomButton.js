@@ -67,6 +67,7 @@ class CustomButton extends React.Component {
     return (
       <Button
         {...this.props.syntheticEvents}
+        ref={this.props.buttonRef ? this.props.buttonRef : false}
         className={this.renderClass()}
         style={this.renderStyle()}
         size={this.props.size}
@@ -123,4 +124,5 @@ CustomButton.propTypes = {
   iconOnHover: PropTypes.object,
   text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   block: PropTypes.bool,
+  buttonRef: PropTypes.object,
 };

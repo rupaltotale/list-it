@@ -10,19 +10,19 @@ class ListColors extends React.Component {
     this.defaultColor = "#ffffff";
     this.colors = [
       "#ffffff",
-      "#f44336",
-      "#e91e63",
-      "#3f51b5",
-      "#2196f3",
-      "#00bcd4",
-      "#009688",
-      "#4caf50",
-      "#8bc34a",
-      "#ffeb3b",
-      "#ffc107",
-      "#ff9800",
+      "#f28b82",
+      "#fbbc04",
+      "#fff475",
+      "#ccff90",
+      "#a7ffeb",
+      "#cbf0f8",
+      "#aecbfa",
+      "#d7aefb",
+      "#fdcfe8",
+      "#e6c9a8",
+      "#e8eaed",
     ];
-    this.listStyle = new ListStyle();
+    this.listStyle = this.props.style;
     this.state = {
       hoveringDropdown: false,
       currentColor: this.props.currentColor

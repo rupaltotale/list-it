@@ -16,13 +16,24 @@ import {
 class ListFooter extends React.Component {
   constructor(props) {
     super(props);
-    this.listStyle = new ListStyle();
+    this.listStyle = this.props.style;
+    this.colorButtonRef = React.createRef();
     this.state = {
       focusingColorIcon: false,
       hoveringColorIcon: false,
       showDeleteModal: false,
       hoveringList: this.props.hoveringList,
     };
+  }
+
+  setFocusToColorButton(bool) {
+    if (this.colorButtonRef) {
+      if (bool) {
+        this.colorButtonRef.current.focus();
+      } else {
+        this.colorButtonRef.current.blur();
+      }
+    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -98,34 +109,33 @@ class ListFooter extends React.Component {
     let createdButtons = [];
     buttons.forEach((button) => {
       createdButtons.push(
-        <CustomButton
-          style={this.listStyle.listIconButton}
-          styleOnHover={this.listStyle.listIconButtonHover}
-          variantOnHover="light"
-          onClick={button.onClick}
-          onClickOutside={button.onClickOutside}
-          onFocus={button.onFocus}
-          onBlur={button.onBlur}
-          icon={button.icon}
-          onHover={button.onHover}
-        />
+        <div
+          style={
+            this.state.hoveringList
+              ? this.listStyle.listFooterButtonDivShow
+              : this.listStyle.listFooterButtonDivHide
+          }
+          {...button.buttonDivProps}
+        >
+          <CustomButton
+            style={this.listStyle.listIconButton}
+            styleOnHover={this.listStyle.listIconButtonHover}
+            variantOnHover="light"
+            onClick={button.onClick}
+            onClickOutside={button.onClickOutside}
+            onFocus={button.onFocus}
+            onBlur={button.onBlur}
+            icon={button.icon}
+            onHover={button.onHover}
+            buttonRef={button.ref}
+          />
+        </div>
       );
     });
     return (
       <>
         {createdButtons.map((createdButton, i) => {
-          return (
-            <div
-              key={i}
-              style={
-                this.state.hoveringList
-                  ? this.listStyle.listFooterButtonDivShow
-                  : this.listStyle.listFooterButtonDivHide
-              }
-            >
-              {createdButton}
-            </div>
-          );
+          return <React.Fragment key={i}>{createdButton}</React.Fragment>;
         })}
       </>
     );
@@ -142,6 +152,33 @@ class ListFooter extends React.Component {
               { icon: <FaUserPlus size={18}></FaUserPlus> },
               {
                 icon: <FaPalette size={18}></FaPalette>,
+                ref: this.colorButtonRef,
+                buttonDivProps: {
+                  onMouseOver: () => {
+                    if (!this.state.hoveringColorIcon) {
+                      this.setState(
+                        {
+                          hoveringColorIcon: true,
+                        },
+                        () => {
+                          this.shouldShowColors();
+                          this.setFocusToColorButton(true);
+                        }
+                      );
+                    }
+                  },
+                  onMouseLeave: () => {
+                    this.setState(
+                      {
+                        hoveringColorIcon: false,
+                      },
+                      () => {
+                        this.shouldShowColors();
+                        this.setFocusToColorButton(false);
+                      }
+                    );
+                  },
+                },
                 onFocus: () => {
                   this.setState(
                     {
@@ -154,14 +191,6 @@ class ListFooter extends React.Component {
                   this.setState(
                     {
                       focusingColorIcon: false,
-                    },
-                    this.shouldShowColors
-                  );
-                },
-                onHover: (bool) => {
-                  this.setState(
-                    {
-                      hoveringColorIcon: bool,
                     },
                     this.shouldShowColors
                   );

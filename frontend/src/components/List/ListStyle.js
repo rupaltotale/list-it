@@ -2,10 +2,10 @@ import globalStylesheet from "../../globalStylesheet";
 import ButtonStyle from "../CustomComponents/Button/ButtonStyle";
 
 export default class ListStyle extends globalStylesheet {
-  constructor() {
+  constructor(backgroundColor) {
     super();
     this.buttonStyle = new ButtonStyle();
-    this.listBackground = this.backgroundColor;
+    this.listBackground = backgroundColor;
     this.list = {
       display: "flex",
       flexDirection: "column",
@@ -48,6 +48,7 @@ export default class ListStyle extends globalStylesheet {
       fontSize: "large",
       textAlign: "center",
       boxShadow: "none",
+      backgroundColor: this.listBackground,
     };
     this.listTitleFocus = {
       textShadow: "1px 1px 2px lightGray",
@@ -62,9 +63,13 @@ export default class ListStyle extends globalStylesheet {
       paddingLeft: "0px",
       paddingRight: "0px",
       border: "none",
+      backgroundColor: this.listBackground,
     };
     this.listItemContent = {
       resize: "none",
+      backgroundColor: this.listBackground,
+      borderColor: this.primaryColor,
+      color: this.primaryColor,
     };
     this.listItemContentCompleted = {
       textDecorationLine: "line-through",
@@ -112,6 +117,7 @@ export default class ListStyle extends globalStylesheet {
       ...this.buttonStyle.buttonNoBorder,
       ...this.buttonStyle.buttonRound,
       ...this.buttonStyle.buttonOpaque,
+      marginBottom: "8px",
     };
     this.listIconButtonHover = this.buttonStyle.buttonOpaqueHover;
     this.listColorDropDownHide = {
@@ -171,14 +177,32 @@ export default class ListStyle extends globalStylesheet {
     this.listBackground = backgroundColor;
     this.listCard = {
       ...this.listCard,
+      ...this.fadeColorTransition(),
+      backgroundColor: backgroundColor,
+    };
+    this.listTitle = {
+      ...this.listTitle,
+      ...this.fadeColorTransition(),
       backgroundColor: backgroundColor,
     };
     this.listHeader = {
       ...this.listHeader,
+      ...this.fadeColorTransition(),
+      backgroundColor: backgroundColor,
+    };
+    this.listItem = {
+      ...this.listItem,
+      ...this.fadeColorTransition(),
+      backgroundColor: backgroundColor,
+    };
+    this.listItemContent = {
+      ...this.listItemContent,
+      ...this.fadeColorTransition(),
       backgroundColor: backgroundColor,
     };
     this.listFooter = {
       ...this.listFooter,
+      ...this.fadeColorTransition(),
       backgroundColor: backgroundColor,
     };
   };

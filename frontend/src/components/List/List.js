@@ -12,7 +12,6 @@ import ListColors from "./ListColors";
 class List extends React.Component {
   constructor(props) {
     super(props);
-    this.listStyle = new ListStyle();
     this.state = {
       idToFocus: null,
       hoveringList: false,
@@ -20,7 +19,7 @@ class List extends React.Component {
       color: this.props.color,
       title: this.props.title,
     };
-    this.listStyle.setNewBackgroundColor(this.state.color);
+    this.listStyle = new ListStyle(this.state.color);
   }
 
   deleteList = () => {
@@ -109,6 +108,7 @@ class List extends React.Component {
         updateListTitle={this.updateListTitle}
         hoveringList={this.state.hoveringList}
         title={this.props.title}
+        style={this.listStyle}
       ></ListHeader>
     );
   };
@@ -146,6 +146,7 @@ class List extends React.Component {
         idToFocus={this.state.idToFocus}
         listItems={this.props.listItems}
         index={index}
+        style={this.listStyle}
         setNewListItemToFocus={this.setNewListItemToFocus}
       ></ListItem>
     );
@@ -204,6 +205,7 @@ class List extends React.Component {
         deleteList={this.deleteList}
         hoveringList={this.state.hoveringList}
         shouldRenderColorDropDown={this.shouldRenderColorDropDown}
+        style={this.listStyle}
       ></ListFooter>
     );
   };
@@ -259,7 +261,7 @@ class List extends React.Component {
       this.setState({
         shouldRenderColorDropDown: bool,
       });
-    } else if (!bool) {
+    } else if (!bool && this.state.shouldRenderColorDropDown) {
       this.setState({
         shouldRenderColorDropDown: bool,
       });
@@ -280,6 +282,7 @@ class List extends React.Component {
           updateListColor={this.updateListColor}
           shouldRenderColorDropDown={this.shouldRenderColorDropDown}
           toggleHoverList={this.toggleHoverList}
+          style={this.listStyle}
         ></ListColors>
       </div>
     );
