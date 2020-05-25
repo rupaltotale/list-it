@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Card, ListGroup, Button, Alert } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import ListItem from "./ListItem";
-import { createNewListItem, deleteList, updateList } from "../../API";
+import { createNewListItem, deleteList, updateList, getList } from "../../API";
 import ListStyle from "./ListStyle";
 import ListFooter from "./ListFooter";
 import ListHeader from "./ListHeader";
@@ -18,7 +18,9 @@ class List extends React.Component {
       shouldRenderColorDropDown: false,
       color: this.props.color,
       title: this.props.title,
+      listItems: this.props.listItems,
     };
+    console.log(this.state);
     this.listStyle = new ListStyle(this.state.color);
   }
 
@@ -34,60 +36,54 @@ class List extends React.Component {
     );
   };
 
-  updateListTitle = (title, callback = null) => {
-    this.setState(
-      {
-        title: title,
-      },
-      () => {
-        updateList(
-          (response) => {
-            callback ? callback(response.data.title) : null;
-            return response.data.title;
-          },
-          (error) => {
-            console.log(error.response);
-          },
-          {
-            id: this.props.id,
-            title: this.state.title,
-            color: this.state.color,
-          }
-        );
-      }
-    );
+  updateList = (properties, callback = null) => {
+    if (properties.color != null) {
+      this.listStyle = this.listStyle.setNewBackgroundColor(properties.color);
+    }
+    this.setState(properties, () => {
+      updateList(
+        (response) => {
+          callback ? callback(response.data) : null;
+          return response.data;
+        },
+        (error) => {
+          console.log(error.response);
+        },
+        {
+          id: this.props.id,
+          title: this.state.title,
+          color: this.state.color,
+          list_items: this.state.listItems,
+        }
+      );
+    });
   };
 
-  updateListColor = (color, callback = null) => {
-    this.listStyle.setNewBackgroundColor(color);
-    this.setState(
-      {
-        color: color,
-      },
-      () => {
-        updateList(
-          (response) => {
-            callback ? callback(response.data.color) : null;
-            return response.data.color;
-          },
-          (error) => {
-            console.log(error.response);
-          },
+  getListData = (callback) => {
+    getList(
+      (response) => {
+        this.setState(
           {
-            id: this.props.id,
-            title: this.state.title,
-            color: this.state.color,
-          }
+            color: response.data.color,
+            title: response.data.title,
+            listItems: response.data.list_items,
+          },
+          callback ? callback() : null
         );
-      }
+      },
+      (error) => {
+        console.log(error.response);
+      },
+      { id: this.props.id }
     );
   };
 
   createListItem = (isCompleted = false) => {
     createNewListItem(
       (response) => {
-        this.setNewListItemToFocus(response.data.id);
-        this.props.refresh();
+        this.getListData(() => {
+          this.setNewListItemToFocus(response.data.id);
+        });
       },
       (error) => {
         console.log(error.response);
@@ -105,7 +101,7 @@ class List extends React.Component {
   renderListHeader = () => {
     return (
       <ListHeader
-        updateListTitle={this.updateListTitle}
+        updateListTitle={this.updateList}
         hoveringList={this.state.hoveringList}
         title={this.props.title}
         style={this.listStyle}
@@ -142,9 +138,9 @@ class List extends React.Component {
         id={listItem.id}
         completed={listItem.completed}
         listID={this.props.id}
-        refresh={this.props.refresh}
         idToFocus={this.state.idToFocus}
-        listItems={this.props.listItems}
+        listItems={this.state.listItems}
+        getListData={this.getListData}
         index={index}
         style={this.listStyle}
         setNewListItemToFocus={this.setNewListItemToFocus}
@@ -189,9 +185,9 @@ class List extends React.Component {
   };
 
   renderListItems = () => {
-    const listItems = [].concat(this.props.listItems);
+    const listItems = [].concat(this.state.listItems);
     return (
-      <ListGroup variant="flush">
+      <ListGroup variant="flush" style={this.listStyle.listGroup}>
         {this.renderAddListItemButton()}
         {this.renderNoncompletedListItems(listItems)}
         {this.renderCompletedListItems(listItems)}
@@ -232,7 +228,13 @@ class List extends React.Component {
     return (
       <div style={this.listStyle.list}>
         <Card
-          style={this.listStyle.listCard}
+          style={
+            this.state.hoveringList
+              ? this.listStyle.listCardHover(
+                  this.state.shouldRenderColorDropDown
+                )
+              : this.listStyle.listCard(this.state.shouldRenderColorDropDown)
+          }
           onKeyDown={() => {
             this.toggleHoverList(true, () => {
               setTimeout(() => {
@@ -273,13 +275,17 @@ class List extends React.Component {
       <div
         style={
           this.state.shouldRenderColorDropDown
-            ? this.listStyle.listColorDropDownShow
-            : this.listStyle.listColorDropDownHide
+            ? this.listStyle.listColorDropDownShow(
+                this.state.shouldRenderColorDropDown
+              )
+            : this.listStyle.listColorDropDownHide(
+                this.state.shouldRenderColorDropDown
+              )
         }
       >
         <ListColors
           currentColor={this.state.color}
-          updateListColor={this.updateListColor}
+          updateListColor={this.updateList}
           shouldRenderColorDropDown={this.shouldRenderColorDropDown}
           toggleHoverList={this.toggleHoverList}
           style={this.listStyle}

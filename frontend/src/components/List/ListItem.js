@@ -9,9 +9,13 @@ import {
   FaRegCheckSquare,
 } from "react-icons/fa";
 import CustomButton from "../CustomComponents/Button/CustomButton";
-import { updateListItem, deleteListItem, createNewListItem } from "../../API";
+import {
+  updateListItem,
+  deleteListItem,
+  createNewListItem,
+  getListItem,
+} from "../../API";
 import * as focus from "../../Focus";
-import ListStyle from "./ListStyle";
 
 class ListItem extends React.Component {
   constructor(props) {
@@ -64,8 +68,9 @@ class ListItem extends React.Component {
       event.preventDefault();
       createNewListItem(
         (response) => {
-          this.props.setNewListItemToFocus(response.data.id);
-          this.props.refresh();
+          this.props.getListData(
+            this.props.setNewListItemToFocus(response.data.id)
+          );
         },
         (error) => {
           console.log(error.response);
@@ -101,13 +106,28 @@ class ListItem extends React.Component {
     });
   };
 
-  updateListItem = () => {
+  updateListItem = (isCompletedChanged = false) => {
     if (this.props.idToFocus !== this.props.id) {
       this.props.setNewListItemToFocus(this.props.id);
     }
     updateListItem(
       (response) => {
-        this.props.refresh();
+        if (isCompletedChanged) {
+          this.props.getListData();
+        } else {
+          getListItem(
+            (response) => {
+              this.setState({
+                completed: response.data.completed,
+                content: response.data.content,
+              });
+            },
+            (error) => {
+              console.log(error);
+            },
+            { id: this.props.id }
+          );
+        }
       },
       (error) => {
         console.log(error.response);
@@ -125,7 +145,9 @@ class ListItem extends React.Component {
       {
         completed: !this.state.completed,
       },
-      this.updateListItem
+      () => {
+        this.updateListItem(true);
+      }
     );
   };
 
@@ -157,7 +179,7 @@ class ListItem extends React.Component {
         errorResponse: null,
       },
       () => {
-        this.updateListItem();
+        this.updateListItem(false);
       }
     );
   };
@@ -205,8 +227,9 @@ class ListItem extends React.Component {
     }
     deleteListItem(
       (response) => {
-        this.props.refresh();
-        this.props.setNewListItemToFocus(newID);
+        this.props.getListData(() => {
+          this.props.setNewListItemToFocus(newID);
+        });
       },
       (error) => {
         console.log(error.response);
@@ -260,9 +283,9 @@ ListItem.propTypes = {
   id: PropTypes.number.isRequired,
   completed: PropTypes.bool.isRequired,
   listID: PropTypes.number.isRequired,
-  refresh: PropTypes.func.isRequired,
   idToFocus: PropTypes.number,
   listItems: PropTypes.array.isRequired,
   index: PropTypes.number.isRequired,
   setNewListItemToFocus: PropTypes.func.isRequired,
+  getListData: PropTypes.func.isRequired,
 };

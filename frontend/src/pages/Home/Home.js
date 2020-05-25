@@ -86,7 +86,12 @@ class Home extends React.Component {
           (error) => {
             console.log(error.response);
           },
-          { content: "", completed: false, list_id: response.data.id }
+          {
+            content: "",
+            completed: false,
+            list_id: response.data.id,
+            color: "rgb(255, 255, 255)",
+          }
         );
       },
       (error) => {

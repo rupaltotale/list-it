@@ -7,20 +7,20 @@ import { FaCheck } from "react-icons/fa";
 class ListColors extends React.Component {
   constructor(props) {
     super(props);
-    this.defaultColor = "#ffffff";
+    this.defaultColor = "rgb(255, 255, 255)";
     this.colors = [
-      "#ffffff",
-      "#f28b82",
-      "#fbbc04",
-      "#fff475",
-      "#ccff90",
-      "#a7ffeb",
-      "#cbf0f8",
-      "#aecbfa",
-      "#d7aefb",
-      "#fdcfe8",
-      "#e6c9a8",
-      "#e8eaed",
+      "rgb(255, 255, 255)",
+      "rgb(242, 139, 130)",
+      "rgb(251, 188, 4)",
+      "rgb(255, 244, 117)",
+      "rgb(204, 255, 144)",
+      "rgb(167, 255, 235)",
+      "rgb(203, 240, 248)",
+      "rgb(174, 203, 250)",
+      "rgb(215, 174, 251)",
+      "rgb(253, 207, 232)",
+      "rgb(230, 201, 168)",
+      "rgb(232, 234, 237)",
     ];
     this.listStyle = this.props.style;
     this.state = {
@@ -32,9 +32,9 @@ class ListColors extends React.Component {
   }
 
   setActiveColor = (color) => {
-    this.props.updateListColor(color, (returnedColor) => {
+    this.props.updateListColor({ color: color }, (returnedData) => {
       this.setState({
-        currentColor: returnedColor,
+        currentColor: returnedData.color,
       });
     });
   };

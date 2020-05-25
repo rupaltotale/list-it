@@ -19,10 +19,10 @@ class ListFooter extends React.Component {
     this.listStyle = this.props.style;
     this.colorButtonRef = React.createRef();
     this.state = {
-      focusingColorIcon: false,
       hoveringColorIcon: false,
       showDeleteModal: false,
       hoveringList: this.props.hoveringList,
+      renderingColorDropDown: false,
     };
   }
 
@@ -98,10 +98,24 @@ class ListFooter extends React.Component {
   };
 
   shouldShowColors = () => {
-    if (this.state.focusingColorIcon || this.state.hoveringColorIcon) {
-      this.props.shouldRenderColorDropDown(true);
+    if (this.state.hoveringColorIcon) {
+      this.setState(
+        {
+          renderingColorDropDown: true,
+        },
+        () => {
+          this.props.shouldRenderColorDropDown(true);
+        }
+      );
     } else {
-      this.props.shouldRenderColorDropDown(false);
+      this.setState(
+        {
+          renderingColorDropDown: false,
+        },
+        () => {
+          this.props.shouldRenderColorDropDown(false);
+        }
+      );
     }
   };
 
@@ -118,8 +132,8 @@ class ListFooter extends React.Component {
           {...button.buttonDivProps}
         >
           <CustomButton
-            style={this.listStyle.listIconButton}
-            styleOnHover={this.listStyle.listIconButtonHover}
+            style={this.listStyle.listFooterButton}
+            styleOnHover={this.listStyle.listFooterButtonHover}
             variantOnHover="light"
             onClick={button.onClick}
             onClickOutside={button.onClickOutside}
@@ -145,7 +159,9 @@ class ListFooter extends React.Component {
     return (
       <>
         {this.renderDeleteModal()}
-        <Card.Footer style={this.listStyle.listFooter}>
+        <Card.Footer
+          style={this.listStyle.listFooter(this.state.renderingColorDropDown)}
+        >
           <div style={this.listStyle.listFooterButtonRow}>
             {this.renderFooterButtons([
               { icon: <FaBell size={18}></FaBell> },
@@ -178,22 +194,6 @@ class ListFooter extends React.Component {
                       }
                     );
                   },
-                },
-                onFocus: () => {
-                  this.setState(
-                    {
-                      focusingColorIcon: true,
-                    },
-                    this.shouldShowColors
-                  );
-                },
-                onBlur: () => {
-                  this.setState(
-                    {
-                      focusingColorIcon: false,
-                    },
-                    this.shouldShowColors
-                  );
                 },
               },
               { icon: <FaImages size={18}></FaImages> },

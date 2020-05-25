@@ -11,11 +11,34 @@ export default class ListStyle extends globalStylesheet {
       flexDirection: "column",
       alignItems: "center",
     };
-    this.listCard = {
-      margin: "15px 15px 0px 15px",
-      width: "289px",
-      backgroundColor: this.listBackground,
-      borderRadius: "0",
+    this.listCard = (isRenderingColorDropDown = false) => {
+      if (isRenderingColorDropDown) {
+        var borderRadius = {
+          borderTopLeftRadius: "8px",
+          borderTopRightRadius: "8px",
+          borderBottomLeftRadius: "0px",
+          borderBottomRightRadius: "0px",
+        };
+      } else {
+        var borderRadius = {
+          borderRadius: "8px",
+        };
+      }
+      return {
+        ...borderRadius,
+        margin: "15px 15px 0px 15px",
+        width: "289px",
+        backgroundColor: this.listBackground,
+        transition:
+          "box-shadow 0.2s, background-color 0.4s, border-radius 0.3s ease-in-out",
+      };
+    };
+    this.listCardHover = (isRenderingColorDropDown = false) => {
+      return {
+        ...this.listCard(isRenderingColorDropDown),
+        boxShadow:
+          "0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149)",
+      };
     };
     this.listSelectHide = {
       ...this.buttonStyle.buttonRound,
@@ -39,7 +62,9 @@ export default class ListStyle extends globalStylesheet {
       color: this.backgroundColor,
     };
     this.listHeader = {
-      backgroundColor: this.listBackground,
+      backgroundColor: "inherit",
+      borderTopLeftRadius: "8px",
+      borderTopRightRadius: "8px",
     };
     this.listTitle = {
       resize: "none",
@@ -48,7 +73,7 @@ export default class ListStyle extends globalStylesheet {
       fontSize: "large",
       textAlign: "center",
       boxShadow: "none",
-      backgroundColor: this.listBackground,
+      backgroundColor: "inherit",
     };
     this.listTitleFocus = {
       textShadow: "1px 1px 2px lightGray",
@@ -56,6 +81,9 @@ export default class ListStyle extends globalStylesheet {
     };
     this.listAddButton = this.buttonStyle.buttonAdd;
     this.listAddIcon = this.buttonStyle.buttonAddIcon;
+    this.listGroup = {
+      backgroundColor: "inherit",
+    };
     this.listItem = {
       display: "flex",
       placeContent: "center",
@@ -63,11 +91,11 @@ export default class ListStyle extends globalStylesheet {
       paddingLeft: "0px",
       paddingRight: "0px",
       border: "none",
-      backgroundColor: this.listBackground,
+      backgroundColor: "inherit",
     };
     this.listItemContent = {
       resize: "none",
-      backgroundColor: this.listBackground,
+      backgroundColor: "inherit",
       borderColor: this.primaryColor,
       color: this.primaryColor,
     };
@@ -87,13 +115,26 @@ export default class ListStyle extends globalStylesheet {
       paddingBottom: "10px",
       fontWeight: "bold",
     };
-    this.listFooter = {
-      backgroundColor: this.listBackground,
-      borderTop: "none",
-      display: "flex",
-      flexDirection: "column",
-      paddingTop: 0,
-      paddingBottom: 0,
+    this.listFooter = (isRenderingColorDropDown) => {
+      if (isRenderingColorDropDown) {
+        var borderRadius = {
+          borderRadius: "0px",
+        };
+      } else {
+        var borderRadius = {
+          borderRadius: "8px",
+        };
+      }
+      return {
+        ...borderRadius,
+        transition: "border-radius 0.3s ease-in-out",
+        backgroundColor: "inherit",
+        borderTop: "none",
+        display: "flex",
+        flexDirection: "column",
+        paddingTop: 0,
+        paddingBottom: 0,
+      };
     };
     this.listFooterButtonRow = {
       display: "flex",
@@ -109,7 +150,7 @@ export default class ListStyle extends globalStylesheet {
     };
     this.listFooterButtonDivShow = {
       ...this.fadeInTransition(),
-      ...this.listFooterButtonDivShow,
+      ...this.listFooterButtonDivHide,
       visibility: "visible",
       opacity: "1",
     };
@@ -117,26 +158,50 @@ export default class ListStyle extends globalStylesheet {
       ...this.buttonStyle.buttonNoBorder,
       ...this.buttonStyle.buttonRound,
       ...this.buttonStyle.buttonOpaque,
+    };
+    this.listFooterButton = {
+      ...this.listIconButton,
       marginBottom: "8px",
     };
-    this.listIconButtonHover = this.buttonStyle.buttonOpaqueHover;
-    this.listColorDropDownHide = {
-      transition: "max-height 1.3s, visibility 1s, opacity 1s ease-in-out",
-      visibility: "hidden",
-      opacity: 0.3,
-      maxHeight: 0,
-      maxWidth: 289,
-      marginRight: "15px",
-      marginLeft: "15px",
-      overflowY: "hidden",
-      borderTop: "none",
-      border: "1px solid rgba(0,0,0,.125)",
+
+    this.listFooterButtonHover = {
+      ...this.listFooterButton,
+      ...this.listIconButtonHover,
     };
-    this.listColorDropDownShow = {
-      ...this.listColorDropDownHide,
-      maxHeight: 200,
-      visibility: "visible",
-      opacity: 1,
+    this.listIconButtonHover = this.buttonStyle.buttonOpaqueHover;
+    this.listColorDropDownHide = (isRenderingColorDropDown) => {
+      if (isRenderingColorDropDown) {
+        var boxShadow = {
+          boxShadow:
+            "0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149)",
+        };
+      } else {
+        var boxShadow = {};
+      }
+      return {
+        ...boxShadow,
+        transition:
+          "max-height 0.6s, visibility 1s, opacity 1s, box-shadow 0.2s ease-in-out",
+        visibility: "hidden",
+        opacity: 0.3,
+        maxHeight: 0,
+        maxWidth: 289,
+        marginRight: "15px",
+        marginLeft: "15px",
+        overflowY: "hidden",
+        borderTop: "none",
+        border: "1px solid rgba(0,0,0,.125)",
+        borderBottomLeftRadius: "8px",
+        borderBottomRightRadius: "8px",
+      };
+    };
+    this.listColorDropDownShow = (isRenderingColorDropDown) => {
+      return {
+        ...this.listColorDropDownHide(isRenderingColorDropDown),
+        maxHeight: 90,
+        visibility: "visible",
+        opacity: 1,
+      };
     };
     this.listColors = {
       display: "flex",
@@ -174,36 +239,6 @@ export default class ListStyle extends globalStylesheet {
   }
 
   setNewBackgroundColor = (backgroundColor) => {
-    this.listBackground = backgroundColor;
-    this.listCard = {
-      ...this.listCard,
-      ...this.fadeColorTransition(),
-      backgroundColor: backgroundColor,
-    };
-    this.listTitle = {
-      ...this.listTitle,
-      ...this.fadeColorTransition(),
-      backgroundColor: backgroundColor,
-    };
-    this.listHeader = {
-      ...this.listHeader,
-      ...this.fadeColorTransition(),
-      backgroundColor: backgroundColor,
-    };
-    this.listItem = {
-      ...this.listItem,
-      ...this.fadeColorTransition(),
-      backgroundColor: backgroundColor,
-    };
-    this.listItemContent = {
-      ...this.listItemContent,
-      ...this.fadeColorTransition(),
-      backgroundColor: backgroundColor,
-    };
-    this.listFooter = {
-      ...this.listFooter,
-      ...this.fadeColorTransition(),
-      backgroundColor: backgroundColor,
-    };
+    return new ListStyle(backgroundColor);
   };
 }

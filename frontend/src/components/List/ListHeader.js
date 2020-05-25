@@ -44,11 +44,14 @@ class ListHeader extends React.Component {
   };
 
   handleTitleChange = (event) => {
-    this.props.updateListTitle(event.target.value, (returnedTitle) => {
-      this.setState({
-        title: returnedTitle,
-      });
-    });
+    this.props.updateListTitle(
+      { title: event.target.value },
+      (returnedData) => {
+        this.setState({
+          title: returnedData.title,
+        });
+      }
+    );
   };
 
   renderListTitle = () => {

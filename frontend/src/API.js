@@ -55,7 +55,39 @@ export function postUser(responseFunc, rejectFunc, properties) {
 
 export function getLists(responseFunc, rejectFunc) {
   axios
-    .get("http://localhost:8000/api/v1/lists/", {
+    .get("http://127.0.0.1:8000/api/v1/lists/", {
+      headers: {
+        Authorization: `JWT ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      responseFunc(response);
+    })
+    .catch((error) => {
+      rejectFunc(error);
+    });
+}
+
+export function getList(responseFunc, rejectFunc, properties) {
+  axios
+    .get(`http://127.0.0.1:8000/api/v1/lists/${properties.id}/`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      responseFunc(response);
+    })
+    .catch((error) => {
+      console.log(error);
+      rejectFunc(error);
+    });
+}
+
+export function getListItem(responseFunc, rejectFunc, properties) {
+  axios
+    .get(`http://127.0.0.1:8000/api/v1/list_item/${properties.id}/`, {
       headers: {
         Authorization: `JWT ${localStorage.getItem("token")}`,
       },
@@ -70,7 +102,7 @@ export function getLists(responseFunc, rejectFunc) {
 
 export function getUser(responseFunc, rejectFunc) {
   axios
-    .get("http://localhost:8000/current_user/", {
+    .get("http://127.0.0.1:8000/current_user/", {
       headers: {
         Authorization: `JWT ${localStorage.getItem("token")}`,
       },

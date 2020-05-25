@@ -40,7 +40,7 @@ class List(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     date_created = models.DateTimeField(blank=True, null=True, default=None)
     list_items = models.ManyToManyField('ListItem', related_name='list_items')
-    color = models.CharField(max_length=50, blank=True, default="#ffffff")
+    color = models.CharField(max_length=50, blank=True, default="rgb(255, 255, 255)")
 
 
 class ListItem(models.Model):
