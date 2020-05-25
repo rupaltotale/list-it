@@ -1,8 +1,5 @@
-import globalStylesheet from "../../../globalStylesheet";
-
-export default class ButtonStyle extends globalStylesheet {
+export default class ButtonStyle {
   constructor() {
-    super();
     this.buttonDiv = {
       display: "flex",
       justifyContent: "center",
@@ -34,36 +31,3 @@ export default class ButtonStyle extends globalStylesheet {
     };
   }
 }
-
-// let button;
-// export default button = {
-// buttonDiv: {
-//   display: "flex",
-//   justifyContent: "center",
-//   visibility: "visible",
-//   opacity: "1",
-// },
-// buttonRound: {
-//   borderRadius: "50%",
-//   padding: "6px",
-// },
-// buttonNoBorder: {
-//   borderColor: "transparent",
-//   boxShadow: "none",
-// },
-// buttonOpaque: {
-//   opacity: "0.7",
-// },
-// buttonOpaqueHover: {
-//   opacity: "1",
-// },
-// buttonAdd: {
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "center",
-//   margin: "6px",
-// },
-// buttonAddIcon: {
-//   margin: "2px",
-// },
-// };

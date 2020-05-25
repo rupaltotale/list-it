@@ -16,7 +16,6 @@ import ListStyle from "./ListStyle";
 class ListItem extends React.Component {
   constructor(props) {
     super(props);
-    this.listStyle = new ListStyle();
     this.ref = React.createRef();
     this.state = {
       content: this.props.content,
@@ -25,6 +24,7 @@ class ListItem extends React.Component {
       idToFocus: this.props.idToFocus,
       focused: false,
     };
+    this.listStyle = this.props.style;
   }
 
   componentDidMount() {
@@ -198,15 +198,15 @@ class ListItem extends React.Component {
   deleteListItem = () => {
     if (this.state.focused) {
       Mousetrap.reset();
-      let newID = focus.setPreviousListItemToFocus(
+      var newID = focus.setPreviousListItemToFocus(
         this.props.index,
         this.props.listItems
       );
-      this.props.setNewListItemToFocus(newID);
     }
     deleteListItem(
       (response) => {
         this.props.refresh();
+        this.props.setNewListItemToFocus(newID);
       },
       (error) => {
         console.log(error.response);

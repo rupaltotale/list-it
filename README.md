@@ -5,12 +5,14 @@ Django REST API with React frontend
 
 - Run `./reset.sh`
 
-If you get weird errors:
+A more fullproof procedure if you get weird errors:
 - Delete database: `rm db.sqlite3`
-- Delete migration:  `cd leads && rm -rf migrations`
-- Resync database: `python3 manage.py syncdb`
+- Delete migrations:  
+  - `cd leads && rm -rf migrations __pycache__`
+  - `cd leads && rm -rf django_react __pycache__`
+  - `cd leads && rm -rf frontend __pycache__`
 - Rerun migrations and start server: `./reset.sh`
-
+- (Optional) Create super user: `python3 manage.py createsuperuser --email <rupaltotale@gmail.com> --username <username>`
 (TODO: Make script for above)
 
 ## Helpful Resources

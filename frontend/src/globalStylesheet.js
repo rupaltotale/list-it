@@ -14,6 +14,12 @@ export default class globalStylesheet {
     };
   };
 
+  fadeColorTransition = (time = 0.4) => {
+    return {
+      transition: `background-color ${time}s ease-in-out`,
+    };
+  };
+
   setColors = (primaryColor = "#212529", backgroundColor = "#fff") => {
     this.primaryColor = primaryColor;
     this.backgroundColor = backgroundColor;

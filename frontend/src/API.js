@@ -1,12 +1,11 @@
 import axios from "axios";
-import { func } from "prop-types";
 
 // *********************************** POST API REQUESTS ***********************************
 
 export function createNewList(
   responseFunc,
   rejectFunc,
-  properties = { title: "" }
+  properties = { title: "", color: "#ffffff" }
 ) {
   axios
     .post("http://127.0.0.1:8000/api/v1/lists/new", properties, {
@@ -88,18 +87,12 @@ export function getUser(responseFunc, rejectFunc) {
 
 export function updateList(responseFunc, rejectFunc, properties) {
   axios
-    .put(
-      `http://127.0.0.1:8000/api/v1/lists/${properties.id}/`,
-      {
-        title: properties.title,
+    .put(`http://127.0.0.1:8000/api/v1/lists/${properties.id}/`, properties, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.getItem("token")}`,
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${localStorage.getItem("token")}`,
-        },
-      }
-    )
+    })
     .then((response) => {
       responseFunc(response);
     })

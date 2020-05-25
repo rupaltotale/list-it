@@ -1,9 +1,7 @@
 import ButtonStyle from "../../components/CustomComponents/Button/ButtonStyle";
-import globalStylesheet from "../../globalStylesheet";
 
-export default class HomeStyle extends globalStylesheet {
+export default class HomeStyle {
   constructor() {
-    super();
     this.buttonStyle = new ButtonStyle();
     this.home = {
       display: "flex",
