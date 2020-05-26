@@ -5,7 +5,7 @@ import axios from "axios";
 export function createNewList(
   responseFunc,
   rejectFunc,
-  properties = { title: "", color: "#ffffff" }
+  properties = { title: "", color: "rgb(255, 255, 255)" }
 ) {
   axios
     .post("http://127.0.0.1:8000/api/v1/lists/new", properties, {

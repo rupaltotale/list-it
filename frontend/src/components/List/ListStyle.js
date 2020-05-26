@@ -74,6 +74,7 @@ export default class ListStyle extends globalStylesheet {
       textAlign: "center",
       boxShadow: "none",
       backgroundColor: "inherit",
+      color: this.primaryColor,
     };
     this.listTitleFocus = {
       textShadow: "1px 1px 2px lightGray",
@@ -122,7 +123,8 @@ export default class ListStyle extends globalStylesheet {
         };
       } else {
         var borderRadius = {
-          borderRadius: "8px",
+          borderBottomLeftRadius: "8px",
+          borderBottomRightRadius: "8px",
         };
       }
       return {

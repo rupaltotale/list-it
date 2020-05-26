@@ -90,12 +90,15 @@ class Home extends React.Component {
             content: "",
             completed: false,
             list_id: response.data.id,
-            color: "rgb(255, 255, 255)",
           }
         );
       },
       (error) => {
         console.log(error.response);
+      },
+      {
+        title: "",
+        color: "rgb(255, 255, 255)",
       }
     );
   };

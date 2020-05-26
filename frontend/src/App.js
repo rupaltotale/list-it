@@ -30,7 +30,7 @@ class App extends React.Component {
       username: "",
       isPasswordShowing: false,
       backgroundColor: "#ffffff",
-      primaryColor: "#212529",
+      primaryColor: "black",
     };
   }
 

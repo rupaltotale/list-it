@@ -1,5 +1,5 @@
 export default class globalStylesheet {
-  constructor(primaryColor = "#212529", backgroundColor = "#fff") {
+  constructor(primaryColor = "black", backgroundColor = "#fff") {
     this.primaryColor = primaryColor;
     this.backgroundColor = backgroundColor;
   }
@@ -20,7 +20,7 @@ export default class globalStylesheet {
     };
   };
 
-  setColors = (primaryColor = "#212529", backgroundColor = "#fff") => {
+  setColors = (primaryColor = "black", backgroundColor = "#fff") => {
     this.primaryColor = primaryColor;
     this.backgroundColor = backgroundColor;
     return {
