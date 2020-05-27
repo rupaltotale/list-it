@@ -5,12 +5,16 @@ export default class NavStyle {
       textDecoration: "none",
     };
     this.navDropdownLogout = {
+      ...this.navDropdownItem,
       color: "red",
       fontWeight: "bold",
     };
-    this.navDropdownMenu = {
-      right: "0",
-      left: "auto",
+    this.navDropdownItem = {
+      display: "flex",
+      alignItems: "center",
+    };
+    this.navDropdownIcon = {
+      marginRight: "5px",
     };
   }
 }

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import { Nav, Navbar, Dropdown } from "react-bootstrap";
 import CustomDropdown from "../CustomComponents/CustomDropdown";
+import { FaSignOutAlt, FaMoon, FaUser } from "react-icons/fa";
 import NavStyle from "./NavStyle";
 
 class CustomNavBar extends React.Component {
@@ -59,18 +60,32 @@ class CustomNavBar extends React.Component {
                   exact
                   to="/profile"
                 >
-                  <Dropdown.Item as="button">My Profile</Dropdown.Item>
+                  <Dropdown.Item
+                    style={this.navStyle.navDropdownItem}
+                    as="button"
+                  >
+                    <FaUser style={this.navStyle.navDropdownIcon}></FaUser>My
+                    Profile
+                  </Dropdown.Item>
                 </NavLink>
+                <Dropdown.Divider></Dropdown.Divider>
+                <Dropdown.Item style={this.navStyle.navDropdownItem}>
+                  <FaMoon style={this.navStyle.navDropdownIcon}></FaMoon>Dark
+                  Theme
+                </Dropdown.Item>
                 <Dropdown.Divider></Dropdown.Divider>
                 <Dropdown.Item
                   style={this.navStyle.navDropdownLogout}
                   onClick={this.handleLogout}
                 >
+                  <FaSignOutAlt
+                    style={this.navStyle.navDropdownIcon}
+                  ></FaSignOutAlt>
                   Logout
                 </Dropdown.Item>
               </>
             }
-            menuStyle={this.navStyle.navDropdownMenu}
+            dropdownProps={{ alignRight: true }}
           />
         </Nav>
       </>

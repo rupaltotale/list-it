@@ -81,6 +81,7 @@ class CustomDropdown extends React.Component {
   render() {
     return (
       <Dropdown
+        {...this.props.dropdownProps}
         onMouseEnter={() => {
           this.toggleDropdownHover(true);
         }}
@@ -105,6 +106,7 @@ export default onClickOutside(CustomDropdown);
 CustomDropdown.propTypes = {
   title: PropTypes.string,
   dropdownItems: PropTypes.object,
+  dropdownProps: PropTypes.object,
   menuStyle: PropTypes.object,
   menuProps: PropTypes.object,
   dropdownToggle: PropTypes.object,

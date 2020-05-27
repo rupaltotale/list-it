@@ -217,7 +217,7 @@ export default class ListStyle extends globalStylesheet {
     this.listColorButton = (color, IsDefault = false, isActive = false) => {
       return {
         ...this.buttonStyle.buttonRound,
-        backgroundColor: color,
+        backgroundColor: color.replace(")", ", 0.7)"),
         padding: isActive ? 7 : 12,
         margin: 7,
         boxShadow: "none",
