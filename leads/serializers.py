@@ -42,11 +42,10 @@ class ListSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = CustomUser
         fields = ('username', 'first_name',
-                  'last_name', 'email', 'date_joined')
+                  'last_name', 'email', 'date_joined', 'theme')
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):

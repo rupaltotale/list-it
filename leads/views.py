@@ -13,12 +13,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from rest_framework.generics import ListAPIView, CreateAPIView, \
-    RetrieveUpdateDestroyAPIView, GenericAPIView
+    RetrieveUpdateDestroyAPIView, GenericAPIView, RetrieveAPIView
 from rest_framework.exceptions import ValidationError
 
 from .serializers import UserSerializer, UserSerializerWithToken, \
     ListSerializer, ListItemSerializer
-from .models import List, ListItem
+from .models import List, ListItem, CustomUser
 from django.utils import timezone
 
 ########################### List endpoints ########################################
@@ -116,15 +116,22 @@ class ListItemRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         return response
 
 ########################### User endpoints ########################################
-@api_view(['GET'])
-def current_user(request):
-    """
-    Determine the current user by their token, and return their data
-    """
+class UserGet(APIView):
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
 
-    serializer = UserSerializer(request.user)
-    return Response(serializer.data)
-
+class UserRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+    queryset = CustomUser.objects.all()
+    lookup_field = 'username'
+    serializer_class = UserSerializer
+    def delete(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        response = super().delete(request, *args, **kwargs)
+        if response.status_code == 204:
+            from django.core.cache import cache
+            cache.delete('user_{}'.format(username))
+        return response
 
 class UserList(APIView):
     """
@@ -140,3 +147,4 @@ class UserList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

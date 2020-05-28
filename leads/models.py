@@ -1,4 +1,4 @@
-# User: colors
+# User: themes
 # List: id, title, owner (userId), dateCreated,
 # ListItem: id, listId, completed, content
 from django.db import models
@@ -31,7 +31,7 @@ class CustomUser(AbstractUser):
     )
 
     def __str__(self):
-        return "Email: {}, Username: {}, Password: Haha no".format(self.email, self.username)
+        return "Email: {}, Username: {}".format(self.email, self.username)
 
 
 class List(models.Model):
