@@ -42,13 +42,15 @@ class ListSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
     class Meta:
         model = CustomUser
-        fields = ('username', 'first_name',
+        fields = ('id', 'username', 'first_name',
                   'last_name', 'email', 'date_joined', 'theme')
 
-
-class UserSerializerWithToken(serializers.ModelSerializer):
+class UserSerializerForCreation(serializers.ModelSerializer):
 
     token = serializers.SerializerMethodField()
     password = serializers.CharField(write_only=True)
@@ -92,9 +94,9 @@ class UserSerializerWithToken(serializers.ModelSerializer):
         if errors:
             raise serializers.ValidationError(errors)
 
-        return super(UserSerializerWithToken, self).validate(data)
+        return super(UserSerializerForCreation, self).validate(data)
 
     class Meta:
         model = CustomUser
-        fields = ('token', 'username', 'password',
+        fields = ('id', 'token', 'username', 'password',
                   'email', 'first_name', 'last_name')

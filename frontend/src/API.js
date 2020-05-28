@@ -158,16 +158,12 @@ export function updateListItem(responseFunc, rejectFunc, properties) {
 
 export function updateUser(responseFunc, rejectFunc, properties) {
   axios
-    .put(
-      `http://127.0.0.1:8000/api/v1/user/${properties.username}`,
-      properties,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${localStorage.getItem("token")}`,
-        },
-      }
-    )
+    .put(`http://127.0.0.1:8000/api/v1/user/${properties.id}/`, properties, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.getItem("token")}`,
+      },
+    })
     .then((response) => {
       responseFunc(response);
     })

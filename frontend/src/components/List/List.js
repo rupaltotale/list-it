@@ -20,7 +20,6 @@ class List extends React.Component {
       title: this.props.title,
       listItems: this.props.listItems,
     };
-    console.log(this.state);
     this.listStyle = new ListStyle(this.state.color);
   }
 

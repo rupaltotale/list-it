@@ -5,6 +5,7 @@ import { Nav, Navbar, Dropdown } from "react-bootstrap";
 import CustomDropdown from "../CustomComponents/CustomDropdown";
 import { FaSignOutAlt, FaMoon, FaUser } from "react-icons/fa";
 import NavStyle from "./NavStyle";
+import { updateUser } from "../../API";
 
 class CustomNavBar extends React.Component {
   constructor(props) {
@@ -13,14 +14,19 @@ class CustomNavBar extends React.Component {
     this.state = {
       loggedIn: localStorage.getItem("token") ? true : false,
       username: this.props.username,
+      userID: this.props.userID,
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.username !== prevState.username) {
+    if (
+      nextProps.username !== prevState.username ||
+      nextProps.userID !== prevState.userID
+    ) {
       return {
         username: nextProps.username,
         loggedIn: nextProps.username ? true : false,
+        userID: nextProps.userID,
       };
     }
 
@@ -42,9 +48,21 @@ class CustomNavBar extends React.Component {
     );
   };
 
+  changeTheme = () => {
+    this.props.updateUser(
+      (response) => {
+        console.log(response);
+      },
+      (error) => {
+        console.log(error.response);
+      },
+      { theme: "L" }
+    );
+  };
+
   handleLogout = () => {
     localStorage.removeItem("token");
-    this.props.setUsername("", false);
+    this.props.setUsername("", false, null);
   };
 
   renderNavLoggedIn = () => {
@@ -69,7 +87,10 @@ class CustomNavBar extends React.Component {
                   </Dropdown.Item>
                 </NavLink>
                 <Dropdown.Divider></Dropdown.Divider>
-                <Dropdown.Item style={this.navStyle.navDropdownItem}>
+                <Dropdown.Item
+                  style={this.navStyle.navDropdownItem}
+                  onClick={this.changeTheme}
+                >
                   <FaMoon style={this.navStyle.navDropdownIcon}></FaMoon>Dark
                   Theme
                 </Dropdown.Item>
@@ -126,4 +147,5 @@ export default CustomNavBar;
 CustomNavBar.propTypes = {
   username: PropTypes.string.isRequired,
   setUsername: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
 };

@@ -16,7 +16,7 @@ from rest_framework.generics import ListAPIView, CreateAPIView, \
     RetrieveUpdateDestroyAPIView, GenericAPIView, RetrieveAPIView
 from rest_framework.exceptions import ValidationError
 
-from .serializers import UserSerializer, UserSerializerWithToken, \
+from .serializers import UserSerializer, UserSerializerForCreation, \
     ListSerializer, ListItemSerializer
 from .models import List, ListItem, CustomUser
 from django.utils import timezone
@@ -61,7 +61,8 @@ class ListRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
             from django.core.cache import cache
             list = response.data
             cache.set('list_data_{}'.format(list['id']), {
-                'title': list['title']
+                'title': list['title'],
+                'color': list['color'],
             })
         return response
 ########################### ListItem endpoints ########################################
@@ -111,7 +112,7 @@ class ListItemRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
             list = response.data
             cache.set('list_item_data_{}'.format(list['id']), {
                 'content': list['content'],
-                'completed': list['completed']
+                'completed': list['completed'],
             })
         return response
 
@@ -123,14 +124,27 @@ class UserGet(APIView):
 
 class UserRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
-    lookup_field = 'username'
+    lookup_field = 'id'
     serializer_class = UserSerializer
     def delete(self, request, *args, **kwargs):
-        username = request.data.get('username')
+        user_id = request.data.get('id')
         response = super().delete(request, *args, **kwargs)
         if response.status_code == 204:
             from django.core.cache import cache
-            cache.delete('user_{}'.format(username))
+            cache.delete('user_{}'.format(user_id))
+        return response
+    def update(self, request, *args, **kwargs):
+        user_id = request.data.get('id')
+        response = super().update(request, *args, **kwargs)
+        if response.status_code == 200:
+            from django.core.cache import cache
+            user = response.data
+            cache.set('user_data_{}'.format(user_id), {
+                'username': user['username'],
+                'first_name': user['first_name'],
+                'last_name': user['last_name'],
+                'email': user['email'],
+            })
         return response
 
 class UserList(APIView):
@@ -142,7 +156,7 @@ class UserList(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
-        serializer = UserSerializerWithToken(data=request.data)
+        serializer = UserSerializerForCreation(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -19,15 +19,20 @@ import CustomForm from "./components/CustomComponents/CustomForm";
 import { render } from "react-dom";
 import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile";
-import { getUser } from "./API";
+import { getUser, updateUser } from "./API";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.container = document.getElementById("app");
     this.state = {
-      loggedIn: localStorage.getItem("token") ? true : false,
       username: "",
+      first_name: "",
+      last_name: "",
+      email: "",
+      id: null,
+      theme: "",
+      loggedIn: localStorage.getItem("token") ? true : false,
       isPasswordShowing: false,
       backgroundColor: "#ffffff",
       primaryColor: "black",
@@ -39,7 +44,14 @@ class App extends React.Component {
       console.log("JWT", localStorage.getItem("token"));
       getUser(
         (response) => {
-          this.setState({ username: response.data.username });
+          this.setState({
+            username: response.data.username,
+            first_name: response.data.first_name,
+            last_name: response.data.last_name,
+            email: response.data.email,
+            id: response.data.id,
+            theme: response.data.theme,
+          });
         },
         (error) => {
           console.log(error);
@@ -58,11 +70,25 @@ class App extends React.Component {
     }
   }
 
-  setUsername = (username, isLoggedIn) => {
+  setUsername = (username, isLoggedIn, id) => {
     this.setState({
       username: username,
       loggedIn: isLoggedIn,
+      id: id,
     });
+  };
+
+  updateUser = (responseFunc, rejectFunc, properties) => {
+    updateUser(
+      (response) => {
+        responseFunc(response);
+        this.setState(response.data);
+      },
+      (error) => {
+        rejectFunc(error);
+      },
+      { ...this.state, ...properties }
+    );
   };
 
   showPassword = () => {
@@ -76,6 +102,7 @@ class App extends React.Component {
       <CustomNavBar
         username={this.state.username}
         setUsername={this.setUsername}
+        updateUser={this.updateUser}
       />
     );
   }
