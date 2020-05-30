@@ -5,7 +5,6 @@ import { Nav, Navbar, Dropdown } from "react-bootstrap";
 import CustomDropdown from "../CustomComponents/CustomDropdown";
 import { FaSignOutAlt, FaMoon, FaUser, FaLightbulb } from "react-icons/fa";
 import NavStyle from "./NavStyle";
-import { updateUser } from "../../API";
 
 class CustomNavBar extends React.Component {
   constructor(props) {

@@ -6,13 +6,12 @@ import { FaCheck } from "react-icons/fa";
 class ListColors extends React.Component {
   constructor(props) {
     super(props);
-    this.initialBackground = this.props.style.defaultBackground;
     this.state = {
       listStyle: this.props.style,
       hoveringDropdown: false,
       currentColor: this.props.currentColor
         ? this.props.currentColor
-        : this.initialBackground,
+        : "Default",
     };
   }
 
@@ -22,7 +21,7 @@ class ListColors extends React.Component {
         listStyle: nextProps.style,
         currentColor: nextProps.currentColor
           ? nextProps.currentColor
-          : nextProps.style.defaultBackground,
+          : "Default",
       };
     }
     return null;
