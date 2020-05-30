@@ -102,7 +102,7 @@ class CustomForm extends React.Component {
         const username = response.data.username
           ? response.data.username
           : response.data.user.username;
-        const id = response.data.id;
+        const id = response.data.id ? response.data.id : response.data.user.id;
         this.setState({
           loggedIn: true,
           username,

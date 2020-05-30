@@ -43,25 +43,15 @@ class App extends React.Component {
   componentDidMount() {
     if (this.state.loggedIn) {
       console.log("JWT", localStorage.getItem("token"));
-      getUser(
-        (response) => {
-          this.setState({
-            username: response.data.username,
-            first_name: response.data.first_name,
-            last_name: response.data.last_name,
-            email: response.data.email,
-            id: response.data.id,
-            theme: response.data.theme,
-          });
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+      this.getUser();
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (prevState.loggedIn !== this.state.loggedIn && this.state.loggedIn) {
+      console.log("JWT", localStorage.getItem("token"));
+      this.getUser();
+    }
     if (
       prevState.primaryColor !== this.state.primaryColor ||
       prevState.backgroundColor !== this.state.backgroundColor
@@ -77,6 +67,24 @@ class App extends React.Component {
       loggedIn: isLoggedIn,
       id: id,
     });
+  };
+
+  getUser = () => {
+    getUser(
+      (response) => {
+        this.setState({
+          username: response.data.username,
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+          email: response.data.email,
+          id: response.data.id,
+          theme: response.data.theme,
+        });
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
 
   updateUser = (responseFunc, rejectFunc, properties) => {
