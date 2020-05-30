@@ -3,6 +3,8 @@ import { getListColorsFromTheme, getPrimaryColorFromTheme } from "../../Colors";
 
 export default class ListStyle {
   constructor(backgroundColor, theme) {
+    /****************************** GLOBAL VARIABLES ******************************/
+
     this.theme = theme;
     this.colors = getListColorsFromTheme(theme);
     this.primaryColor = getPrimaryColorFromTheme(theme);
@@ -11,6 +13,17 @@ export default class ListStyle {
       ? this.colors[backgroundColor]
       : this.defaultBackground;
     this.buttonStyle = new ButtonStyle();
+
+    this.listIconButton = {
+      ...this.buttonStyle.buttonNoBorder,
+      ...this.buttonStyle.buttonRound,
+      ...this.buttonStyle.buttonOpaque,
+      color: "inherit",
+    };
+    this.listIconButtonHover = this.buttonStyle.buttonOpaqueHover;
+
+    /****************************** LIST AND LIST CARD VARIABLES ******************************/
+
     this.list = {
       display: "flex",
       flexDirection: "column",
@@ -33,6 +46,7 @@ export default class ListStyle {
         ...borderRadius,
         margin: "15px 15px 0px 15px",
         width: "289px",
+        color: this.primaryColor,
         backgroundColor: this.listBackground,
         transition:
           "box-shadow 0.2s, background-color 0.4s, border-radius 0.3s ease-in-out",
@@ -45,6 +59,11 @@ export default class ListStyle {
           "0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149)",
       };
     };
+
+    /****************************** LIST HEADER VARIABLES ******************************/
+
+    /********** SELECT ICON **********/
+
     this.listSelectHide = {
       ...this.buttonStyle.buttonRound,
       ...this.buttonStyle.buttonNoBorder,
@@ -66,8 +85,13 @@ export default class ListStyle {
     this.listSelectIcon = {
       color: "white",
     };
+
+    /********** LIST HEADER AND LIST TITLE **********/
+
     this.listHeader = {
       backgroundColor: "inherit",
+      color: "inherit",
+      borderColor: this.primaryColor,
       borderTopLeftRadius: "8px",
       borderTopRightRadius: "8px",
     };
@@ -79,16 +103,28 @@ export default class ListStyle {
       textAlign: "center",
       boxShadow: "none",
       backgroundColor: "inherit",
-      color: this.primaryColor,
+      color: "inherit",
     };
     this.listTitleFocus = {
       textShadow: "1px 1px 2px lightGray",
       boxShadow: "none",
     };
-    this.listAddButton = this.buttonStyle.buttonAdd;
+
+    /****************************** LIST BODY VARIABLES ******************************/
+
+    /********** LIST ITEM ADD BUTTON **********/
+    this.listAddButton = {
+      ...this.buttonStyle.buttonAdd,
+      backgroundColor: "transparent",
+      color: "inherit",
+      borderColor: "inherit",
+    };
     this.listAddIcon = this.buttonStyle.buttonAddIcon;
+
+    /********** LIST ITEM GROUP **********/
     this.listGroup = {
       backgroundColor: "inherit",
+      color: "inherit",
     };
     this.listItem = {
       display: "flex",
@@ -98,21 +134,16 @@ export default class ListStyle {
       paddingRight: "0px",
       border: "none",
       backgroundColor: "inherit",
+      color: "inherit",
     };
     this.listItemContent = {
       resize: "none",
       backgroundColor: "inherit",
+      color: "inherit",
       borderColor: this.primaryColor,
-      color: this.primaryColor,
     };
     this.listItemContentCompleted = {
       textDecorationLine: "line-through",
-    };
-    this.listItemButtonDiv = {
-      ...this.buttonStyle.buttonDiv,
-      marginLeft: "0.25rem",
-      marginRight: "0.25rem",
-      boxShadow: "none",
     };
     this.listCompletedItemsAlert = {
       borderRadius: "0px",
@@ -121,6 +152,21 @@ export default class ListStyle {
       paddingBottom: "10px",
       fontWeight: "bold",
     };
+
+    /********** LIST ITEM BUTTONS **********/
+    this.listItemButtonDiv = {
+      ...this.buttonStyle.buttonDiv,
+      marginLeft: "0.25rem",
+      marginRight: "0.25rem",
+      boxShadow: "none",
+      color: "inherit",
+    };
+    this.listItemButton = { ...this.listIconButton };
+    this.listItemButtonHover = { ...this.listIconButtonHover };
+
+    /****************************** LIST FOOTER VARIABLES ******************************/
+
+    /********** LIST FOOTER **********/
     this.listFooter = (isRenderingColorDropDown) => {
       if (isRenderingColorDropDown) {
         var borderRadius = {
@@ -149,6 +195,8 @@ export default class ListStyle {
       alignItems: "center",
       height: "40px",
     };
+
+    /********** LIST FOOTER BUTTONS **********/
     this.listFooterButtonDivHide = {
       ...this.buttonStyle.buttonDiv,
       ...this.fadeInTransition(),
@@ -161,11 +209,6 @@ export default class ListStyle {
       visibility: "visible",
       opacity: "1",
     };
-    this.listIconButton = {
-      ...this.buttonStyle.buttonNoBorder,
-      ...this.buttonStyle.buttonRound,
-      ...this.buttonStyle.buttonOpaque,
-    };
     this.listFooterButton = {
       ...this.listIconButton,
       marginBottom: "8px",
@@ -175,7 +218,10 @@ export default class ListStyle {
       ...this.listFooterButton,
       ...this.listIconButtonHover,
     };
-    this.listIconButtonHover = this.buttonStyle.buttonOpaqueHover;
+
+    /****************************** LIST COLOR VARIABLES ******************************/
+
+    /********** LIST COLOR DROPDOWN **********/
     this.listColorDropDownHide = (isRenderingColorDropDown) => {
       if (isRenderingColorDropDown) {
         var boxShadow = {
@@ -200,6 +246,7 @@ export default class ListStyle {
         border: "1px solid rgba(0,0,0,.125)",
         borderBottomLeftRadius: "8px",
         borderBottomRightRadius: "8px",
+        backgroundColor: this.defaultBackground,
       };
     };
     this.listColorDropDownShow = (isRenderingColorDropDown) => {
@@ -219,6 +266,8 @@ export default class ListStyle {
       alignItems: "flex-start",
       justifyContent: "center",
     };
+
+    /********** LIST COLOR DROPDOWN BUTTONS **********/
     this.listColorButton = (color, isActive = false) => {
       return {
         ...this.buttonStyle.buttonRound,
@@ -244,6 +293,7 @@ export default class ListStyle {
       };
     };
   }
+
   fadeInTransition = (time = 0.4) => {
     return {
       transition: `visibility ${time}s, opacity ${time}s ease-in-out`,

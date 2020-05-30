@@ -24,6 +24,12 @@ class List extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.listStyle !== this.state.listStyle) {
+      console.log(this.state.listStyle);
+    }
+  }
+
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.theme !== prevState.theme) {
       console.log("NEXT PROPS COLOR: ", nextProps.color);
@@ -127,7 +133,6 @@ class List extends React.Component {
     return (
       <Button
         style={this.state.listStyle.listAddButton}
-        variant="outline-dark"
         onClick={() => {
           this.createListItem();
         }}

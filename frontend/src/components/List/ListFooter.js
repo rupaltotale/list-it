@@ -134,7 +134,6 @@ class ListFooter extends React.Component {
           <CustomButton
             style={this.listStyle.listFooterButton}
             styleOnHover={this.listStyle.listFooterButtonHover}
-            variantOnHover="light"
             onClick={button.onClick}
             onClickOutside={button.onClickOutside}
             onFocus={button.onFocus}

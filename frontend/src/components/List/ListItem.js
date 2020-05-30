@@ -27,8 +27,8 @@ class ListItem extends React.Component {
       errorResponse: null,
       idToFocus: this.props.idToFocus,
       focused: false,
+      listStyle: this.props.style,
     };
-    this.listStyle = this.props.style;
   }
 
   componentDidMount() {
@@ -47,12 +47,17 @@ class ListItem extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.style !== prevState.listStyle) {
+      var newStyle = {
+        listStyle: nextProps.style,
+      };
+    }
     if (nextProps.idToFocus !== prevState.idToFocus) {
-      return {
+      var newIDToFocus = {
         idToFocus: nextProps.idToFocus,
       };
     }
-    return null;
+    return newStyle || newIDToFocus ? { ...newStyle, ...newIDToFocus } : null;
   }
 
   focusListItem = () => {
@@ -153,18 +158,17 @@ class ListItem extends React.Component {
 
   renderCheckbox = () => {
     return (
-      <div style={this.listStyle.listItemButtonDiv}>
+      <div style={this.state.listStyle.listItemButtonDiv}>
         <CustomButton
           size="sm"
-          style={this.listStyle.listIconButton}
-          styleOnHover={this.listStyle.listIconButtonHover}
-          variantOnHover="light"
+          style={this.state.listStyle.listIconButton}
+          styleOnHover={this.state.listStyle.listIconButtonHover}
           onClick={this.toggleCompleted}
           icon={
             this.state.completed ? (
-              <FaRegCheckSquare color="black" size={20}></FaRegCheckSquare>
+              <FaRegCheckSquare size={20}></FaRegCheckSquare>
             ) : (
-              <FaRegSquare color="black" size={20}></FaRegSquare>
+              <FaRegSquare size={20}></FaRegSquare>
             )
           }
         />
@@ -191,10 +195,10 @@ class ListItem extends React.Component {
         style={
           this.state.completed && this.state.content
             ? {
-                ...this.listStyle.listItemContent,
-                ...this.listStyle.listItemContentCompleted,
+                ...this.state.listStyle.listItemContent,
+                ...this.state.listStyle.listItemContentCompleted,
               }
-            : this.listStyle.listItemContent
+            : this.state.listStyle.listItemContent
         }
         className="form-control mousetrap"
         onChange={this.handleContentChange}
@@ -246,16 +250,15 @@ class ListItem extends React.Component {
 
   renderDeleteButton = () => {
     return (
-      <div style={this.listStyle.listItemButtonDiv}>
+      <div style={this.state.listStyle.listItemButtonDiv}>
         <CustomButton
           eventTypes={["click", "mousedown"]}
           size="sm"
-          style={this.listStyle.listIconButton}
-          styleOnHover={this.listStyle.listIconButtonHover}
-          variantOnHover="light"
+          style={this.state.listStyle.listItemButton}
+          styleOnHover={this.state.listStyle.listItemButtonHover}
           onClick={this.deleteListItem}
           onClickOutside={this.handleClickOutsideDelete}
-          icon={<FaRegTimesCircle size={20} color="black"></FaRegTimesCircle>}
+          icon={<FaRegTimesCircle size={20}></FaRegTimesCircle>}
         />
       </div>
     );
@@ -263,7 +266,7 @@ class ListItem extends React.Component {
 
   renderListItem = () => {
     return (
-      <ListGroupItem style={this.listStyle.listItem}>
+      <ListGroupItem style={this.state.listStyle.listItem}>
         {this.renderCheckbox()}
         {this.renderListItemContent()}
         {this.renderDeleteButton()}

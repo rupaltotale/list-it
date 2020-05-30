@@ -51,3 +51,10 @@ export function getSecondaryColorFromTheme(theme) {
   }
   return "rgb(254, 239, 195)";
 }
+
+export function getHoveringButtonColorFromTheme(theme) {
+  if (theme === "D") {
+    return "rgba(154,160,166,0.157)";
+  }
+  return null;
+}

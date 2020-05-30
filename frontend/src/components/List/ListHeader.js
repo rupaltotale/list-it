@@ -10,22 +10,29 @@ import CustomButton from "../CustomComponents/Button/CustomButton";
 class ListHeader extends React.Component {
   constructor(props) {
     super(props);
-    this.listStyle = this.props.style;
     this.listTitle = React.createRef();
     this.state = {
       hoveringList: this.props.hoveringList,
       title: this.props.title,
       focusedOnListTitle: false,
+      listStyle: this.props.style,
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.style !== prevState.listStyle) {
+      var newStyle = {
+        listStyle: nextProps.style,
+      };
+    }
     if (nextProps.hoveringList !== prevState.hoveringList) {
-      return {
+      var newHoveringList = {
         hoveringList: nextProps.hoveringList,
       };
     }
-    return null;
+    return newStyle || newHoveringList
+      ? { ...newStyle, ...newHoveringList }
+      : null;
   }
 
   renderSelectIcon = () => {
@@ -33,11 +40,14 @@ class ListHeader extends React.Component {
       <CustomButton
         style={
           this.state.hoveringList
-            ? this.listStyle.listSelectShow
-            : this.listStyle.listSelectHide
+            ? this.state.listStyle.listSelectShow
+            : this.state.listStyle.listSelectHide
         }
         icon={
-          <FaCheck style={this.listStyle.listSelectIcon} size={16}></FaCheck>
+          <FaCheck
+            style={this.state.listStyle.listSelectIcon}
+            size={16}
+          ></FaCheck>
         }
       ></CustomButton>
     );
@@ -56,17 +66,17 @@ class ListHeader extends React.Component {
 
   renderListTitle = () => {
     return (
-      <Card.Header style={this.listStyle.listHeader}>
+      <Card.Header style={this.state.listStyle.listHeader}>
         <TextareaAutosize
           value={this.state.title}
           className="form-control mousetrap"
           style={
             this.state.focusedOnListTitle
               ? {
-                  ...this.listStyle.listTitle,
-                  ...this.listStyle.listTitleFocus,
+                  ...this.state.listStyle.listTitle,
+                  ...this.state.listStyle.listTitleFocus,
                 }
-              : this.listStyle.listTitle
+              : this.state.listStyle.listTitle
           }
           onChange={this.handleTitleChange}
           placeholder="List Title"
