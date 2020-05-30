@@ -20,6 +20,7 @@ import { render } from "react-dom";
 import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile";
 import { getUser, updateUser } from "./API";
+import globalStylesheet from "./globalStylesheet";
 
 class App extends React.Component {
   constructor(props) {
@@ -101,6 +102,7 @@ class App extends React.Component {
     return (
       <CustomNavBar
         username={this.state.username}
+        theme={this.state.theme}
         setUsername={this.setUsername}
         updateUser={this.updateUser}
       />
@@ -214,7 +216,11 @@ class App extends React.Component {
 
   renderHomePage = () => {
     return (
-      <Home username={this.state.username} loggedIn={this.state.loggedIn} />
+      <Home
+        username={this.state.username}
+        loggedIn={this.state.loggedIn}
+        theme={this.state.theme}
+      />
     );
   };
 

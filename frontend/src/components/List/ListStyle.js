@@ -1,11 +1,16 @@
-import globalStylesheet from "../../globalStylesheet";
 import ButtonStyle from "../CustomComponents/Button/ButtonStyle";
+import { getListColorsFromTheme, getPrimaryColorFromTheme } from "../../Colors";
 
-export default class ListStyle extends globalStylesheet {
-  constructor(backgroundColor) {
-    super();
+export default class ListStyle {
+  constructor(backgroundColor, theme) {
+    this.theme = theme;
+    this.colors = getListColorsFromTheme(theme);
+    this.primaryColor = getPrimaryColorFromTheme(theme);
+    this.defaultBackground = this.colors.Default;
+    this.listBackground = backgroundColor
+      ? this.colors[backgroundColor]
+      : this.defaultBackground;
     this.buttonStyle = new ButtonStyle();
-    this.listBackground = backgroundColor;
     this.list = {
       display: "flex",
       flexDirection: "column",
@@ -47,7 +52,7 @@ export default class ListStyle extends globalStylesheet {
       display: "flex",
       visibility: "hidden",
       opacity: "0",
-      backgroundColor: this.primaryColor,
+      backgroundColor: "black",
       position: "absolute",
       left: "-10px",
       top: "-10px",
@@ -59,7 +64,7 @@ export default class ListStyle extends globalStylesheet {
       opacity: "1",
     };
     this.listSelectIcon = {
-      color: this.backgroundColor,
+      color: "white",
     };
     this.listHeader = {
       backgroundColor: "inherit",
@@ -214,24 +219,24 @@ export default class ListStyle extends globalStylesheet {
       alignItems: "flex-start",
       justifyContent: "center",
     };
-    this.listColorButton = (color, IsDefault = false, isActive = false) => {
+    this.listColorButton = (color, isActive = false) => {
       return {
         ...this.buttonStyle.buttonRound,
-        backgroundColor: color.replace(")", ", 0.7)"),
+        backgroundColor: this.colors[color].replace(")", ", 0.7)"),
         padding: isActive ? 7 : 12,
         margin: 7,
         boxShadow: "none",
         transition: "transform 0.1s, box-shadow 0.1s ease-in-out",
         borderWidth: "2px",
-        borderColor: isActive ? "black" : IsDefault ? "gray" : color,
+        borderColor: isActive
+          ? this.primaryColor
+          : color === "Default"
+          ? "gray"
+          : this.colors[color],
       };
     };
-    this.listColorButtonHover = (
-      color,
-      IsDefault = false,
-      isActive = false
-    ) => {
-      let style = this.listColorButton(color, IsDefault, isActive);
+    this.listColorButtonHover = (color, isActive = false) => {
+      let style = this.listColorButton(color, isActive);
       return {
         ...style,
         transform: "scale(1.2)",
@@ -239,8 +244,23 @@ export default class ListStyle extends globalStylesheet {
       };
     };
   }
+  fadeInTransition = (time = 0.4) => {
+    return {
+      transition: `visibility ${time}s, opacity ${time}s ease-in-out`,
+    };
+  };
+
+  fadeColorTransition = (time = 0.4) => {
+    return {
+      transition: `background-color ${time}s ease-in-out`,
+    };
+  };
+
+  setNewTheme = (theme) => {
+    return new ListStyle(this.listBackground, theme);
+  };
 
   setNewBackgroundColor = (backgroundColor) => {
-    return new ListStyle(backgroundColor);
+    return new ListStyle(backgroundColor, this.theme);
   };
 }

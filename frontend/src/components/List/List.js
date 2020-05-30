@@ -19,8 +19,20 @@ class List extends React.Component {
       color: this.props.color,
       title: this.props.title,
       listItems: this.props.listItems,
+      theme: this.props.theme,
+      listStyle: new ListStyle(this.props.color, this.props.theme),
     };
-    this.listStyle = new ListStyle(this.state.color);
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.theme !== prevState.theme) {
+      console.log("NEXT PROPS COLOR: ", nextProps.color);
+      return {
+        theme: nextProps.theme,
+        listStyle: new ListStyle(prevState.color, nextProps.theme),
+      };
+    }
+    return null;
   }
 
   deleteList = () => {
@@ -37,11 +49,14 @@ class List extends React.Component {
 
   updateList = (properties, callback = null) => {
     if (properties.color != null) {
-      this.listStyle = this.listStyle.setNewBackgroundColor(properties.color);
+      this.setState({
+        listStyle: this.state.listStyle.setNewBackgroundColor(properties.color),
+      });
     }
     this.setState(properties, () => {
       updateList(
         (response) => {
+          console.log(response.data);
           callback ? callback(response.data) : null;
           return response.data;
         },
@@ -103,7 +118,7 @@ class List extends React.Component {
         updateListTitle={this.updateList}
         hoveringList={this.state.hoveringList}
         title={this.props.title}
-        style={this.listStyle}
+        style={this.state.listStyle}
       ></ListHeader>
     );
   };
@@ -111,13 +126,13 @@ class List extends React.Component {
   renderAddListItemButton = () => {
     return (
       <Button
-        style={this.listStyle.listAddButton}
+        style={this.state.listStyle.listAddButton}
         variant="outline-dark"
         onClick={() => {
           this.createListItem();
         }}
       >
-        <FaPlus style={this.listStyle.listAddIcon}></FaPlus>
+        <FaPlus style={this.state.listStyle.listAddIcon}></FaPlus>
         {" Add list item"}
       </Button>
     );
@@ -141,7 +156,7 @@ class List extends React.Component {
         listItems={this.state.listItems}
         getListData={this.getListData}
         index={index}
-        style={this.listStyle}
+        style={this.state.listStyle}
         setNewListItemToFocus={this.setNewListItemToFocus}
       ></ListItem>
     );
@@ -168,7 +183,7 @@ class List extends React.Component {
     if (completedListItems.length > 0) {
       return (
         <>
-          <Alert style={this.listStyle.listCompletedItemsAlert}>
+          <Alert style={this.state.listStyle.listCompletedItemsAlert}>
             Completed Items
           </Alert>
           {completedListItems.map((listItem, i) => {
@@ -186,7 +201,7 @@ class List extends React.Component {
   renderListItems = () => {
     const listItems = [].concat(this.state.listItems);
     return (
-      <ListGroup variant="flush" style={this.listStyle.listGroup}>
+      <ListGroup variant="flush" style={this.state.listStyle.listGroup}>
         {this.renderAddListItemButton()}
         {this.renderNoncompletedListItems(listItems)}
         {this.renderCompletedListItems(listItems)}
@@ -200,7 +215,7 @@ class List extends React.Component {
         deleteList={this.deleteList}
         hoveringList={this.state.hoveringList}
         shouldRenderColorDropDown={this.shouldRenderColorDropDown}
-        style={this.listStyle}
+        style={this.state.listStyle}
       ></ListFooter>
     );
   };
@@ -225,14 +240,16 @@ class List extends React.Component {
 
   renderList = () => {
     return (
-      <div style={this.listStyle.list}>
+      <div style={this.state.listStyle.list}>
         <Card
           style={
             this.state.hoveringList
-              ? this.listStyle.listCardHover(
+              ? this.state.listStyle.listCardHover(
                   this.state.shouldRenderColorDropDown
                 )
-              : this.listStyle.listCard(this.state.shouldRenderColorDropDown)
+              : this.state.listStyle.listCard(
+                  this.state.shouldRenderColorDropDown
+                )
           }
           onKeyDown={() => {
             this.toggleHoverList(true, () => {
@@ -274,10 +291,10 @@ class List extends React.Component {
       <div
         style={
           this.state.shouldRenderColorDropDown
-            ? this.listStyle.listColorDropDownShow(
+            ? this.state.listStyle.listColorDropDownShow(
                 this.state.shouldRenderColorDropDown
               )
-            : this.listStyle.listColorDropDownHide(
+            : this.state.listStyle.listColorDropDownHide(
                 this.state.shouldRenderColorDropDown
               )
         }
@@ -287,7 +304,7 @@ class List extends React.Component {
           updateListColor={this.updateList}
           shouldRenderColorDropDown={this.shouldRenderColorDropDown}
           toggleHoverList={this.toggleHoverList}
-          style={this.listStyle}
+          style={this.state.listStyle}
         ></ListColors>
       </div>
     );
@@ -307,4 +324,5 @@ List.propTypes = {
   listItems: PropTypes.array.isRequired,
   color: PropTypes.string,
   refresh: PropTypes.func.isRequired,
+  theme: PropTypes.string.isRequired,
 };

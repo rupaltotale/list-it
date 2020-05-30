@@ -3,30 +3,33 @@ import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import { Nav, Navbar, Dropdown } from "react-bootstrap";
 import CustomDropdown from "../CustomComponents/CustomDropdown";
-import { FaSignOutAlt, FaMoon, FaUser } from "react-icons/fa";
+import { FaSignOutAlt, FaMoon, FaUser, FaLightbulb } from "react-icons/fa";
 import NavStyle from "./NavStyle";
 import { updateUser } from "../../API";
 
 class CustomNavBar extends React.Component {
   constructor(props) {
     super(props);
-    this.navStyle = new NavStyle();
     this.state = {
       loggedIn: localStorage.getItem("token") ? true : false,
       username: this.props.username,
       userID: this.props.userID,
+      theme: this.props.theme,
     };
+    this.navStyle = new NavStyle(this.state.theme);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (
       nextProps.username !== prevState.username ||
-      nextProps.userID !== prevState.userID
+      nextProps.userID !== prevState.userID ||
+      nextProps.theme !== prevState.theme
     ) {
       return {
         username: nextProps.username,
         loggedIn: nextProps.username ? true : false,
         userID: nextProps.userID,
+        theme: nextProps.theme,
       };
     }
 
@@ -56,7 +59,7 @@ class CustomNavBar extends React.Component {
       (error) => {
         console.log(error.response);
       },
-      { theme: "L" }
+      { theme: this.state.theme === "L" ? "D" : "L" }
     );
   };
 
@@ -91,7 +94,14 @@ class CustomNavBar extends React.Component {
                   style={this.navStyle.navDropdownItem}
                   onClick={this.changeTheme}
                 >
-                  <FaMoon style={this.navStyle.navDropdownIcon}></FaMoon>Dark
+                  {this.state.theme === "L" ? (
+                    <FaMoon style={this.navStyle.navDropdownIcon}></FaMoon>
+                  ) : (
+                    <FaLightbulb
+                      style={this.navStyle.navDropdownIcon}
+                    ></FaLightbulb>
+                  )}
+                  {this.state.theme === "L" ? "Dark " : "Light "}
                   Theme
                 </Dropdown.Item>
                 <Dropdown.Divider></Dropdown.Divider>

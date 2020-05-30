@@ -9,14 +9,15 @@ import HomeStyle from "./HomeStyle";
 class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.homeStyle = new HomeStyle();
     this.state = {
       loggedIn: this.props.loggedIn,
       username: this.props.username,
       windowWidth: window.innerWidth,
       numberOfColumns: null,
       lists: [],
+      theme: this.props.theme,
     };
+    this.homeStyle = new HomeStyle(this.state.theme);
   }
 
   //On mount, get the user's list and update lists
@@ -37,16 +38,18 @@ class Home extends React.Component {
     }
   }
 
-  // If the props (username/logged in) from app.js have changed, change the state
+  // If the props (username/logged in/theme) from app.js have changed, change the state
   static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.theme !== prevState.theme) {
+      var newTheme = { theme: nextProps.theme };
+    }
     if (nextProps.username !== prevState.username) {
-      return {
+      var newUsername = {
         username: nextProps.username,
         loggedIn: nextProps.loggedIn,
       };
     }
-
-    return null;
+    return newTheme || newUsername ? { ...newTheme, ...newUsername } : null;
   }
 
   updateWindowWidth = () => {
@@ -94,16 +97,15 @@ class Home extends React.Component {
         );
       },
       (error) => {
-        console.log(error.response);
+        console.log(error.response.data);
       },
       {
         title: "",
-        color: "rgb(255, 255, 255)",
       }
     );
   };
 
-  getUserLists = () => {
+  getUserLists = (resetColumnAmount = true) => {
     if (this.state.loggedIn) {
       getLists(
         (response) => {
@@ -111,7 +113,7 @@ class Home extends React.Component {
             {
               lists: response.data,
             },
-            this.setColumnAmount
+            resetColumnAmount ? this.setColumnAmount : null
           );
         },
         (error) => {
@@ -156,6 +158,7 @@ class Home extends React.Component {
                       listItems={listItems}
                       color={list.color}
                       refresh={this.refresh}
+                      theme={this.state.theme}
                     />
                   );
                 })}
@@ -225,4 +228,5 @@ export default Home;
 Home.propTypes = {
   username: PropTypes.string.isRequired,
   loggedIn: PropTypes.bool.isRequired,
+  theme: PropTypes.string.isRequired,
 };
