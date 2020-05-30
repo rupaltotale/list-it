@@ -54,7 +54,9 @@ class CustomNavBar extends React.Component {
   changeTheme = () => {
     this.props.updateUser(
       (response) => {
-        console.log(response);
+        this.setState({
+          theme: response.data.theme,
+        });
       },
       (error) => {
         console.log(error.response);
