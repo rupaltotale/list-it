@@ -71,7 +71,7 @@ export default class ListStyle {
       display: "flex",
       visibility: "hidden",
       opacity: "0",
-      backgroundColor: "black",
+      backgroundColor: this.primaryColor,
       position: "absolute",
       left: "-10px",
       top: "-10px",
@@ -83,7 +83,7 @@ export default class ListStyle {
       opacity: "1",
     };
     this.listSelectIcon = {
-      color: "white",
+      color: this.listBackground,
     };
 
     /********** LIST HEADER AND LIST TITLE **********/
@@ -291,6 +291,9 @@ export default class ListStyle {
         transform: "scale(1.2)",
         boxShadow: `${color} 0px 0px 5px `,
       };
+    };
+    this.listColorButtonCheck = {
+      color: this.primaryColor,
     };
   }
 

@@ -127,7 +127,14 @@ class ListColorButton extends React.Component {
         onClick={() => {
           this.props.setActiveColor(this.props.colorName);
         }}
-        icon={this.props.isCurrentColor ? <FaCheck size={10}></FaCheck> : null}
+        icon={
+          this.props.isCurrentColor ? (
+            <FaCheck
+              size={10}
+              style={this.state.listStyle.listColorButtonCheck}
+            ></FaCheck>
+          ) : null
+        }
       />
     );
   }
