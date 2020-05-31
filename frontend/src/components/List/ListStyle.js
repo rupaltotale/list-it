@@ -120,6 +120,11 @@ export default class ListStyle {
       color: "inherit",
       borderColor: "inherit",
     };
+    this.listAddButtonHover = {
+      ...this.listAddButton,
+      backgroundColor: this.primaryColor,
+      color: this.listBackground,
+    };
     this.listAddIcon = this.buttonStyle.buttonAddIcon;
 
     /********** LIST ITEM GROUP **********/

@@ -8,6 +8,7 @@ import ListStyle from "./ListStyle";
 import ListFooter from "./ListFooter";
 import ListHeader from "./ListHeader";
 import ListColors from "./ListColors";
+import CustomButton from "../CustomComponents/Button/CustomButton";
 
 class List extends React.Component {
   constructor(props) {
@@ -123,15 +124,15 @@ class List extends React.Component {
 
   renderAddListItemButton = () => {
     return (
-      <Button
+      <CustomButton
         style={this.state.listStyle.listAddButton}
+        styleOnHover={this.state.listStyle.listAddButtonHover}
         onClick={() => {
           this.createListItem();
         }}
-      >
-        <FaPlus style={this.state.listStyle.listAddIcon}></FaPlus>
-        {" Add list item"}
-      </Button>
+        icon={<FaPlus style={this.state.listStyle.listAddIcon}></FaPlus>}
+        text={" Add list item"}
+      ></CustomButton>
     );
   };
 
