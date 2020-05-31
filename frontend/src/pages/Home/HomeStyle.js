@@ -1,8 +1,15 @@
 import ButtonStyle from "../../components/CustomComponents/Button/ButtonStyle";
+import {
+  getBackgroundColorFromTheme,
+  getPrimaryColorFromTheme,
+} from "../../Colors";
 
 export default class HomeStyle {
-  constructor() {
+  constructor(theme) {
+    this.theme = theme;
     this.buttonStyle = new ButtonStyle();
+    this.backgroundColor = getBackgroundColorFromTheme(this.theme);
+    this.primaryColor = getPrimaryColorFromTheme(this.theme);
     this.home = {
       display: "flex",
       flexDirection: "column",
@@ -34,6 +41,11 @@ export default class HomeStyle {
       backgroundColor: "transparent",
       color: "inherit",
       borderColor: "inherit",
+    };
+    this.homeAddHover = {
+      ...this.homeAddHover,
+      color: this.backgroundColor,
+      backgroundColor: this.primaryColor,
     };
     this.homeAddIcon = this.buttonStyle.buttonAddIcon;
   }

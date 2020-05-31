@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa";
 import List from "../../components/List/List";
 import { createNewList, createNewListItem, getLists } from "../../API";
 import HomeStyle from "./HomeStyle";
+import CustomButton from "../../components/CustomComponents/Button/CustomButton";
 
 class Home extends React.Component {
   constructor(props) {
@@ -16,8 +17,8 @@ class Home extends React.Component {
       numberOfColumns: null,
       lists: [],
       theme: this.props.theme,
+      homeStyle: new HomeStyle(this.props.theme),
     };
-    this.homeStyle = new HomeStyle(this.state.theme);
   }
 
   //On mount, get the user's list and update lists
@@ -41,7 +42,10 @@ class Home extends React.Component {
   // If the props (username/logged in/theme) from app.js have changed, change the state
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.theme !== prevState.theme) {
-      var newTheme = { theme: nextProps.theme };
+      var newTheme = {
+        theme: nextProps.theme,
+        homeStyle: new HomeStyle(nextProps.theme),
+      };
     }
     if (nextProps.username !== prevState.username) {
       var newUsername = {
@@ -137,10 +141,10 @@ class Home extends React.Component {
         recreatedLists.push(listArray);
       }
       return (
-        <div style={this.homeStyle.homeRow}>
+        <div style={this.state.homeStyle.homeRow}>
           {recreatedLists.map((listArray, i) => {
             return (
-              <div key={i} style={this.homeStyle.homeCol}>
+              <div key={i} style={this.state.homeStyle.homeCol}>
                 {listArray.map((list) => {
                   let listItems = list.list_items.sort((x, y) => {
                     return x.completed === y.completed
@@ -173,22 +177,22 @@ class Home extends React.Component {
 
   renderAddListButton = () => {
     return (
-      <Button
-        style={this.homeStyle.homeAdd}
+      <CustomButton
+        style={this.state.homeStyle.homeAdd}
+        styleOnHover={this.state.homeStyle.homeAddHover}
         onClick={() => {
           this.createList();
         }}
-      >
-        <FaPlus style={this.homeStyle.homeAddIcon}></FaPlus>
-        {" Add list"}
-      </Button>
+        text={" Add List"}
+        icon={<FaPlus style={this.state.homeStyle.homeAddIcon}></FaPlus>}
+      ></CustomButton>
     );
   };
 
   renderHeading = () => {
     return (
-      <div style={this.homeStyle.homeHeading}>
-        <h1 className="display-4" style={this.homeStyle.homeTitle}>
+      <div style={this.state.homeStyle.homeHeading}>
+        <h1 className="display-4" style={this.state.homeStyle.homeTitle}>
           My Lists
         </h1>
         {this.renderAddListButton()}
@@ -198,7 +202,7 @@ class Home extends React.Component {
 
   renderLoggedInHome = () => {
     return (
-      <div style={this.homeStyle.home}>
+      <div style={this.state.homeStyle.home}>
         {this.renderHeading()}
         {this.renderLists()}
       </div>
@@ -207,8 +211,8 @@ class Home extends React.Component {
 
   renderLoggedOutHome = () => {
     return (
-      <div style={this.homeStyle.homeHeading}>
-        <h1 className="display-4" style={this.homeStyle.homeTitle}>
+      <div style={this.state.homeStyle.homeHeading}>
+        <h1 className="display-4" style={this.state.homeStyle.homeTitle}>
           You must log in to create lists
         </h1>
       </div>
