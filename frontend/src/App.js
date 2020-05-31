@@ -15,7 +15,7 @@ import {
 } from "react-router-dom";
 import React from "react";
 import CustomNavBar from "./components/Nav/Nav";
-import CustomForm from "./components/CustomComponents/CustomForm";
+import CustomForm from "./components/CustomComponents/Form/CustomForm";
 import { render } from "react-dom";
 import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile";

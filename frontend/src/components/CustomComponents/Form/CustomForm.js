@@ -2,7 +2,7 @@ import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 import { Redirect, BrowserRouter as Router } from "react-router-dom";
 import PropTypes from "prop-types";
 import React from "react";
-import { postUser } from "../../API";
+import { postUser } from "../../../API";
 
 class CustomForm extends React.Component {
   constructor(props) {
