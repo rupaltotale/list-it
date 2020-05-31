@@ -208,6 +208,7 @@ export default class ListStyle {
       ...this.fadeInTransition(),
       visibility: "hidden",
       opacity: "0",
+      margin: "auto",
     };
     this.listFooterButtonDivShow = {
       ...this.fadeInTransition(),

@@ -1,5 +1,4 @@
 import React from "react";
-import ListStyle from "./ListStyle";
 import PropTypes from "prop-types";
 import * as Mousetrap from "Mousetrap";
 import CustomButton from "../CustomComponents/Button/CustomButton";
@@ -11,6 +10,7 @@ import {
   FaUserPlus,
   FaImages,
   FaTrashAlt,
+  FaTags,
 } from "react-icons/fa";
 
 class ListFooter extends React.Component {
@@ -163,7 +163,7 @@ class ListFooter extends React.Component {
         >
           <div style={this.listStyle.listFooterButtonRow}>
             {this.renderFooterButtons([
-              { icon: <FaBell size={18}></FaBell> },
+              { icon: <FaTags size={18}></FaTags> },
               { icon: <FaUserPlus size={18}></FaUserPlus> },
               {
                 icon: <FaPalette size={18}></FaPalette>,
