@@ -48,6 +48,7 @@ export default class ListStyle {
         width: "289px",
         color: this.primaryColor,
         backgroundColor: this.listBackground,
+        borderColor: this.primaryColor,
         transition:
           "box-shadow 0.2s, background-color 0.4s, border-radius 0.3s ease-in-out",
       };
@@ -247,6 +248,7 @@ export default class ListStyle {
         borderBottomLeftRadius: "8px",
         borderBottomRightRadius: "8px",
         backgroundColor: this.defaultBackground,
+        borderColor: this.primaryColor,
       };
     };
     this.listColorDropDownShow = (isRenderingColorDropDown) => {

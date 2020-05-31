@@ -82,6 +82,7 @@ class CustomDropdown extends React.Component {
     return (
       <Dropdown
         {...this.props.dropdownProps}
+        style={this.props.dropdownStyle}
         onMouseEnter={() => {
           this.toggleDropdownHover(true);
         }}

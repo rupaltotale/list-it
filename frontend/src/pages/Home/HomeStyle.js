@@ -29,7 +29,12 @@ export default class HomeStyle {
       placeContent: "flex-start center",
       alignItems: "flex-start",
     };
-    this.homeAdd = this.buttonStyle.buttonAdd;
+    this.homeAdd = {
+      ...this.buttonStyle.buttonAdd,
+      backgroundColor: "transparent",
+      color: "inherit",
+      borderColor: "inherit",
+    };
     this.homeAddIcon = this.buttonStyle.buttonAddIcon;
   }
 }

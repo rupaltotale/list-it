@@ -174,7 +174,6 @@ class Home extends React.Component {
   renderAddListButton = () => {
     return (
       <Button
-        variant="outline-dark"
         style={this.homeStyle.homeAdd}
         onClick={() => {
           this.createList();

@@ -14,8 +14,8 @@ class CustomNavBar extends React.Component {
       username: this.props.username,
       userID: this.props.userID,
       theme: this.props.theme,
+      navStyle: new NavStyle(this.props.theme),
     };
-    this.navStyle = new NavStyle(this.state.theme);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -29,6 +29,7 @@ class CustomNavBar extends React.Component {
         loggedIn: nextProps.username ? true : false,
         userID: nextProps.userID,
         theme: nextProps.theme,
+        navStyle: new NavStyle(nextProps.theme),
       };
     }
 
@@ -39,10 +40,20 @@ class CustomNavBar extends React.Component {
     return (
       <>
         <Nav>
-          <NavLink className="nav-link" exact to="/login">
+          <NavLink
+            style={this.state.navStyle.navLink}
+            className="nav-link"
+            exact
+            to="/login"
+          >
             Login
           </NavLink>
-          <NavLink className="nav-link" exact to="/signup">
+          <NavLink
+            style={this.state.navStyle.navLink}
+            className="nav-link"
+            exact
+            to="/signup"
+          >
             Sign Up
           </NavLink>
         </Nav>
@@ -75,31 +86,37 @@ class CustomNavBar extends React.Component {
         <Nav>
           <CustomDropdown
             title={this.state.username}
+            dropdownStyle={this.state.navStyle.navDropdown}
+            menuStyle={this.state.navStyle.navDropdownMenu}
             dropdownItems={
               <>
                 <NavLink
-                  style={this.navStyle.navDropdownLink}
+                  style={this.state.navStyle.navDropdownLink}
                   exact
                   to="/profile"
                 >
                   <Dropdown.Item
-                    style={this.navStyle.navDropdownItem}
+                    style={this.state.navStyle.navDropdownItem}
                     as="button"
                   >
-                    <FaUser style={this.navStyle.navDropdownIcon}></FaUser>My
-                    Profile
+                    <FaUser
+                      style={this.state.navStyle.navDropdownIcon}
+                    ></FaUser>
+                    My Profile
                   </Dropdown.Item>
                 </NavLink>
                 <Dropdown.Divider></Dropdown.Divider>
                 <Dropdown.Item
-                  style={this.navStyle.navDropdownItem}
+                  style={this.state.navStyle.navDropdownItem}
                   onClick={this.changeTheme}
                 >
                   {this.state.theme === "L" ? (
-                    <FaMoon style={this.navStyle.navDropdownIcon}></FaMoon>
+                    <FaMoon
+                      style={this.state.navStyle.navDropdownIcon}
+                    ></FaMoon>
                   ) : (
                     <FaLightbulb
-                      style={this.navStyle.navDropdownIcon}
+                      style={this.state.navStyle.navDropdownIcon}
                     ></FaLightbulb>
                   )}
                   {this.state.theme === "L" ? "Dark " : "Light "}
@@ -107,11 +124,11 @@ class CustomNavBar extends React.Component {
                 </Dropdown.Item>
                 <Dropdown.Divider></Dropdown.Divider>
                 <Dropdown.Item
-                  style={this.navStyle.navDropdownLogout}
+                  style={this.state.navStyle.navDropdownLogout}
                   onClick={this.handleLogout}
                 >
                   <FaSignOutAlt
-                    style={this.navStyle.navDropdownIcon}
+                    style={this.state.navStyle.navDropdownIcon}
                   ></FaSignOutAlt>
                   Logout
                 </Dropdown.Item>
@@ -126,17 +143,29 @@ class CustomNavBar extends React.Component {
 
   renderCustomNavBar = () => {
     return (
-      <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
-        <NavLink exact to="/">
-          <Navbar.Brand>To-Do List</Navbar.Brand>
+      <Navbar collapseOnSelect expand="sm" style={this.state.navStyle.navbar}>
+        <NavLink exact to="/" style={this.state.navStyle.navLink}>
+          <Navbar.Brand style={this.state.navStyle.navBrand}>
+            To-Do List
+          </Navbar.Brand>
         </NavLink>
         <Navbar.Toggle />
         <Navbar.Collapse>
-          <Nav className="mr-auto">
-            <NavLink className="nav-link" exact to="/">
+          <Nav style={this.state.navStyle.leftNavbar}>
+            <NavLink
+              style={this.state.navStyle.navLink}
+              className="nav-link"
+              exact
+              to="/"
+            >
               Home
             </NavLink>
-            <NavLink className="nav-link" exact to="/about">
+            <NavLink
+              style={this.state.navStyle.navLink}
+              className="nav-link"
+              exact
+              to="/about"
+            >
               About
             </NavLink>
           </Nav>

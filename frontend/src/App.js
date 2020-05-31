@@ -21,6 +21,10 @@ import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile";
 import { getUser, updateUser } from "./API";
 import globalStylesheet from "./globalStylesheet";
+import {
+  getPrimaryColorFromTheme,
+  getBackgroundColorFromTheme,
+} from "./Colors";
 
 class App extends React.Component {
   constructor(props) {
@@ -35,12 +39,11 @@ class App extends React.Component {
       theme: "",
       loggedIn: localStorage.getItem("token") ? true : false,
       isPasswordShowing: false,
-      backgroundColor: "#ffffff",
-      primaryColor: "black",
     };
   }
 
   componentDidMount() {
+    document.body.style.transition = "background-color 0.4s";
     if (this.state.loggedIn) {
       console.log("JWT", localStorage.getItem("token"));
       this.getUser();
@@ -52,14 +55,17 @@ class App extends React.Component {
       console.log("JWT", localStorage.getItem("token"));
       this.getUser();
     }
-    if (
-      prevState.primaryColor !== this.state.primaryColor ||
-      prevState.backgroundColor !== this.state.backgroundColor
-    ) {
-      this.container.style.color = this.state.primaryColor;
-      this.container.style.backgroundColor = this.state.backgroundColor;
+    if (prevState.theme !== this.state.theme) {
+      this.setColors();
     }
   }
+
+  setColors = () => {
+    document.body.style.color = getPrimaryColorFromTheme(this.state.theme);
+    document.body.style.backgroundColor = getBackgroundColorFromTheme(
+      this.state.theme
+    );
+  };
 
   setUsername = (username, isLoggedIn, id) => {
     this.setState({
@@ -72,14 +78,17 @@ class App extends React.Component {
   getUser = () => {
     getUser(
       (response) => {
-        this.setState({
-          username: response.data.username,
-          first_name: response.data.first_name,
-          last_name: response.data.last_name,
-          email: response.data.email,
-          id: response.data.id,
-          theme: response.data.theme,
-        });
+        this.setState(
+          {
+            username: response.data.username,
+            first_name: response.data.first_name,
+            last_name: response.data.last_name,
+            email: response.data.email,
+            id: response.data.id,
+            theme: response.data.theme,
+          },
+          this.setColors
+        );
       },
       (error) => {
         console.log(error);
