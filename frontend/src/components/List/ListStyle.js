@@ -276,9 +276,10 @@ export default class ListStyle {
 
     /********** LIST COLOR DROPDOWN BUTTONS **********/
     this.listColorButton = (color, isActive = false) => {
+      let colorRGB = this.colors[color];
       return {
         ...this.buttonStyle.buttonRound,
-        backgroundColor: this.colors[color].replace(")", ", 0.7)"),
+        backgroundColor: colorRGB.replace(")", ", 0.7)"),
         padding: isActive ? 7 : 12,
         margin: 7,
         boxShadow: "none",
@@ -288,15 +289,16 @@ export default class ListStyle {
           ? this.primaryColor
           : color === "Default"
           ? "gray"
-          : this.colors[color],
+          : colorRGB,
       };
     };
     this.listColorButtonHover = (color, isActive = false) => {
-      let style = this.listColorButton(color, isActive);
+      let colorRGB = this.colors[color];
+      let nonHoverStyle = this.listColorButton(color, isActive);
       return {
-        ...style,
+        ...nonHoverStyle,
         transform: "scale(1.2)",
-        boxShadow: `${color} 0px 0px 5px `,
+        boxShadow: `${colorRGB} 0px 0px 5px `,
       };
     };
     this.listColorButtonCheck = {
