@@ -20,7 +20,6 @@ import { render } from "react-dom";
 import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile";
 import { getUser, updateUser } from "./API";
-import globalStylesheet from "./globalStylesheet";
 import {
   getPrimaryColorFromTheme,
   getBackgroundColorFromTheme,
@@ -270,7 +269,11 @@ class App extends React.Component {
             {this.state.loggedIn && this.renderProfilePage()}
             {!this.state.loggedIn && <Redirect to="/" />}
           </Route>
-          <Route path="/">{this.renderHomePage()}</Route>
+          <Route path="/">
+            {this.state.loggedIn
+              ? this.renderHomePage()
+              : this.renderLoginForm()}
+          </Route>
         </Switch>
       </Router>
     );
