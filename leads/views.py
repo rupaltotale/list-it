@@ -17,8 +17,8 @@ from rest_framework.generics import ListAPIView, CreateAPIView, \
 from rest_framework.exceptions import ValidationError
 
 from .serializers import UserSerializer, UserSerializerForCreation, \
-    ListSerializer, ListItemSerializer
-from .models import List, ListItem, CustomUser
+    ListSerializer, ListItemSerializer, TagSerializer
+from .models import List, ListItem, CustomUser, Tag
 from django.utils import timezone
 
 ########################### List endpoints ########################################
@@ -102,7 +102,7 @@ class ListItemRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         response = super().delete(request, *args, **kwargs)
         if response.status_code == 204:
             from django.core.cache import cache
-            cache.delete('list_data_{}'.format(list_id))
+            cache.delete('list_item_data_{}'.format(list_id))
         return response
 
     def update(self, request, *args, **kwargs):
@@ -115,6 +115,62 @@ class ListItemRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
                 'completed': list['completed'],
             })
         return response
+
+
+########################### Tag endpoints ########################################
+
+class TagList(ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+    def get_queryset(self):
+        return Tag.objects.all().filter(owner=self.request.user)
+
+class TagCreate(CreateAPIView):
+    serializer_class = TagSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(
+            owner=self.request.user,
+        )
+    
+    def create(self, request, *args, **kwargs):
+        list_id = request.data.get('list_id')
+        serializer = self.get_serializer(data=request.data)
+        try:
+            int(list_id)
+        except:
+            raise ValidationError({'list_id': 'A valid list_id is required'})
+        response = super().create(request, *args, **kwargs)
+        parent_list = List.objects.all().filter(id=list_id).first()
+        if parent_list is None:
+            raise ValidationError(
+                {'list_id': 'list with id {} does not exist'.format(list_id)})
+        parent_list.tags.add(
+            Tag.objects.all().filter(id=response.data["id"]).first()
+        )
+        return response
+
+class TagRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+    queryset = Tag.objects.all()
+    lookup_field = 'id'
+    serializer_class = TagSerializer
+
+    def delete(self, request, *args, **kwargs):
+        response = super().delete(request, *args, **kwargs)
+        return response
+    
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        list_id = request.data.get('list_id')
+        if int(list_id):
+            parent_list = List.objects.all().filter(id=list_id).first()
+            if parent_list is not None:
+                parent_list.tags.add(
+                    Tag.objects.all().filter(id=response.data["id"]).first()
+                )
+        return response
+
 
 ########################### User endpoints ########################################
 class UserGet(APIView):

@@ -2,13 +2,15 @@ import axios from "axios";
 
 // *********************************** POST API REQUESTS ***********************************
 
+const BaseURL = "http://127.0.0.1:8000";
+
 export function createNewList(
   responseFunc,
   rejectFunc,
   properties = { title: "" }
 ) {
   axios
-    .post("http://127.0.0.1:8000/api/v1/lists/new", properties, {
+    .post(`${BaseURL}/api/v1/lists/new`, properties, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -24,7 +26,7 @@ export function createNewList(
 
 export function createNewListItem(responseFunc, rejectFunc, properties) {
   axios
-    .post("http://127.0.0.1:8000/api/v1/list_item/new", properties, {
+    .post(`${BaseURL}/api/v1/list_item/new`, properties, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -42,6 +44,22 @@ export function postUser(responseFunc, rejectFunc, properties) {
   axios
     .post(properties.url, properties.data, {
       headers: { "Content-Type": "application/json" },
+    })
+    .then((response) => {
+      responseFunc(response);
+    })
+    .catch((error) => {
+      rejectFunc(error);
+    });
+}
+
+export function createNewTag(responseFunc, rejectFunc, properties) {
+  axios
+    .post(`${BaseURL}/api/v1/tags/new`, properties, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.getItem("token")}`,
+      },
     })
     .then((response) => {
       responseFunc(response);

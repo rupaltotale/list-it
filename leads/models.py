@@ -34,6 +34,10 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return "Email: {}, Username: {}".format(self.email, self.username)
 
+class Tag(models.Model):
+    id = models.AutoField(primary_key=True)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length = 20)
 
 class List(models.Model):
     id = models.AutoField(primary_key=True)
@@ -41,7 +45,8 @@ class List(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     date_created = models.DateTimeField(blank=True, null=True, default=None)
     list_items = models.ManyToManyField('ListItem', related_name='list_items')
-    color = models.CharField(max_length=50, blank=True, null=True)
+    tags = models.ManyToManyField('Tag', related_name="tags")
+    color = models.CharField(max_length=50, blank=True, null=True, default="Default")
 
 
 class ListItem(models.Model):

@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import List from "../../components/List/List";
 import { createNewList, createNewListItem, getLists } from "../../API";

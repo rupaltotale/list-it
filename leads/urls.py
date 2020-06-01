@@ -10,8 +10,13 @@ urlpatterns = [
     path('api/v1/lists/<int:id>/',
          views.ListRetrieveUpdateDestroy.as_view()
          ),
-    path('api/v1/list_item/new', views.ListItemCreate.as_view()),
+	path('api/v1/list_item/new', views.ListItemCreate.as_view()),
     path('api/v1/list_item/<int:id>/',
          views.ListItemRetrieveUpdateDestroy.as_view()
+         ),
+    path('api/v1/tags/', views.TagList.as_view()),
+    path('api/v1/tags/new', views.TagCreate.as_view()),
+    path('api/v1/tags/<int:id>/',
+         views.TagRetrieveUpdateDestroy.as_view()
          ),
 ]

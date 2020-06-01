@@ -1,11 +1,26 @@
 from rest_framework import serializers
-from .models import List, ListItem, CustomUser
+from .models import List, ListItem, CustomUser, Tag
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 import sys
 from django.core import exceptions
 import django.contrib.auth.password_validation as validators
 
+class TagSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(required=True)
+    owner = serializers.PrimaryKeyRelatedField(
+        read_only=True
+    )
+    list_id = serializers.IntegerField(write_only=True, required=False)
+
+    class Meta:
+        model = Tag
+        fields = ('id', 'name', 'owner', 'list_id')
+
+    def create(self, validated_data):
+        if "list_id" in validated_data:
+            validated_data.pop("list_id")
+        return(Tag.objects.create(**validated_data))
 
 class ListItemSerializer(serializers.ModelSerializer):
     list_id = serializers.IntegerField(write_only=True, required=False)
@@ -34,11 +49,17 @@ class ListSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(
         read_only=True
     )
+    tags = TagSerializer(
+        many=True,
+        required=False
+    )
+    # def update():
+        
 
     class Meta:
         model = List
         fields = ('id', 'title', 'owner',
-                  'date_created', 'list_items', 'color')
+                  'date_created', 'list_items', 'color', 'tags')
 
 
 class UserSerializer(serializers.ModelSerializer):
