@@ -162,6 +162,7 @@ class Home extends React.Component {
                       color={list.color}
                       refresh={this.refresh}
                       theme={this.state.theme}
+                      tags={list.tags}
                     />
                   );
                 })}

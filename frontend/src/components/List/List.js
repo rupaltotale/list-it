@@ -1,38 +1,41 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Card, ListGroup, Button, Alert } from "react-bootstrap";
-import { FaPlus } from "react-icons/fa";
-import ListItem from "./ListItem";
-import { createNewListItem, deleteList, updateList, getList } from "../../API";
+import { Card } from "react-bootstrap";
+import { deleteList, updateList, getList } from "../../API";
 import ListStyle from "./ListStyle";
 import ListFooter from "./ListFooter";
 import ListHeader from "./ListHeader";
 import ListColors from "./ListColors";
-import CustomButton from "../CustomComponents/Button/CustomButton";
+import ListBody from "./ListBody";
 
 class List extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      idToFocus: null,
       hoveringList: false,
       shouldRenderColorDropDown: false,
       color: this.props.color,
       title: this.props.title,
       listItems: this.props.listItems,
       theme: this.props.theme,
+      tags: this.props.tags,
       listStyle: new ListStyle(this.props.color, this.props.theme),
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.tags !== prevState.tags) {
+      var newTags = {
+        tags: nextProps.tags,
+      };
+    }
     if (nextProps.theme !== prevState.theme) {
-      return {
+      var newTheme = {
         theme: nextProps.theme,
         listStyle: new ListStyle(prevState.color, nextProps.theme),
       };
     }
-    return null;
+    return newTags || newTheme ? { ...newTags, ...newTheme } : null;
   }
 
   deleteList = () => {
@@ -91,20 +94,6 @@ class List extends React.Component {
     );
   };
 
-  createListItem = (isCompleted = false) => {
-    createNewListItem(
-      (response) => {
-        this.getListData(() => {
-          this.setNewListItemToFocus(response.data.id);
-        });
-      },
-      (error) => {
-        console.log(error.response);
-      },
-      { content: "", completed: isCompleted, list_id: this.props.id }
-    );
-  };
-
   setNewColor = (color) => {
     this.setState({
       color: color,
@@ -122,88 +111,14 @@ class List extends React.Component {
     );
   };
 
-  renderAddListItemButton = () => {
+  renderListBody = () => {
     return (
-      <CustomButton
-        style={this.state.listStyle.listAddButton}
-        styleOnHover={this.state.listStyle.listAddButtonHover}
-        onClick={() => {
-          this.createListItem();
-        }}
-        icon={<FaPlus style={this.state.listStyle.listAddIcon}></FaPlus>}
-        text={" Add list item"}
-      ></CustomButton>
-    );
-  };
-
-  setNewListItemToFocus = (id) => {
-    this.setState({
-      idToFocus: id,
-    });
-  };
-
-  renderListItem = (listItem, index) => {
-    return (
-      <ListItem
-        key={listItem.id}
-        content={listItem.content}
-        id={listItem.id}
-        completed={listItem.completed}
-        listID={this.props.id}
-        idToFocus={this.state.idToFocus}
+      <ListBody
+        style={this.state.listStyle}
         listItems={this.state.listItems}
         getListData={this.getListData}
-        index={index}
-        style={this.state.listStyle}
-        setNewListItemToFocus={this.setNewListItemToFocus}
-      ></ListItem>
-    );
-  };
-
-  renderNoncompletedListItems = (listItems) => {
-    return (
-      <>
-        {listItems
-          .filter((listItem) => {
-            return !listItem.completed;
-          })
-          .map((listItem, i) => {
-            return this.renderListItem(listItem, i);
-          })}
-      </>
-    );
-  };
-
-  renderCompletedListItems = (listItems) => {
-    let completedListItems = listItems.filter((listItem) => {
-      return listItem.completed;
-    });
-    if (completedListItems.length > 0) {
-      return (
-        <>
-          <Alert style={this.state.listStyle.listCompletedItemsAlert}>
-            Completed Items
-          </Alert>
-          {completedListItems.map((listItem, i) => {
-            return this.renderListItem(
-              listItem,
-              i + (listItems.length - completedListItems.length)
-            );
-          })}
-        </>
-      );
-    }
-    return null;
-  };
-
-  renderListItems = () => {
-    const listItems = [].concat(this.state.listItems);
-    return (
-      <ListGroup variant="flush" style={this.state.listStyle.listGroup}>
-        {this.renderAddListItemButton()}
-        {this.renderNoncompletedListItems(listItems)}
-        {this.renderCompletedListItems(listItems)}
-      </ListGroup>
+        id={this.props.id}
+      ></ListBody>
     );
   };
 
@@ -264,7 +179,7 @@ class List extends React.Component {
           }}
         >
           {this.renderListHeader()}
-          {this.renderListItems()}
+          {this.renderListBody()}
           {this.renderListFooter()}
         </Card>
         {this.renderColorDropDown()}
