@@ -17,10 +17,10 @@ export function createNewList(
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -33,10 +33,10 @@ export function createNewListItem(responseFunc, rejectFunc, properties) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -46,10 +46,10 @@ export function postUser(responseFunc, rejectFunc, properties) {
       headers: { "Content-Type": "application/json" },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -62,10 +62,10 @@ export function createNewTag(responseFunc, rejectFunc, properties) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -79,10 +79,10 @@ export function getLists(responseFunc, rejectFunc) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -95,11 +95,11 @@ export function getList(responseFunc, rejectFunc, properties) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
       console.log(error);
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -111,10 +111,10 @@ export function getListItem(responseFunc, rejectFunc, properties) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -126,10 +126,10 @@ export function getUser(responseFunc, rejectFunc) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -144,10 +144,10 @@ export function updateList(responseFunc, rejectFunc, properties) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -167,10 +167,10 @@ export function updateListItem(responseFunc, rejectFunc, properties) {
       }
     )
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -183,10 +183,10 @@ export function updateUser(responseFunc, rejectFunc, properties) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -200,10 +200,10 @@ export function deleteList(responseFunc, rejectFunc, properties) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -215,10 +215,10 @@ export function deleteListItem(responseFunc, rejectFunc, properties) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
 
@@ -230,9 +230,9 @@ export function deleteTag(responseFunc, rejectFunc, properties) {
       },
     })
     .then((response) => {
-      responseFunc(response);
+      responseFunc ? responseFunc(response) : null;
     })
     .catch((error) => {
-      rejectFunc(error);
+      rejectFunc ? rejectFunc(error) : null;
     });
 }
