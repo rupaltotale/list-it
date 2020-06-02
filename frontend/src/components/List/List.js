@@ -24,18 +24,13 @@ class List extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.tags !== prevState.tags) {
-      var newTags = {
-        tags: nextProps.tags,
-      };
-    }
     if (nextProps.theme !== prevState.theme) {
       var newTheme = {
         theme: nextProps.theme,
         listStyle: new ListStyle(prevState.color, nextProps.theme),
       };
     }
-    return newTags || newTheme ? { ...newTags, ...newTheme } : null;
+    return newTheme ? { ...newTheme } : null;
   }
 
   deleteList = () => {
@@ -83,8 +78,9 @@ class List extends React.Component {
             color: response.data.color,
             title: response.data.title,
             listItems: response.data.list_items,
+            tags: response.data.tags,
           },
-          callback ? callback() : null
+          callback ? callback(response) : null
         );
       },
       (error) => {
@@ -117,6 +113,7 @@ class List extends React.Component {
         style={this.state.listStyle}
         listItems={this.state.listItems}
         getListData={this.getListData}
+        tags={this.state.tags}
         id={this.props.id}
       ></ListBody>
     );

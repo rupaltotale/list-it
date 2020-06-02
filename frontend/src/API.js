@@ -73,7 +73,7 @@ export function createNewTag(responseFunc, rejectFunc, properties) {
 
 export function getLists(responseFunc, rejectFunc) {
   axios
-    .get("http://127.0.0.1:8000/api/v1/lists/", {
+    .get(`${BaseURL}/api/v1/lists/`, {
       headers: {
         Authorization: `JWT ${localStorage.getItem("token")}`,
       },
@@ -88,7 +88,7 @@ export function getLists(responseFunc, rejectFunc) {
 
 export function getList(responseFunc, rejectFunc, properties) {
   axios
-    .get(`http://127.0.0.1:8000/api/v1/lists/${properties.id}/`, {
+    .get(`${BaseURL}/api/v1/lists/${properties.id}/`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -105,7 +105,7 @@ export function getList(responseFunc, rejectFunc, properties) {
 
 export function getListItem(responseFunc, rejectFunc, properties) {
   axios
-    .get(`http://127.0.0.1:8000/api/v1/list_item/${properties.id}/`, {
+    .get(`${BaseURL}/api/v1/list_item/${properties.id}/`, {
       headers: {
         Authorization: `JWT ${localStorage.getItem("token")}`,
       },
@@ -120,7 +120,7 @@ export function getListItem(responseFunc, rejectFunc, properties) {
 
 export function getUser(responseFunc, rejectFunc) {
   axios
-    .get("http://127.0.0.1:8000/current_user/", {
+    .get(`${BaseURL}/current_user/`, {
       headers: {
         Authorization: `JWT ${localStorage.getItem("token")}`,
       },
@@ -137,7 +137,7 @@ export function getUser(responseFunc, rejectFunc) {
 
 export function updateList(responseFunc, rejectFunc, properties) {
   axios
-    .put(`http://127.0.0.1:8000/api/v1/lists/${properties.id}/`, properties, {
+    .put(`${BaseURL}/api/v1/lists/${properties.id}/`, properties, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -154,7 +154,7 @@ export function updateList(responseFunc, rejectFunc, properties) {
 export function updateListItem(responseFunc, rejectFunc, properties) {
   axios
     .put(
-      `http://127.0.0.1:8000/api/v1/list_item/${properties.id}/`,
+      `${BaseURL}/api/v1/list_item/${properties.id}/`,
       {
         content: properties.content,
         completed: properties.completed,
@@ -176,7 +176,7 @@ export function updateListItem(responseFunc, rejectFunc, properties) {
 
 export function updateUser(responseFunc, rejectFunc, properties) {
   axios
-    .put(`http://127.0.0.1:8000/api/v1/user/${properties.id}/`, properties, {
+    .put(`${BaseURL}/api/v1/user/${properties.id}/`, properties, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -194,7 +194,7 @@ export function updateUser(responseFunc, rejectFunc, properties) {
 
 export function deleteList(responseFunc, rejectFunc, properties) {
   axios
-    .delete(`http://127.0.0.1:8000/api/v1/lists/${properties.id}/`, {
+    .delete(`${BaseURL}/api/v1/lists/${properties.id}/`, {
       headers: {
         Authorization: `JWT ${localStorage.getItem("token")}`,
       },
@@ -209,7 +209,22 @@ export function deleteList(responseFunc, rejectFunc, properties) {
 
 export function deleteListItem(responseFunc, rejectFunc, properties) {
   axios
-    .delete(`http://127.0.0.1:8000/api/v1/list_item/${properties.id}/`, {
+    .delete(`${BaseURL}/api/v1/list_item/${properties.id}/`, {
+      headers: {
+        Authorization: `JWT ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      responseFunc(response);
+    })
+    .catch((error) => {
+      rejectFunc(error);
+    });
+}
+
+export function deleteTag(responseFunc, rejectFunc, properties) {
+  axios
+    .delete(`${BaseURL}/api/v1/tags/${properties.id}`, {
       headers: {
         Authorization: `JWT ${localStorage.getItem("token")}`,
       },

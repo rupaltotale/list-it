@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa";
 import ListItem from "./ListItem";
 import CustomButton from "../CustomComponents/Button/CustomButton";
 import { createNewListItem } from "../../API";
+import ListTag from "./ListTag";
 
 class ListBody extends React.Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class ListBody extends React.Component {
       listStyle: this.props.style,
       idToFocus: null,
       listItems: this.props.listItems,
+      tags: this.props.tags,
     };
   }
 
@@ -27,7 +29,14 @@ class ListBody extends React.Component {
         listItems: nextProps.listItems,
       };
     }
-    return newStyle || newListItems ? { ...newStyle, ...newListItems } : null;
+    if (nextProps.tags !== prevState.tags) {
+      var newTags = {
+        tags: nextProps.tags,
+      };
+    }
+    return newStyle || newListItems || newTags
+      ? { ...newStyle, ...newListItems, ...newTags }
+      : null;
   }
 
   setNewListItemToFocus = (id) => {
@@ -118,19 +127,42 @@ class ListBody extends React.Component {
     return null;
   };
 
-  renderListItems = () => {
+  renderTags = (tags) => {
+    if (tags.length > 0) {
+      return (
+        <div style={this.state.listStyle.listTags}>
+          {tags.map((tag) => {
+            return (
+              <ListTag
+                key={tag.id}
+                name={tag.name}
+                id={tag.id}
+                style={this.state.listStyle}
+                getListData={this.props.getListData}
+              ></ListTag>
+            );
+          })}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  renderListBody = () => {
     const listItems = [].concat(this.state.listItems);
+    const tags = [].concat(this.state.tags);
     return (
       <ListGroup variant="flush" style={this.state.listStyle.listGroup}>
         {this.renderAddListItemButton()}
         {this.renderNoncompletedListItems(listItems)}
         {this.renderCompletedListItems(listItems)}
+        {this.renderTags(tags)}
       </ListGroup>
     );
   };
 
   render() {
-    return this.renderListItems();
+    return this.renderListBody();
   }
 }
 

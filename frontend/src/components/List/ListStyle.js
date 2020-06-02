@@ -170,6 +170,77 @@ export default class ListStyle {
     this.listItemButton = { ...this.listIconButton };
     this.listItemButtonHover = { ...this.listIconButtonHover };
 
+    /********** LIST TAGS **********/
+    this.listTags = {
+      display: "flex",
+      placeContent: "center flex-start",
+      padding: "5px 10px",
+      flexWrap: "wrap",
+    };
+    this.listTag = {
+      maxWidth: "100%",
+      margin: "6px 6px 0px 0px",
+      position: "relative",
+      display: "flex",
+      padding: "3px 5px",
+      cursor: "pointer",
+      backgroundColor: "transparent",
+      boxShadow: "inset 0 0 0 1px rgba(154,160,166,0.541)",
+      borderRadius: "18px",
+    };
+
+    this.listTagHover = {
+      ...this.listTag,
+      justifyContent: "flex-start",
+      justifyItems: "flex-start",
+    };
+
+    this.listTagLabel = {
+      cursor: "inherit",
+      margin: 0,
+      border: "1px solid transparent",
+      color: this.primaryColor,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      fontSize: "13px",
+      padding: "1px",
+      textAlign: "center",
+    };
+
+    this.listTagLabelHover = {
+      ...this.listTagLabel,
+      textAlign: "center",
+      width: "calc(100% - 16px)",
+    };
+
+    this.listTagRemoveButton = {
+      ...this.listIconButton,
+      display: "none",
+      padding: 0,
+      flex: "0 0 auto",
+      position: "absolute",
+      right: "2px",
+      top: "50%",
+      transform: "translateY(-50%)",
+      backgroundColor: "transparent",
+      color: this.primaryColor,
+    };
+
+    this.listTagRemoveButtonHover = {
+      ...this.listTagRemoveButtonShow,
+      ...this.listIconButtonHover,
+    };
+
+    this.listTagRemoveButtonShow = {
+      ...this.listTagRemoveButton,
+      display: "flex",
+    };
+
+    this.listTagRemoveIcon = {
+      color: this.primaryColor,
+    };
+
     /****************************** LIST FOOTER VARIABLES ******************************/
 
     /********** LIST FOOTER **********/
