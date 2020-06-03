@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import CustomButton from "../CustomComponents/Button/CustomButton";
+import CustomButton from "../../CustomComponents/Button/CustomButton";
 import { FaCheck } from "react-icons/fa";
 
 class ListColors extends React.Component {
@@ -8,23 +8,30 @@ class ListColors extends React.Component {
     super(props);
     this.state = {
       listStyle: this.props.style,
-      hoveringDropdown: false,
       currentColor: this.props.currentColor
         ? this.props.currentColor
         : "Default",
+      shouldRenderColors: this.props.shouldRenderColors,
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.style !== prevState.listStyle) {
-      return {
+      var newStyle = {
         listStyle: nextProps.style,
         currentColor: nextProps.currentColor
           ? nextProps.currentColor
           : "Default",
       };
     }
-    return null;
+    if (nextProps.shouldRenderColors !== prevState.shouldRenderColors) {
+      var newShouldRenderColors = {
+        shouldRenderColors: nextProps.shouldRenderColors,
+      };
+    }
+    return newStyle || newShouldRenderColors
+      ? { ...newStyle, ...newShouldRenderColors }
+      : null;
   }
 
   setActiveColor = (color) => {
@@ -60,15 +67,11 @@ class ListColors extends React.Component {
   render() {
     return (
       <div
-        style={this.state.listStyle.listColors}
-        onMouseOver={() => {
-          this.props.shouldRenderColorDropDown(true);
-          this.props.toggleHoverList(true);
-        }}
-        onMouseLeave={() => {
-          this.props.shouldRenderColorDropDown(false);
-          this.props.toggleHoverList(false);
-        }}
+        style={
+          this.state.shouldRenderColors
+            ? this.state.listStyle.listColorsShow
+            : this.state.listStyle.listColorsHide
+        }
       >
         {this.renderColors(this.state.listStyle.colors)}
       </div>
@@ -79,10 +82,10 @@ class ListColors extends React.Component {
 export default ListColors;
 
 ListColors.propTypes = {
-  shouldRenderColorDropDown: PropTypes.func.isRequired,
-  toggleHoverList: PropTypes.func.isRequired,
+  style: PropTypes.object.isRequired,
   currentColor: PropTypes.string,
   updateListColor: PropTypes.func.isRequired,
+  shouldRenderColors: PropTypes.bool.isRequired,
 };
 
 class ListColorButton extends React.Component {

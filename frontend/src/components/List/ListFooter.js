@@ -6,7 +6,6 @@ import CustomModal from "../CustomComponents/CustomModal";
 import { Card, Button } from "react-bootstrap";
 import {
   FaPalette,
-  FaBell,
   FaUserPlus,
   FaImages,
   FaTrashAlt,
@@ -16,33 +15,33 @@ import {
 class ListFooter extends React.Component {
   constructor(props) {
     super(props);
-    this.listStyle = this.props.style;
-    this.colorButtonRef = React.createRef();
     this.state = {
-      hoveringColorIcon: false,
+      listStyle: this.props.style,
       showDeleteModal: false,
       hoveringList: this.props.hoveringList,
-      renderingColorDropDown: false,
+      isRenderingDropDown: this.props.isRenderingDropDown,
     };
   }
 
-  setFocusToColorButton(bool) {
-    if (this.colorButtonRef) {
-      if (bool) {
-        this.colorButtonRef.current.focus();
-      } else {
-        this.colorButtonRef.current.blur();
-      }
-    }
-  }
-
   static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.style !== prevState.listStyle) {
+      var newStyle = {
+        listStyle: nextProps.style,
+      };
+    }
+    if (nextProps.isRenderingDropDown !== prevState.isRenderingDropDown) {
+      var newIsRenderingDropDown = {
+        isRenderingDropDown: nextProps.isRenderingDropDown,
+      };
+    }
     if (nextProps.hoveringList !== prevState.hoveringList) {
-      return {
+      var newHoveringList = {
         hoveringList: nextProps.hoveringList,
       };
     }
-    return null;
+    return newStyle || newIsRenderingDropDown || newHoveringList
+      ? { ...newStyle, ...newIsRenderingDropDown, ...newHoveringList }
+      : null;
   }
 
   deleteList = () => {
@@ -97,25 +96,11 @@ class ListFooter extends React.Component {
     );
   };
 
-  shouldShowColors = () => {
-    if (this.state.hoveringColorIcon) {
-      this.setState(
-        {
-          renderingColorDropDown: true,
-        },
-        () => {
-          this.props.shouldRenderColorDropDown(true);
-        }
-      );
+  toggleHoverFooterButton = (bool, type) => {
+    if (bool) {
+      this.props.toggleHoverFooterButton(bool, type);
     } else {
-      this.setState(
-        {
-          renderingColorDropDown: false,
-        },
-        () => {
-          this.props.shouldRenderColorDropDown(false);
-        }
-      );
+      this.props.toggleHoverFooterButton(bool);
     }
   };
 
@@ -123,26 +108,13 @@ class ListFooter extends React.Component {
     let createdButtons = [];
     buttons.forEach((button) => {
       createdButtons.push(
-        <div
-          style={
-            this.state.hoveringList
-              ? this.listStyle.listFooterButtonDivShow
-              : this.listStyle.listFooterButtonDivHide
-          }
-          {...button.buttonDivProps}
-        >
-          <CustomButton
-            style={this.listStyle.listFooterButton}
-            styleOnHover={this.listStyle.listFooterButtonHover}
-            onClick={button.onClick}
-            onClickOutside={button.onClickOutside}
-            onFocus={button.onFocus}
-            onBlur={button.onBlur}
-            icon={button.icon}
-            onHover={button.onHover}
-            buttonRef={button.ref}
-          />
-        </div>
+        <ListFooterButton
+          listStyle={this.state.listStyle}
+          hoveringList={this.state.hoveringList}
+          icon={button.icon}
+          name={button.name}
+          toggleHoverFooterButton={this.toggleHoverFooterButton}
+        ></ListFooterButton>
       );
     });
     return (
@@ -156,56 +128,19 @@ class ListFooter extends React.Component {
 
   render() {
     return (
-      <>
-        {this.renderDeleteModal()}
-        <Card.Footer
-          style={this.listStyle.listFooter(this.state.renderingColorDropDown)}
-        >
-          <div style={this.listStyle.listFooterButtonRow}>
-            {this.renderFooterButtons([
-              { icon: <FaTags size={18}></FaTags> },
-              { icon: <FaUserPlus size={18}></FaUserPlus> },
-              {
-                icon: <FaPalette size={18}></FaPalette>,
-                ref: this.colorButtonRef,
-                buttonDivProps: {
-                  onMouseOver: () => {
-                    if (!this.state.hoveringColorIcon) {
-                      this.setState(
-                        {
-                          hoveringColorIcon: true,
-                        },
-                        () => {
-                          this.shouldShowColors();
-                          this.setFocusToColorButton(true);
-                        }
-                      );
-                    }
-                  },
-                  onMouseLeave: () => {
-                    this.setState(
-                      {
-                        hoveringColorIcon: false,
-                      },
-                      () => {
-                        this.shouldShowColors();
-                        this.setFocusToColorButton(false);
-                      }
-                    );
-                  },
-                },
-              },
-              { icon: <FaImages size={18}></FaImages> },
-              {
-                icon: <FaTrashAlt size={18}></FaTrashAlt>,
-                onClick: () => {
-                  this.toggleDeleteModal();
-                },
-              },
-            ])}
-          </div>
-        </Card.Footer>
-      </>
+      <Card.Footer
+        style={this.state.listStyle.listFooter(this.state.isRenderingDropDown)}
+      >
+        <div style={this.state.listStyle.listFooterButtonRow}>
+          {this.renderFooterButtons([
+            { icon: <FaTags size={18}></FaTags>, name: "tags" },
+            { icon: <FaUserPlus size={18}></FaUserPlus>, name: "sharing" },
+            { icon: <FaPalette size={18}></FaPalette>, name: "colors" },
+            { icon: <FaImages size={18}></FaImages>, name: "images" },
+            { icon: <FaTrashAlt size={18}></FaTrashAlt>, name: "delete" },
+          ])}
+        </div>
+      </Card.Footer>
     );
   }
 }
@@ -213,7 +148,88 @@ class ListFooter extends React.Component {
 export default ListFooter;
 
 ListFooter.propTypes = {
+  style: PropTypes.object.isRequired,
   deleteList: PropTypes.func.isRequired,
   hoveringList: PropTypes.bool.isRequired,
-  shouldRenderColorDropDown: PropTypes.func,
+  toggleHoverFooterButton: PropTypes.func.isRequired,
+  isRenderingDropDown: PropTypes.bool.isRequired,
+};
+
+class ListFooterButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      listStyle: this.props.listStyle,
+      hoveringList: this.props.hoveringList,
+      hoveringButton: false,
+    };
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.listStyle !== prevState.listStyle) {
+      var newStyle = {
+        listStyle: nextProps.listStyle,
+      };
+    }
+    if (nextProps.hoveringList !== prevState.hoveringList) {
+      var newHoveringList = {
+        hoveringList: nextProps.hoveringList,
+      };
+    }
+    return newStyle || newHoveringList
+      ? { ...newStyle, ...newHoveringList }
+      : null;
+  }
+
+  toggleHoveringButton = (bool) => {
+    if (this.state.hoveringButton !== bool) {
+      this.setState(
+        {
+          hoveringButton: bool,
+        },
+        () => {
+          this.props.toggleHoverFooterButton(bool, this.props.name);
+        }
+      );
+    }
+  };
+
+  renderFooterButton = () => {
+    return (
+      <div
+        style={
+          this.state.hoveringList
+            ? this.state.listStyle.listFooterButtonDivShow
+            : this.state.listStyle.listFooterButtonDivHide
+        }
+        onMouseOver={() => {
+          this.toggleHoveringButton(true);
+        }}
+        onMouseLeave={() => {
+          this.toggleHoveringButton(false);
+        }}
+      >
+        <CustomButton
+          style={
+            this.state.hoveringButton
+              ? this.state.listStyle.listFooterButtonHover
+              : this.state.listStyle.listFooterButton
+          }
+          icon={this.props.icon}
+        />
+      </div>
+    );
+  };
+
+  render() {
+    return this.renderFooterButton();
+  }
+}
+
+ListFooterButton.propTypes = {
+  name: PropTypes.string.isRequired,
+  icon: PropTypes.object.isRequired,
+  hoveringList: PropTypes.bool.isRequired,
+  listStyle: PropTypes.object.isRequired,
+  toggleHoverFooterButton: PropTypes.func.isRequired,
 };
