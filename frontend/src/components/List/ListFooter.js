@@ -17,7 +17,6 @@ class ListFooter extends React.Component {
     super(props);
     this.state = {
       listStyle: this.props.style,
-      showDeleteModal: false,
       hoveringList: this.props.hoveringList,
       isRenderingDropDown: this.props.isRenderingDropDown,
     };
@@ -43,58 +42,6 @@ class ListFooter extends React.Component {
       ? { ...newStyle, ...newIsRenderingDropDown, ...newHoveringList }
       : null;
   }
-
-  deleteList = () => {
-    this.toggleDeleteModal();
-    this.props.deleteList();
-  };
-
-  toggleDeleteModal = () => {
-    this.setState(
-      {
-        showDeleteModal: !this.state.showDeleteModal,
-      },
-      this.renderDeleteModal
-    );
-  };
-
-  renderDeleteModal = () => {
-    return (
-      <CustomModal
-        showModal={this.state.showDeleteModal}
-        onShow={() => {
-          Mousetrap.bind("enter", () => {
-            this.deleteList();
-            Mousetrap.reset();
-          });
-        }}
-        onHide={() => {
-          this.toggleDeleteModal();
-          Mousetrap.reset();
-        }}
-        title={
-          <>
-            {"Delete "}
-            <em>{this.state.title}</em>{" "}
-          </>
-        }
-        body={
-          "Are you sure you want to delete this list? This action cannot be undone."
-        }
-        footer={
-          <Button
-            variant="danger"
-            onClick={() => {
-              this.deleteList();
-              Mousetrap.reset();
-            }}
-          >
-            Delete
-          </Button>
-        }
-      ></CustomModal>
-    );
-  };
 
   toggleHoverFooterButton = (bool, type) => {
     if (bool) {
@@ -149,7 +96,6 @@ export default ListFooter;
 
 ListFooter.propTypes = {
   style: PropTypes.object.isRequired,
-  deleteList: PropTypes.func.isRequired,
   hoveringList: PropTypes.bool.isRequired,
   toggleHoverFooterButton: PropTypes.func.isRequired,
   isRenderingDropDown: PropTypes.bool.isRequired,

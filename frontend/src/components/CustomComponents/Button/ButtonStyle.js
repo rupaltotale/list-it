@@ -3,8 +3,6 @@ export default class ButtonStyle {
     this.buttonDiv = {
       display: "flex",
       justifyContent: "center",
-      visibility: "visible",
-      opacity: "1",
     };
     this.buttonRound = {
       borderRadius: "50%",

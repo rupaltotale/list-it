@@ -1,5 +1,9 @@
 import ButtonStyle from "../CustomComponents/Button/ButtonStyle";
-import { getListColorsFromTheme, getPrimaryColorFromTheme } from "../../Colors";
+import {
+  getListColorsFromTheme,
+  getPrimaryColorFromTheme,
+  getDeleteButtonColorFromTheme,
+} from "../../Colors";
 
 export default class ListStyle {
   constructor(backgroundColor, theme) {
@@ -50,7 +54,7 @@ export default class ListStyle {
         color: this.primaryColor,
         backgroundColor: this.listBackground,
         borderColor: this.primaryColor,
-        transition: `box-shadow 0.2s, background-color 0.4s, border-radius ${this.dropdownTransitionTiming} ease-in-out`,
+        transition: `box-shadow 0.2s, background-color 0.4s, border-radius ${this.dropdownTransitionTiming}`,
       };
     };
     this.listCardHover = (isRenderingDropDown = false) => {
@@ -257,7 +261,7 @@ export default class ListStyle {
       }
       return {
         ...borderRadius,
-        transition: `border-radius ${this.dropdownTransitionTiming} ease-in-out`,
+        transition: `border-radius ${this.dropdownTransitionTiming}`,
         backgroundColor: "inherit",
         borderTop: "none",
         display: "flex",
@@ -269,7 +273,6 @@ export default class ListStyle {
     this.listFooterButtonRow = {
       display: "flex",
       placeContent: "center space-around",
-      alignItems: "center",
       height: "40px",
     };
 
@@ -279,7 +282,6 @@ export default class ListStyle {
       ...this.fadeInTransition(),
       visibility: "hidden",
       opacity: "0",
-      margin: "auto",
     };
     this.listFooterButtonDivShow = {
       ...this.fadeInTransition(),
@@ -300,56 +302,98 @@ export default class ListStyle {
     /****************************** LIST DROPDOWN VARIABLES ******************************/
 
     /********** LIST DROPDOWN **********/
-    this.listDropDownHide = () => {
+    this.setBorderValues = (borderWidth, borderStyle, borderColor) => {
       return {
-        visibility: "hidden",
+        borderTopWidth: borderWidth,
+        borderBottomWidth: borderWidth,
+        borderLeftWidth: borderWidth,
+        borderRightWidth: borderWidth,
+        borderTopStyle: borderStyle,
+        borderBottomStyle: borderStyle,
+        borderLeftStyle: borderStyle,
+        borderRightStyle: borderStyle,
+        borderTopColor: borderColor,
+        borderBottomColor: borderColor,
+        borderLeftColor: borderColor,
+        borderRightColor: borderColor,
+      };
+    };
+
+    this.listDropDownShow = () => {
+      return {
+        backgroundColor: this.defaultBackground,
+        display: "flex",
+        //Border Values
+        ...this.setBorderValues("1px", "solid", this.primaryColor),
+        borderTopWidth: "0px",
+        borderBottomLeftRadius: "8px",
+        borderBottomRightRadius: "8px",
         boxShadow:
           "0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149)",
-        maxWidth: 289,
+        //Width, Height, Margin
+        width: 289,
         marginRight: "15px",
         marginLeft: "15px",
         overflowY: "hidden",
-        backgroundColor: this.defaultBackground,
-        borderBottomLeftRadius: "8px",
-        borderBottomRightRadius: "8px",
+        //Transition Properties
+        maxHeight: 90,
+        visibility: "visible",
+        opacity: 1,
+        transition: `max-height ${this.dropdownTransitionTiming}, 
+                     visibility ${this.dropdownTransitionTiming}, 
+                     opacity ${this.dropdownTransitionTiming},  
+                     border-right-width ${this.dropdownTransitionTiming},
+                     border-left-width ${this.dropdownTransitionTiming},
+                     border-bottom-width ${this.dropdownTransitionTiming}`,
       };
     };
-    this.listDropDownShow = () => {
+    this.listDropDownHide = () => {
       return {
-        ...this.listDropDownHide(),
-        visibility: "visible",
+        ...this.listDropDownShow(),
+        borderTopWidth: "0px",
+        borderBottomWidth: "0px",
+        borderLeftWidth: "0px",
+        borderRightWidth: "0px",
+        maxHeight: 0,
+        visibility: "hidden",
+        opacity: 0,
       };
     };
 
-    this.listDropDownTemplate = {
-      display: "flex",
-      overflowY: "hidden",
-      alignSelf: "stretch",
-      flexFlow: "row wrap",
-      alignContent: "flex-start",
-      placeContent: "flex-start center",
-      maxHeight: 90,
-      visibility: "visible",
-      opacity: 1,
-      border: `1px solid ${this.primaryColor}`,
-      borderBottomLeftRadius: "8px",
-      borderBottomRightRadius: "8px",
-      transition: `max-height ${this.dropdownTransitionTiming}, visibility ${this.dropdownTransitionTiming}, opacity ${this.dropdownTransitionTiming}`,
+    this.listDropDownContent = (typeOfDropdown = null) => {
+      var defaultStyle = {
+        visibility: "visible",
+        opacity: 1,
+        transition: `visibility ${this.dropdownTransitionTiming}, opacity ${this.dropdownTransitionTiming}`,
+        overflowY: "hidden",
+        display: "flex",
+      };
+      switch (typeOfDropdown) {
+        case "colors":
+          var extraStyle = {
+            placeContent: "flex-end center",
+            flexFlow: "row wrap",
+          };
+          break;
+        case "delete":
+          var extraStyle = {
+            flexGrow: 1,
+            flexFlow: "row wrap",
+          };
+          break;
+      }
+      return { ...defaultStyle, ...extraStyle };
     };
-    this.listDropDownTemplateHide = {
-      ...this.listDropDownTemplate,
-      maxHeight: 0,
-      opacity: 0,
-      visibility: "hidden",
+
+    this.listDropDownContentHide = (typeOfDropdown) => {
+      return {
+        ...this.listDropDownContent(typeOfDropdown),
+        opacity: 0,
+        visibility: "hidden",
+      };
     };
 
     /********** LIST COLOR DROPDOWN **********/
-    this.listColorsShow = {
-      ...this.listDropDownTemplate,
-    };
-    this.listColorsHide = {
-      ...this.listDropDownTemplateHide,
-    };
 
     this.listColorButton = (color, isActive = false) => {
       let colorRGB = this.colors[color];
@@ -359,7 +403,7 @@ export default class ListStyle {
         padding: isActive ? 7 : 12,
         margin: 7,
         boxShadow: "none",
-        transition: "transform 0.1s, box-shadow 0.1s ease-in-out",
+        transition: "transform 0.1s, box-shadow 0.1s",
         borderWidth: "2px",
         borderColor: isActive
           ? this.primaryColor
@@ -380,17 +424,36 @@ export default class ListStyle {
     this.listColorButtonCheck = {
       color: this.primaryColor,
     };
+
+    /********** LIST DELETE DROPDOWN **********/
+    this.listDeleteInfo = {
+      alignSelf: "center",
+      justifySelf: "center",
+      color: this.primaryColor,
+    };
+    this.listDeleteButton = {
+      placeSelf: "center",
+      backgroundColor: getDeleteButtonColorFromTheme(this.theme),
+      borderColor: this.primaryColor,
+      borderRadius: 0,
+      color: this.primaryColor,
+      height: 40,
+      marginBottom: "10px",
+    };
+    this.listArchiveButton = {
+      ...this.listDeleteButton,
+    };
   }
 
   fadeInTransition = (time = 0.4) => {
     return {
-      transition: `visibility ${time}s, opacity ${time}s ease-in-out`,
+      transition: `visibility ${time}s, opacity ${time}s `,
     };
   };
 
   fadeColorTransition = (time = 0.4) => {
     return {
-      transition: `background-color ${time}s ease-in-out`,
+      transition: `background-color ${time}s `,
     };
   };
 

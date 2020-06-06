@@ -11,7 +11,6 @@ class ListColors extends React.Component {
       currentColor: this.props.currentColor
         ? this.props.currentColor
         : "Default",
-      shouldRenderColors: this.props.shouldRenderColors,
     };
   }
 
@@ -24,14 +23,7 @@ class ListColors extends React.Component {
           : "Default",
       };
     }
-    if (nextProps.shouldRenderColors !== prevState.shouldRenderColors) {
-      var newShouldRenderColors = {
-        shouldRenderColors: nextProps.shouldRenderColors,
-      };
-    }
-    return newStyle || newShouldRenderColors
-      ? { ...newStyle, ...newShouldRenderColors }
-      : null;
+    return newStyle ? { ...newStyle } : null;
   }
 
   setActiveColor = (color) => {
@@ -65,17 +57,7 @@ class ListColors extends React.Component {
   };
 
   render() {
-    return (
-      <div
-        style={
-          this.state.shouldRenderColors
-            ? this.state.listStyle.listColorsShow
-            : this.state.listStyle.listColorsHide
-        }
-      >
-        {this.renderColors(this.state.listStyle.colors)}
-      </div>
-    );
+    return <>{this.renderColors(this.state.listStyle.colors)}</>;
   }
 }
 
@@ -85,7 +67,6 @@ ListColors.propTypes = {
   style: PropTypes.object.isRequired,
   currentColor: PropTypes.string,
   updateListColor: PropTypes.func.isRequired,
-  shouldRenderColors: PropTypes.bool.isRequired,
 };
 
 class ListColorButton extends React.Component {

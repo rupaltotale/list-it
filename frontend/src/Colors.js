@@ -58,3 +58,10 @@ export function getHoveringButtonColorFromTheme(theme) {
   }
   return null;
 }
+
+export function getDeleteButtonColorFromTheme(theme) {
+  if (theme === "D") {
+    return "rgb(176, 29, 12)";
+  }
+  return "rgb(250, 94, 77)";
+}

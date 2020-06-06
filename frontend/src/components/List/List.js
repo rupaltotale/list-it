@@ -126,7 +126,6 @@ class List extends React.Component {
   renderListFooter = () => {
     return (
       <ListFooter
-        deleteList={this.deleteList}
         hoveringList={this.state.hoveringList}
         toggleHoverFooterButton={this.toggleHoverFooterButton}
         isRenderingDropDown={
@@ -161,6 +160,7 @@ class List extends React.Component {
         typeOfDropdown={this.state.typeOfDropdown}
         toggleHoverDropDown={this.toggleHoverDropDown}
         updateList={this.updateList}
+        deleteList={this.deleteList}
       ></ListDropdown>
     );
   };

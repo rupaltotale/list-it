@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ListColors from "./ListColors";
+import ListDelete from "./ListDelete";
+import ListTags from "./ListTags";
 
 class ListDropdown extends React.Component {
   constructor(props) {
@@ -8,6 +10,7 @@ class ListDropdown extends React.Component {
     this.state = {
       listStyle: this.props.listStyle,
       shouldRenderDropDown: this.props.shouldRenderDropDown,
+      changingTypeOfDropDown: false,
       typeOfDropdown: this.props.typeOfDropdown,
       color: this.props.color,
       hoveringDropdown: false,
@@ -21,9 +24,16 @@ class ListDropdown extends React.Component {
       };
     }
     if (nextProps.typeOfDropdown !== prevState.typeOfDropdown) {
-      var newtypeOfDropdown = {
+      var newTypeOfDropdown = {
+        changingTypeOfDropDown: true,
         typeOfDropdown: nextProps.typeOfDropdown,
       };
+    } else {
+      if (prevState.changingTypeOfDropDown) {
+        var newTypeOfDropdown = {
+          changingTypeOfDropDown: false,
+        };
+      }
     }
     if (nextProps.shouldRenderDropDown !== prevState.shouldRenderDropDown) {
       var newShouldRenderDropDown = {
@@ -35,10 +45,10 @@ class ListDropdown extends React.Component {
         color: nextProps.color,
       };
     }
-    return newStyle || newtypeOfDropdown || newColor || newShouldRenderDropDown
+    return newStyle || newTypeOfDropdown || newColor || newShouldRenderDropDown
       ? {
           ...newStyle,
-          ...newtypeOfDropdown,
+          ...newTypeOfDropdown,
           ...newColor,
           ...newShouldRenderDropDown,
         }
@@ -58,13 +68,57 @@ class ListDropdown extends React.Component {
     }
   };
 
+  renderDropdownContent = () => {
+    let content = null;
+    switch (this.state.typeOfDropdown) {
+      case "tags":
+        content = <ListTags style={this.state.listStyle}></ListTags>;
+      case "sharing":
+        break;
+      case "colors":
+        content = (
+          <ListColors
+            style={this.state.listStyle}
+            updateListColor={this.props.updateList}
+            currentColor={this.state.color}
+          ></ListColors>
+        );
+        break;
+      case "images":
+        break;
+      case "delete":
+        content = (
+          <ListDelete
+            style={this.state.listStyle}
+            deleteList={this.props.deleteList}
+          ></ListDelete>
+        );
+        break;
+    }
+    return (
+      <div
+        style={
+          this.state.shouldRenderDropDown
+            ? this.state.listStyle.listDropDownContent(
+                this.state.typeOfDropdown
+              )
+            : this.state.listStyle.listDropDownContentHide(
+                this.state.typeOfDropdown
+              )
+        }
+      >
+        {content}
+      </div>
+    );
+  };
+
   renderDropdown = () => {
     return (
       <div
         style={
           this.state.shouldRenderDropDown
-            ? this.state.listStyle.listDropDownShow()
-            : this.state.listStyle.listDropDownHide()
+            ? this.state.listStyle.listDropDownShow(this.state.typeOfDropdown)
+            : this.state.listStyle.listDropDownHide(this.state.typeOfDropdown)
         }
         onMouseOver={() => {
           this.toggleHoveringDropdown(true);
@@ -73,21 +127,7 @@ class ListDropdown extends React.Component {
           this.toggleHoveringDropdown(false);
         }}
       >
-        <ListColors
-          currentColor={this.state.color}
-          updateListColor={this.props.updateList}
-          style={this.state.listStyle}
-          shouldRenderColors={
-            this.state.shouldRenderDropDown &&
-            this.state.typeOfDropdown === "colors"
-          }
-        ></ListColors>
-        {/* <ListDelete
-          shouldRenderDelete={
-            this.state.shouldRenderDropDown &&
-            this.state.typeOfDropdown === "delete"
-          }
-        ></ListDelete> */}
+        {this.renderDropdownContent()}
       </div>
     );
   };
@@ -103,6 +143,7 @@ ListDropdown.propTypes = {
   listStyle: PropTypes.object.isRequired,
   typeOfDropdown: PropTypes.string,
   updateList: PropTypes.func.isRequired,
+  deleteList: PropTypes.func.isRequired,
   color: PropTypes.node.isRequired,
   toggleHoverDropDown: PropTypes.func.isRequired,
   shouldRenderDropDown: PropTypes.bool.isRequired,
