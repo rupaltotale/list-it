@@ -1,8 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ListColors from "./ListColors";
-import ListDelete from "./ListDelete";
 import ListTags from "./ListTags";
+import ListSharing from "./ListSharing";
+import ListColors from "./ListColors";
+import ListImages from "./ListImages";
+import ListDelete from "./ListDelete";
 
 class ListDropdown extends React.Component {
   constructor(props) {
@@ -73,7 +75,9 @@ class ListDropdown extends React.Component {
     switch (this.state.typeOfDropdown) {
       case "tags":
         content = <ListTags style={this.state.listStyle}></ListTags>;
+        break;
       case "sharing":
+        content = <ListSharing style={this.state.listStyle}></ListSharing>;
         break;
       case "colors":
         content = (
@@ -85,6 +89,7 @@ class ListDropdown extends React.Component {
         );
         break;
       case "images":
+        content = <ListImages style={this.state.listStyle}></ListImages>;
         break;
       case "delete":
         content = (

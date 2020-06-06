@@ -190,6 +190,22 @@ export function updateUser(responseFunc, rejectFunc, properties) {
     });
 }
 
+export function updateTag(responseFunc, rejectFunc, properties) {
+  axios
+    .put(`${BaseURL}/api/v1/tags/${properties.id}`, properties, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      responseFunc ? responseFunc(response) : null;
+    })
+    .catch((error) => {
+      rejectFunc ? rejectFunc(error) : null;
+    });
+}
+
 // *********************************** DELETE API REQUESTS ***********************************
 
 export function deleteList(responseFunc, rejectFunc, properties) {

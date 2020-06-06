@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import CustomButton from "../../CustomComponents/Button/CustomButton";
 
-class ListTags extends React.Component {
+class ListSharing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,24 +19,21 @@ class ListTags extends React.Component {
     return newStyle ? { ...newStyle } : null;
   }
 
-  renderListTags = () => {
+  renderListSharing = () => {
     return (
       <>
-        <div style={this.state.listStyle.listTagsTitle}>Add Tag</div>
-        <div style={this.state.listStyle.listTagSearchDiv}>
-          <input style={this.state.listStyle.listTagSearch}></input>
-        </div>
+        <i>This is list sharing</i>
       </>
     );
   };
 
   render() {
-    return this.renderListTags();
+    return this.renderListSharing();
   }
 }
 
-export default ListTags;
+export default ListSharing;
 
-ListTags.propTypes = {
+ListSharing.propTypes = {
   style: PropTypes.object.isRequired,
 };

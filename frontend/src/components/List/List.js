@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
-import { deleteList, updateList, getList } from "../../API";
+import { deleteList, updateList, getList, createNewTag } from "../../API";
 import ListStyle from "./ListStyle";
 import ListFooter from "./ListFooter";
 import ListHeader from "./ListHeader";
@@ -91,6 +91,22 @@ class List extends React.Component {
         console.log(error.response);
       },
       { id: this.props.id }
+    );
+  };
+
+  createNewTag = (name, callback) => {
+    createNewTag(
+      (response) => {
+        this.getListData();
+        callback ? callback(response) : null;
+      },
+      (error) => {
+        console.log(error.response);
+      },
+      {
+        list_id: this.props.id,
+        name: name,
+      }
     );
   };
 

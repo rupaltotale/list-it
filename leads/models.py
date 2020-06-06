@@ -37,7 +37,7 @@ class CustomUser(AbstractUser):
 class Tag(models.Model):
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    name = models.CharField(max_length = 20)
+    name = models.CharField(max_length = 20, unique=True)
 
 class List(models.Model):
     id = models.AutoField(primary_key=True)

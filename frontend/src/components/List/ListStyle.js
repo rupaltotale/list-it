@@ -367,19 +367,23 @@ export default class ListStyle {
         transition: `visibility ${this.dropdownTransitionTiming}, opacity ${this.dropdownTransitionTiming}`,
         overflowY: "hidden",
         display: "flex",
+        flexFlow: "row wrap",
+        flexGrow: 1,
+        alignContent: "flex-end",
       };
       switch (typeOfDropdown) {
+        case "tags":
+          var extraStyle = {
+            justifyContent: "center",
+          };
+          break;
         case "colors":
           var extraStyle = {
-            placeContent: "flex-end center",
-            flexFlow: "row wrap",
+            justifyContent: "center",
           };
           break;
         case "delete":
-          var extraStyle = {
-            flexGrow: 1,
-            flexFlow: "row wrap",
-          };
+          var extraStyle = {};
           break;
       }
       return { ...defaultStyle, ...extraStyle };
@@ -442,6 +446,25 @@ export default class ListStyle {
     };
     this.listArchiveButton = {
       ...this.listDeleteButton,
+    };
+
+    /********** LIST TAGS DROPDOWN **********/
+    this.listTagsTitle = {
+      cursor: "default",
+      fontSize: "14px",
+      padding: "0px 12px",
+    };
+    this.listTagSearchDiv = {
+      padding: "8px 12px",
+      position: "relative",
+      backgroundColor: this.backgroundColor,
+    };
+    this.listTagSearch = {
+      height: "auto",
+      width: "100%",
+      padding: "2px 22px 2px 2px",
+      boxSizing: "border-box",
+      border: "none",
     };
   }
 
