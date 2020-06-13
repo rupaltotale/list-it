@@ -3,6 +3,10 @@ import {
   getListColorsFromTheme,
   getPrimaryColorFromTheme,
   getDeleteButtonColorFromTheme,
+  getElevationColorFromTheme,
+  getHoveringAndFocusingColorFromTheme,
+  getHoveringColorFromTheme,
+  getFocusingColorFromTheme,
 } from "../../Colors";
 
 export default class ListStyle {
@@ -17,7 +21,7 @@ export default class ListStyle {
       ? this.colors[backgroundColor]
       : this.defaultBackground;
     this.buttonStyle = new ButtonStyle();
-    this.dropdownTransitionTiming = "0.7s";
+    this.dropdownTransitionTiming = 0.7;
 
     this.listIconButton = {
       ...this.buttonStyle.buttonNoBorder,
@@ -54,7 +58,7 @@ export default class ListStyle {
         color: this.primaryColor,
         backgroundColor: this.listBackground,
         borderColor: this.primaryColor,
-        transition: `box-shadow 0.2s, background-color 0.4s, border-radius ${this.dropdownTransitionTiming}`,
+        transition: `box-shadow 0.2s, background-color 0.4s, border-radius ${this.dropdownTransitionTiming}s`,
       };
     };
     this.listCardHover = (isRenderingDropDown = false) => {
@@ -210,6 +214,7 @@ export default class ListStyle {
       fontSize: "13px",
       padding: "1px",
       textAlign: "center",
+      boxSizing: "content-box",
     };
 
     this.listTagLabelHover = {
@@ -261,7 +266,7 @@ export default class ListStyle {
       }
       return {
         ...borderRadius,
-        transition: `border-radius ${this.dropdownTransitionTiming}`,
+        transition: `border-radius ${this.dropdownTransitionTiming}s`,
         backgroundColor: "inherit",
         borderTop: "none",
         display: "flex",
@@ -302,29 +307,28 @@ export default class ListStyle {
     /****************************** LIST DROPDOWN VARIABLES ******************************/
 
     /********** LIST DROPDOWN **********/
-    this.setBorderValues = (borderWidth, borderStyle, borderColor) => {
-      return {
-        borderTopWidth: borderWidth,
-        borderBottomWidth: borderWidth,
-        borderLeftWidth: borderWidth,
-        borderRightWidth: borderWidth,
-        borderTopStyle: borderStyle,
-        borderBottomStyle: borderStyle,
-        borderLeftStyle: borderStyle,
-        borderRightStyle: borderStyle,
-        borderTopColor: borderColor,
-        borderBottomColor: borderColor,
-        borderLeftColor: borderColor,
-        borderRightColor: borderColor,
-      };
-    };
-
-    this.listDropDownShow = () => {
+    this.listDropDownShow = (typeOfDropdown) => {
+      switch (typeOfDropdown) {
+        case "tags":
+          var maxHeight = {
+            maxHeight: 280,
+          };
+          break;
+        default:
+          var maxHeight = {
+            maxHeight: 84,
+          };
+          break;
+      }
       return {
         backgroundColor: this.defaultBackground,
         display: "flex",
         //Border Values
-        ...this.setBorderValues("1px", "solid", this.primaryColor),
+        ...this.setBorderValues({
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderColor: this.primaryColor,
+        }),
         borderTopWidth: "0px",
         borderBottomLeftRadius: "8px",
         borderBottomRightRadius: "8px",
@@ -336,24 +340,23 @@ export default class ListStyle {
         marginLeft: "15px",
         overflowY: "hidden",
         //Transition Properties
-        maxHeight: 90,
+        ...maxHeight,
         visibility: "visible",
         opacity: 1,
-        transition: `max-height ${this.dropdownTransitionTiming}, 
-                     visibility ${this.dropdownTransitionTiming}, 
-                     opacity ${this.dropdownTransitionTiming},  
-                     border-right-width ${this.dropdownTransitionTiming},
-                     border-left-width ${this.dropdownTransitionTiming},
-                     border-bottom-width ${this.dropdownTransitionTiming}`,
+        transition: `max-height ${this.dropdownTransitionTiming}s, 
+                     visibility ${this.dropdownTransitionTiming}s, 
+                     opacity ${this.dropdownTransitionTiming}s,  
+                     border-right-width ${this.dropdownTransitionTiming}s,
+                     border-left-width ${this.dropdownTransitionTiming}s,
+                     border-bottom-width ${this.dropdownTransitionTiming}s`,
       };
     };
-    this.listDropDownHide = () => {
+    this.listDropDownHide = (typeOfDropdown) => {
       return {
         ...this.listDropDownShow(),
-        borderTopWidth: "0px",
-        borderBottomWidth: "0px",
-        borderLeftWidth: "0px",
-        borderRightWidth: "0px",
+        ...this.setBorderValues({
+          borderWidth: "0px",
+        }),
         maxHeight: 0,
         visibility: "hidden",
         opacity: 0,
@@ -362,20 +365,20 @@ export default class ListStyle {
 
     this.listDropDownContent = (typeOfDropdown = null) => {
       var defaultStyle = {
-        visibility: "visible",
-        opacity: 1,
-        transition: `visibility ${this.dropdownTransitionTiming}, opacity ${this.dropdownTransitionTiming}`,
-        overflowY: "hidden",
+        //Display Attributes
         display: "flex",
         flexFlow: "row wrap",
         flexGrow: 1,
         alignContent: "flex-end",
+        //Transition Attributes
+        visibility: "visible",
+        opacity: 1,
+        transition: `visibility ${this.dropdownTransitionTiming}s, opacity ${this.dropdownTransitionTiming}s`,
+        overflowY: "hidden",
       };
       switch (typeOfDropdown) {
         case "tags":
-          var extraStyle = {
-            justifyContent: "center",
-          };
+          var extraStyle = {};
           break;
         case "colors":
           var extraStyle = {
@@ -449,15 +452,14 @@ export default class ListStyle {
     };
 
     /********** LIST TAGS DROPDOWN **********/
-    this.listTagsTitle = {
-      cursor: "default",
-      fontSize: "14px",
-      padding: "0px 12px",
-    };
     this.listTagSearchDiv = {
-      padding: "8px 12px",
+      padding: "0px 12px",
       position: "relative",
+      width: "100%",
       backgroundColor: this.backgroundColor,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     };
     this.listTagSearch = {
       height: "auto",
@@ -465,8 +467,140 @@ export default class ListStyle {
       padding: "2px 22px 2px 2px",
       boxSizing: "border-box",
       border: "none",
+      backgroundColor: "transparent",
+      color: this.primaryColor,
+      outline: "none",
+    };
+    this.listTagSearchIcon = {
+      position: "absolute",
+      right: "11px",
+    };
+    this.listAllTags = (renderingCreateTagButton) => {
+      if (renderingCreateTagButton) {
+        var maxHeight = { maxHeight: "202px" };
+      } else {
+        var maxHeight = { maxHeight: "236px" };
+      }
+      return {
+        ...maxHeight,
+        padding: "6px 0",
+        overflowY: "auto",
+        width: "100%",
+      };
+    };
+    this.listListedTag = (matchesSearch, hoveringTag, focusingTag) => {
+      if (hoveringTag) {
+        if (focusingTag) {
+          var backgroundColor = {
+            backgroundColor: getHoveringAndFocusingColorFromTheme(this.theme),
+          };
+        } else {
+          var backgroundColor = {
+            backgroundColor: getHoveringColorFromTheme(this.theme),
+          };
+        }
+      } else if (focusingTag) {
+        var backgroundColor = {
+          backgroundColor: getFocusingColorFromTheme(this.theme),
+        };
+      } else {
+        var backgroundColor = {
+          backgroundColor: this.defaultBackground,
+        };
+      }
+      return {
+        ...backgroundColor,
+        cursor: "pointer",
+        display: matchesSearch ? "flex" : "none",
+        alignItems: "center",
+        outline: "none",
+        padding: "5px 10px 3px",
+        position: "relative",
+      };
+    };
+    this.listTagCheckbox = {};
+    this.listTagName = {
+      display: "flex",
+      textAlign: "center",
+      marginLeft: "7px",
+      maxWidth: "240px",
+      paddingTop: "2px",
+      verticalAlign: "top",
+      overflowX: "hidden",
+      wordBreak: "break-all",
+    };
+    this.listCreateTagButton = (shouldDisplay) => {
+      return {
+        display: shouldDisplay ? "flex" : "none",
+        padding: "5px",
+        alignItems: "center",
+      };
     };
   }
+
+  setBorderValues = (args) => {
+    if (args.borderWidth) {
+      var borderWidth = {
+        borderTopWidth: borderWidth,
+        borderBottomWidth: borderWidth,
+        borderLeftWidth: borderWidth,
+        borderRightWidth: borderWidth,
+      };
+    }
+    if (args.borderStyle) {
+      var borderStyle = {
+        borderTopStyle: borderStyle,
+        borderBottomStyle: borderStyle,
+        borderLeftStyle: borderStyle,
+        borderRightStyle: borderStyle,
+      };
+    }
+    if (args.borderColor) {
+      var borderColor = {
+        borderTopColor: borderColor,
+        borderBottomColor: borderColor,
+        borderLeftColor: borderColor,
+        borderRightColor: borderColor,
+      };
+    }
+    return {
+      ...borderWidth,
+      ...borderStyle,
+      ...borderColor,
+    };
+  };
+
+  setBorderValues = (args) => {
+    if (args.borderWidth) {
+      var borderWidth = {
+        borderTopWidth: args.borderWidth,
+        borderBottomWidth: args.borderWidth,
+        borderLeftWidth: args.borderWidth,
+        borderRightWidth: args.borderWidth,
+      };
+    }
+    if (args.borderStyle) {
+      var borderStyle = {
+        borderTopStyle: args.borderStyle,
+        borderBottomStyle: args.borderStyle,
+        borderLeftStyle: args.borderStyle,
+        borderRightStyle: args.borderStyle,
+      };
+    }
+    if (args.borderColor) {
+      var borderColor = {
+        borderTopColor: args.borderColor,
+        borderBottomColor: args.borderColor,
+        borderLeftColor: args.borderColor,
+        borderRightColor: args.borderColor,
+      };
+    }
+    return {
+      ...borderWidth,
+      ...borderStyle,
+      ...borderColor,
+    };
+  };
 
   fadeInTransition = (time = 0.4) => {
     return {

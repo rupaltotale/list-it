@@ -133,6 +133,21 @@ export function getUser(responseFunc, rejectFunc) {
     });
 }
 
+export function getTags(responseFunc, rejectFunc) {
+  axios
+    .get(`${BaseURL}/api/v1/tags/`, {
+      headers: {
+        Authorization: `JWT ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      responseFunc ? responseFunc(response) : null;
+    })
+    .catch((error) => {
+      rejectFunc ? rejectFunc(error) : null;
+    });
+}
+
 // *********************************** PUT API REQUESTS ***********************************
 
 export function updateList(responseFunc, rejectFunc, properties) {

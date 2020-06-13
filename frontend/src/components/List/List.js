@@ -69,6 +69,7 @@ class List extends React.Component {
           title: this.state.title,
           color: this.state.color,
           list_items: this.state.listItems,
+          tags: this.state.tags,
         }
       );
     });
@@ -98,7 +99,7 @@ class List extends React.Component {
     createNewTag(
       (response) => {
         this.getListData();
-        callback ? callback(response) : null;
+        callback ? callback(response.data) : null;
       },
       (error) => {
         console.log(error.response);
@@ -170,6 +171,7 @@ class List extends React.Component {
       <ListDropdown
         listStyle={this.state.listStyle}
         color={this.state.color}
+        tags={this.state.tags}
         shouldRenderDropDown={
           this.state.hoveringDropDown || this.state.hoveringFooterButton
         }
@@ -177,6 +179,7 @@ class List extends React.Component {
         toggleHoverDropDown={this.toggleHoverDropDown}
         updateList={this.updateList}
         deleteList={this.deleteList}
+        createNewTag={this.createNewTag}
       ></ListDropdown>
     );
   };

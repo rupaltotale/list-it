@@ -65,3 +65,31 @@ export function getDeleteButtonColorFromTheme(theme) {
   }
   return "rgb(250, 94, 77)";
 }
+
+export function getHoveringColorFromTheme(theme) {
+  if (theme === "D") {
+    return "rgb(154, 160, 166, 0.039)";
+  }
+  return "rgb(95, 99, 104, 0.039)";
+}
+
+export function getFocusingColorFromTheme(theme) {
+  if (theme === "D") {
+    return "rgb(154, 160, 166, 0.122)";
+  }
+  return "rgb(95, 99, 104, 0.122)";
+}
+
+export function getHoveringAndFocusingColorFromTheme(theme) {
+  if (theme === "D") {
+    return "rgb(154, 160, 166, 0.157)";
+  }
+  return "rgb(95, 99, 104, 0.157)";
+}
+
+export function getElevationColorFromTheme(theme) {
+  if (theme === "D") {
+    return "rgb(45, 46, 48)";
+  }
+  return getBackgroundColorFromTheme("L");
+}

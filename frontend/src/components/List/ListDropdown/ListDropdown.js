@@ -74,7 +74,14 @@ class ListDropdown extends React.Component {
     let content = null;
     switch (this.state.typeOfDropdown) {
       case "tags":
-        content = <ListTags style={this.state.listStyle}></ListTags>;
+        content = (
+          <ListTags
+            style={this.state.listStyle}
+            updateListTags={this.props.updateList}
+            createNewTag={this.props.createNewTag}
+            currentTags={this.props.tags}
+          ></ListTags>
+        );
         break;
       case "sharing":
         content = <ListSharing style={this.state.listStyle}></ListSharing>;
@@ -145,11 +152,13 @@ class ListDropdown extends React.Component {
 export default ListDropdown;
 
 ListDropdown.propTypes = {
-  listStyle: PropTypes.object.isRequired,
+  color: PropTypes.node.isRequired,
   typeOfDropdown: PropTypes.string,
+  tags: PropTypes.array,
+  listStyle: PropTypes.object.isRequired,
   updateList: PropTypes.func.isRequired,
   deleteList: PropTypes.func.isRequired,
-  color: PropTypes.node.isRequired,
   toggleHoverDropDown: PropTypes.func.isRequired,
   shouldRenderDropDown: PropTypes.bool.isRequired,
+  createNewTag: PropTypes.func.isRequired,
 };
