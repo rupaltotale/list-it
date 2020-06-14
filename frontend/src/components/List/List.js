@@ -1,11 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
-import { deleteList, updateList, getList, createNewTag } from "../../API";
+import {
+  deleteList,
+  updateList,
+  getList,
+  createNewTag,
+  updateListTags,
+  updateTag,
+} from "../../API";
 import ListStyle from "./ListStyle";
 import ListFooter from "./ListFooter";
 import ListHeader from "./ListHeader";
-import ListBody from "./ListBody";
+import ListBody from "./ListBody/ListBody";
 import ListDropdown from "./ListDropdown/ListDropdown";
 
 class List extends React.Component {
@@ -62,7 +69,7 @@ class List extends React.Component {
           return response.data;
         },
         (error) => {
-          console.log(error.response);
+          console.log(error.response.data);
         },
         {
           id: this.props.id,
@@ -73,6 +80,26 @@ class List extends React.Component {
         }
       );
     });
+  };
+
+  updateListTags = (newTags, callback = null) => {
+    this.setState(
+      {
+        tags: newTags,
+      },
+      () => {
+        updateListTags(
+          (response) => {
+            callback ? callback(response.data) : null;
+            return response.data;
+          },
+          (error) => {
+            console.log(error.response);
+          },
+          { tags: newTags, id: this.props.id }
+        );
+      }
+    );
   };
 
   getListData = (callback) => {
@@ -98,11 +125,15 @@ class List extends React.Component {
   createNewTag = (name, callback) => {
     createNewTag(
       (response) => {
-        this.getListData();
+        const newTags = [].concat(this.state.tags);
+        newTags.unshift(response.data);
+        this.setState({
+          tags: newTags,
+        });
         callback ? callback(response.data) : null;
       },
       (error) => {
-        console.log(error.response);
+        console.log(error.response.data);
       },
       {
         list_id: this.props.id,
@@ -111,10 +142,32 @@ class List extends React.Component {
     );
   };
 
-  setNewColor = (color) => {
-    this.setState({
-      color: color,
+  addTag = (id, callback) => {
+    updateTag(
+      (response) => {
+        const newTags = [].concat(this.state.tags);
+        newTags.unshift(response.data);
+        this.setState({
+          tags: newTags,
+        });
+        callback ? callback(response.data) : null;
+      },
+      (error) => {
+        console.log(error.response);
+      },
+      {
+        id: id,
+        list_id: this.props.id,
+      }
+    );
+  };
+
+  removeTag = (id) => {
+    const newTags = [].concat(this.state.tags);
+    let filteredArray = newTags.filter((newTag) => {
+      return newTag.id !== id;
     });
+    this.updateListTags(filteredArray);
   };
 
   renderListHeader = () => {
@@ -134,6 +187,7 @@ class List extends React.Component {
         style={this.state.listStyle}
         listItems={this.state.listItems}
         getListData={this.getListData}
+        removeTag={this.removeTag}
         tags={this.state.tags}
         id={this.props.id}
       ></ListBody>
@@ -166,20 +220,27 @@ class List extends React.Component {
     });
   };
 
-  renderColorDropDown = () => {
+  renderDropDown = () => {
     return (
       <ListDropdown
+        //Properties
         listStyle={this.state.listStyle}
         color={this.state.color}
         tags={this.state.tags}
+        typeOfDropdown={this.state.typeOfDropdown}
+        //Tag Functions
+        addTag={this.addTag}
+        removeTag={this.removeTag}
+        createNewTag={this.createNewTag}
+        updateListTags={this.updateListTags}
+        //List Functions
+        updateList={this.updateList}
+        deleteList={this.deleteList}
+        //Dropdown Functions
+        toggleHoverDropDown={this.toggleHoverDropDown}
         shouldRenderDropDown={
           this.state.hoveringDropDown || this.state.hoveringFooterButton
         }
-        typeOfDropdown={this.state.typeOfDropdown}
-        toggleHoverDropDown={this.toggleHoverDropDown}
-        updateList={this.updateList}
-        deleteList={this.deleteList}
-        createNewTag={this.createNewTag}
       ></ListDropdown>
     );
   };
@@ -233,7 +294,7 @@ class List extends React.Component {
           {this.renderListBody()}
           {this.renderListFooter()}
         </Card>
-        {this.renderColorDropDown()}
+        {this.renderDropDown()}
       </div>
     );
   };

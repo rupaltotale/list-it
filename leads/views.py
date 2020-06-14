@@ -13,11 +13,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from rest_framework.generics import ListAPIView, CreateAPIView, \
-    RetrieveUpdateDestroyAPIView, GenericAPIView, RetrieveAPIView
+    RetrieveUpdateDestroyAPIView, GenericAPIView, RetrieveAPIView, \
+    RetrieveUpdateAPIView, RetrieveDestroyAPIView
 from rest_framework.exceptions import ValidationError
 
 from .serializers import UserSerializer, UserSerializerForCreation, \
-    ListSerializer, ListItemSerializer, TagSerializer
+    ListSerializer, ListItemSerializer, TagSerializer, ListSerializerUpdateTags
 from .models import List, ListItem, CustomUser, Tag
 from django.utils import timezone
 
@@ -41,6 +42,20 @@ class ListCreate(CreateAPIView):
             date_created=timezone.now()
         )
 
+class ListUpdateTags(RetrieveUpdateAPIView):
+    queryset = List.objects.all()
+    lookup_field = 'id'
+    serializer_class = ListSerializerUpdateTags
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        if response.status_code == 200:
+            from django.core.cache import cache
+            _list = response.data
+            cache.set('list_data_{}'.format(_list['id']), {
+                'tags': _list['tags'],
+            })
+        return response
 
 class ListRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     queryset = List.objects.all()
@@ -59,12 +74,13 @@ class ListRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         response = super().update(request, *args, **kwargs)
         if response.status_code == 200:
             from django.core.cache import cache
-            list = response.data
-            cache.set('list_data_{}'.format(list['id']), {
-                'title': list['title'],
-                'color': list['color'],
+            _list = response.data
+            cache.set('list_data_{}'.format(_list['id']), {
+                'title': _list['title'],
+                'color': _list['color'],
             })
         return response
+
 ########################### ListItem endpoints ########################################
 
 
@@ -109,10 +125,10 @@ class ListItemRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         response = super().update(request, *args, **kwargs)
         if response.status_code == 200:
             from django.core.cache import cache
-            list = response.data
-            cache.set('list_item_data_{}'.format(list['id']), {
-                'content': list['content'],
-                'completed': list['completed'],
+            _list = response.data
+            cache.set('list_item_data_{}'.format(_list['id']), {
+                'content': _list['content'],
+                'completed': _list['completed'],
             })
         return response
 
@@ -124,7 +140,7 @@ class TagList(ListAPIView):
     serializer_class = TagSerializer
 
     def get_queryset(self):
-        return Tag.objects.all().filter(owner=self.request.user)
+        return Tag.objects.all().filter(owner=self.request.user).order_by("-date_created")
 
 class TagCreate(CreateAPIView):
     serializer_class = TagSerializer
@@ -132,6 +148,7 @@ class TagCreate(CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(
             owner=self.request.user,
+            date_created=timezone.now(),
         )
     
     def create(self, request, *args, **kwargs):

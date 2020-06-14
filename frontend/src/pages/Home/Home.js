@@ -120,7 +120,7 @@ class Home extends React.Component {
           );
         },
         (error) => {
-          console.log(error.response);
+          console.log(error.response.data);
         }
       );
     }

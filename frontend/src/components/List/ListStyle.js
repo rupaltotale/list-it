@@ -186,10 +186,12 @@ export default class ListStyle {
       flexWrap: "wrap",
     };
     this.listTag = {
+      display: "flex",
+      justifyContent: "center",
       maxWidth: "100%",
+      minWidth: "35px",
       margin: "6px 6px 0px 0px",
       position: "relative",
-      display: "flex",
       padding: "3px 5px",
       cursor: "pointer",
       backgroundColor: "transparent",

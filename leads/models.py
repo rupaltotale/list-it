@@ -38,6 +38,7 @@ class Tag(models.Model):
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     name = models.CharField(max_length = 20, unique=True)
+    date_created = models.DateTimeField(blank=True, null=True, default=None)
 
 class List(models.Model):
     id = models.AutoField(primary_key=True)

@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { ListGroup, Alert } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import ListItem from "./ListItem";
-import CustomButton from "../CustomComponents/Button/CustomButton";
-import { createNewListItem } from "../../API";
+import CustomButton from "../../CustomComponents/Button/CustomButton";
+import { createNewListItem } from "../../../API";
 import ListTag from "./ListTag";
 
 class ListBody extends React.Component {
@@ -137,6 +137,7 @@ class ListBody extends React.Component {
                 key={tag.id}
                 name={tag.name}
                 id={tag.id}
+                removeTag={this.props.removeTag}
                 style={this.state.listStyle}
                 getListData={this.props.getListData}
               ></ListTag>
@@ -173,4 +174,5 @@ ListBody.propTypes = {
   listItems: PropTypes.array,
   getListData: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
+  removeTag: PropTypes.func.isRequired,
 };

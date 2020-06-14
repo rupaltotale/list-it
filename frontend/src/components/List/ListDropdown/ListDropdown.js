@@ -15,6 +15,7 @@ class ListDropdown extends React.Component {
       changingTypeOfDropDown: false,
       typeOfDropdown: this.props.typeOfDropdown,
       color: this.props.color,
+      tags: this.props.tags,
       hoveringDropdown: false,
     };
   }
@@ -47,8 +48,18 @@ class ListDropdown extends React.Component {
         color: nextProps.color,
       };
     }
-    return newStyle || newTypeOfDropdown || newColor || newShouldRenderDropDown
+    if (nextProps.tags !== prevState.tags) {
+      var newTags = {
+        tags: nextProps.tags,
+      };
+    }
+    return newStyle ||
+      newTypeOfDropdown ||
+      newColor ||
+      newShouldRenderDropDown ||
+      newTags
       ? {
+          ...newTags,
           ...newStyle,
           ...newTypeOfDropdown,
           ...newColor,
@@ -77,9 +88,11 @@ class ListDropdown extends React.Component {
         content = (
           <ListTags
             style={this.state.listStyle}
-            updateListTags={this.props.updateList}
+            updateListTags={this.props.updateListTags}
             createNewTag={this.props.createNewTag}
-            currentTags={this.props.tags}
+            removeTag={this.props.removeTag}
+            currentTags={this.state.tags}
+            addTag={this.props.addTag}
           ></ListTags>
         );
         break;
@@ -152,13 +165,20 @@ class ListDropdown extends React.Component {
 export default ListDropdown;
 
 ListDropdown.propTypes = {
+  //Properties
   color: PropTypes.node.isRequired,
   typeOfDropdown: PropTypes.string,
   tags: PropTypes.array,
   listStyle: PropTypes.object.isRequired,
+  //Tag Functions
+  updateListTags: PropTypes.func.isRequired,
+  removeTag: PropTypes.func.isRequired,
+  createNewTag: PropTypes.func.isRequired,
+  addTag: PropTypes.func.isRequired,
+  //List Properties
   updateList: PropTypes.func.isRequired,
   deleteList: PropTypes.func.isRequired,
+  //Dropdown Properties
   toggleHoverDropDown: PropTypes.func.isRequired,
   shouldRenderDropDown: PropTypes.bool.isRequired,
-  createNewTag: PropTypes.func.isRequired,
 };

@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import CustomButton from "../CustomComponents/Button/CustomButton";
+import CustomButton from "../../CustomComponents/Button/CustomButton";
 import { FaTimes } from "react-icons/fa";
-import { deleteTag } from "../../API";
 
 class ListTag extends React.Component {
   constructor(props) {
@@ -27,18 +26,6 @@ class ListTag extends React.Component {
     }
     return newName || newStyle ? { ...newName, ...newStyle } : null;
   }
-
-  deleteTag = () => {
-    deleteTag(
-      (response) => {
-        this.props.getListData();
-      },
-      (error) => {
-        console.log(error.response);
-      },
-      { id: this.props.id }
-    );
-  };
 
   renderTag = () => {
     return (
@@ -71,7 +58,9 @@ class ListTag extends React.Component {
           {this.props.name}
         </label>
         <CustomButton
-          onClick={this.deleteTag}
+          onClick={() => {
+            this.props.removeTag(this.props.id);
+          }}
           style={
             this.state.hoveringTag
               ? this.state.listStyle.listTagRemoveButtonShow
@@ -97,8 +86,10 @@ class ListTag extends React.Component {
 export default ListTag;
 
 ListTag.propTypes = {
+  index: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   style: PropTypes.object.isRequired,
   getListData: PropTypes.func.isRequired,
+  removeTag: PropTypes.func.isRequired,
 };

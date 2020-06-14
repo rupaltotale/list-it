@@ -12,10 +12,13 @@ class TagSerializer(serializers.ModelSerializer):
         read_only=True
     )
     list_id = serializers.IntegerField(write_only=True, required=False)
+    date_created = serializers.DateTimeField(
+        read_only=True,
+    )
 
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'owner', 'list_id')
+        fields = ('id', 'name', 'owner', 'list_id', 'date_created')
 
     def create(self, validated_data):
         if "list_id" in validated_data:
@@ -35,6 +38,65 @@ class ListItemSerializer(serializers.ModelSerializer):
             validated_data.pop("list_id")
         return(ListItem.objects.create(**validated_data))
 
+class ListSerializerUpdateTags(serializers.ModelSerializer):
+    title = serializers.CharField(trim_whitespace=False, allow_blank=True, read_only=True)
+    color = serializers.CharField(allow_blank=True, required=False, read_only=True)
+    date_created = serializers.DateTimeField(
+        read_only=True,
+    )
+    list_items = ListItemSerializer(
+        many=True,
+        read_only=True
+    )
+    owner = serializers.PrimaryKeyRelatedField(
+        read_only=True
+    )
+    tags = TagSerializer(
+        many=True,
+        required=False
+    )
+
+    class Meta:
+        model = List
+        fields = ('id', 'title', 'owner',
+                  'date_created', 'list_items', 'color', 'tags')
+    
+    def update(self, instance, validated_data):
+        # Update the  instance
+        # instance.tags = validated_data['tags']
+        # instance.save()
+        # print(validated_data['tags'])
+
+        # Delete any detail not included in the request
+        if "tags" in validated_data:
+            tag_names = [item["name"] for item in validated_data['tags']]
+            # print(tag_names)
+            # print(instance.id)
+            _list = List.objects.get(pk=instance.id)
+            for tag in _list.tags.all():
+                if tag.name not in tag_names:
+                    _list.tags.remove(tag)
+            return _list
+        # for tag in List.tags.all():
+        #     if tag.id not in tag_ids:
+        #         tag.delete()
+
+        # Create or update owner 
+        # for tag in validated_data['tags']:
+        #     tag_obj = Tag.objects.get(pk=item['id'])
+        #     if tag_obj:
+        #         tag_obj.some_field=item['some_field']
+        #         ....fields...
+        #     else:
+        #        ownerObj = Owner.create(car=instance,**owner)
+        #     ownerObj.save()
+
+        # return super().update(instance, validated_data)
+    # def update(self, instance, validated_data):
+    #     if "tags" in validated_data:
+    #         validated_data.pop("tags")
+    #     return(List.objects.update(**validated_data))
+
 
 class ListSerializer(serializers.ModelSerializer):
     title = serializers.CharField(trim_whitespace=False, allow_blank=True)
@@ -51,10 +113,9 @@ class ListSerializer(serializers.ModelSerializer):
     )
     tags = TagSerializer(
         many=True,
-        required=False
+        required=False,
+        read_only=True
     )
-    # def update():
-        
 
     class Meta:
         model = List

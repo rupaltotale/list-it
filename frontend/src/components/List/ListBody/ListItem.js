@@ -8,14 +8,14 @@ import {
   FaRegSquare,
   FaRegCheckSquare,
 } from "react-icons/fa";
-import CustomButton from "../CustomComponents/Button/CustomButton";
+import CustomButton from "../../CustomComponents/Button/CustomButton";
 import {
   updateListItem,
   deleteListItem,
   createNewListItem,
   getListItem,
-} from "../../API";
-import * as focus from "../../Focus";
+} from "../../../API";
+import * as focus from "../../../Focus";
 
 class ListItem extends React.Component {
   constructor(props) {

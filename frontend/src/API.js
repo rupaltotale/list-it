@@ -10,7 +10,7 @@ export function createNewList(
   properties = { title: "" }
 ) {
   axios
-    .post(`${BaseURL}/api/v1/lists/new`, properties, {
+    .post(`${BaseURL}/api/v1/lists/new/`, properties, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -26,7 +26,7 @@ export function createNewList(
 
 export function createNewListItem(responseFunc, rejectFunc, properties) {
   axios
-    .post(`${BaseURL}/api/v1/list_item/new`, properties, {
+    .post(`${BaseURL}/api/v1/list_item/new/`, properties, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -55,7 +55,7 @@ export function postUser(responseFunc, rejectFunc, properties) {
 
 export function createNewTag(responseFunc, rejectFunc, properties) {
   axios
-    .post(`${BaseURL}/api/v1/tags/new`, properties, {
+    .post(`${BaseURL}/api/v1/tags/new/`, properties, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -152,7 +152,23 @@ export function getTags(responseFunc, rejectFunc) {
 
 export function updateList(responseFunc, rejectFunc, properties) {
   axios
-    .put(`${BaseURL}/api/v1/lists/${properties.id}/`, properties, {
+    .patch(`${BaseURL}/api/v1/lists/${properties.id}/`, properties, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      responseFunc ? responseFunc(response) : null;
+    })
+    .catch((error) => {
+      rejectFunc ? rejectFunc(error) : null;
+    });
+}
+
+export function updateListTags(responseFunc, rejectFunc, properties) {
+  axios
+    .patch(`${BaseURL}/api/v1/lists/${properties.id}/tags/`, properties, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -168,19 +184,12 @@ export function updateList(responseFunc, rejectFunc, properties) {
 
 export function updateListItem(responseFunc, rejectFunc, properties) {
   axios
-    .put(
-      `${BaseURL}/api/v1/list_item/${properties.id}/`,
-      {
-        content: properties.content,
-        completed: properties.completed,
+    .patch(`${BaseURL}/api/v1/list_item/${properties.id}/`, properties, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.getItem("token")}`,
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${localStorage.getItem("token")}`,
-        },
-      }
-    )
+    })
     .then((response) => {
       responseFunc ? responseFunc(response) : null;
     })
@@ -191,7 +200,7 @@ export function updateListItem(responseFunc, rejectFunc, properties) {
 
 export function updateUser(responseFunc, rejectFunc, properties) {
   axios
-    .put(`${BaseURL}/api/v1/user/${properties.id}/`, properties, {
+    .patch(`${BaseURL}/api/v1/user/${properties.id}/`, properties, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -207,7 +216,7 @@ export function updateUser(responseFunc, rejectFunc, properties) {
 
 export function updateTag(responseFunc, rejectFunc, properties) {
   axios
-    .put(`${BaseURL}/api/v1/tags/${properties.id}`, properties, {
+    .patch(`${BaseURL}/api/v1/tags/${properties.id}/`, properties, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.getItem("token")}`,
@@ -255,7 +264,7 @@ export function deleteListItem(responseFunc, rejectFunc, properties) {
 
 export function deleteTag(responseFunc, rejectFunc, properties) {
   axios
-    .delete(`${BaseURL}/api/v1/tags/${properties.id}`, {
+    .delete(`${BaseURL}/api/v1/tags/${properties.id}/`, {
       headers: {
         Authorization: `JWT ${localStorage.getItem("token")}`,
       },

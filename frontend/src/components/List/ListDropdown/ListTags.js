@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import CustomButton from "../../CustomComponents/Button/CustomButton";
-import { getTags } from "../../../API";
+import { getTags, updateTag } from "../../../API";
 import {
   FaPlus,
   FaSearch,
@@ -28,6 +28,10 @@ class ListTags extends React.Component {
     if (this.searchRef.current) {
       this.searchRef.current.focus();
     }
+    this.getTags();
+  }
+
+  getTags = () => {
     getTags(
       (response) => {
         this.setState({
@@ -38,7 +42,7 @@ class ListTags extends React.Component {
         console.log(error.response);
       }
     );
-  }
+  };
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.style !== prevState.listStyle) {
@@ -46,20 +50,17 @@ class ListTags extends React.Component {
         listStyle: nextProps.style,
       };
     }
-    return newStyle ? { ...newStyle } : null;
+    if (nextProps.currentTags !== prevState.currentTags) {
+      var newCurrentTags = {
+        currentTags: nextProps.currentTags.map((currentTag) => {
+          return currentTag.id;
+        }),
+      };
+    }
+    return newStyle || newCurrentTags
+      ? { ...newStyle, ...newCurrentTags }
+      : null;
   }
-
-  addTag = (tag) => {
-    const newTags = [].concat(this.state.tags);
-    newTags.push(tag);
-    const newCurrentTags = [].concat(this.state.currentTags);
-    newCurrentTags.push(tag.id);
-    this.setState({
-      tags: newTags,
-      currentTags: newCurrentTags,
-      searchInput: "",
-    });
-  };
 
   changeSearchMatchesTagName = (bool) => {
     this.setState({
@@ -82,7 +83,12 @@ class ListTags extends React.Component {
           !this.state.searchMatchesTagName && this.state.searchInput
         )}
         onClick={() => {
-          this.props.createNewTag(this.state.searchInput, this.addTag);
+          this.props.createNewTag(this.state.searchInput, () => {
+            this.getTags();
+            this.setState({
+              searchInput: "",
+            });
+          });
         }}
       >
         <FaPlus></FaPlus>
@@ -94,19 +100,24 @@ class ListTags extends React.Component {
   renderTag = (tag, isCurrentTag) => {
     return (
       <ListTag
+        //Tag Properties
         key={tag.id}
-        style={this.state.listStyle}
         name={tag.name}
         id={tag.id}
         isCurrentTag={isCurrentTag}
+        //Other Properties
+        style={this.state.listStyle}
         currentSearch={this.state.searchInput}
+        //Functions
+        addTag={this.props.addTag}
+        removeTag={this.props.removeTag}
         changeSearchMatchesTagName={this.changeSearchMatchesTagName}
+        updateListTags={this.props.updateListTags}
       ></ListTag>
     );
   };
 
   createTagList = () => {
-    console.log(this.state.currentTags);
     if (this.state.tags !== null) {
       let tags = [].concat(this.state.tags);
       let currentTags = [].concat(this.state.currentTags);
@@ -159,7 +170,10 @@ export default ListTags;
 ListTags.propTypes = {
   style: PropTypes.object.isRequired,
   updateListTags: PropTypes.func.isRequired,
+  createNewTag: PropTypes.func.isRequired,
+  removeTag: PropTypes.func.isRequired,
   currentTags: PropTypes.array,
+  addTag: PropTypes.func.isRequired,
 };
 
 class ListTag extends React.Component {
@@ -186,7 +200,14 @@ class ListTag extends React.Component {
         listStyle: nextProps.style,
       };
     }
-    return newStyle ? { ...newStyle } : null;
+    if (nextProps.isCurrentTag !== prevState.isCurrentTag) {
+      var newIsCurrentTag = {
+        isCurrentTag: nextProps.isCurrentTag,
+      };
+    }
+    return newStyle || newIsCurrentTag
+      ? { ...newStyle, ...newIsCurrentTag }
+      : null;
   }
 
   toggleHover = (bool) => {
@@ -210,6 +231,14 @@ class ListTag extends React.Component {
       this.setState({
         focus: bool,
       });
+    }
+  };
+
+  toggleCurrentTag = () => {
+    if (this.state.isCurrentTag) {
+      this.props.removeTag(this.props.id);
+    } else {
+      this.props.addTag(this.props.id);
     }
   };
 
@@ -255,6 +284,9 @@ class ListTag extends React.Component {
         onBlur={() => {
           this.toggleFocus(false);
         }}
+        onClick={() => {
+          this.toggleCurrentTag();
+        }}
       >
         {this.state.isCurrentTag ? (
           <FaRegCheckSquare style={this.state.listStyle.listTagCheckbox} />
@@ -268,10 +300,16 @@ class ListTag extends React.Component {
 }
 
 ListTag.propTypes = {
-  style: PropTypes.object.isRequired,
+  //Tag Properties
   name: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   isCurrentTag: PropTypes.bool.isRequired,
+  //Other Properties
+  style: PropTypes.object.isRequired,
   currentSearch: PropTypes.string.isRequired,
+  //Functions
+  addTag: PropTypes.func.isRequired,
+  removeTag: PropTypes.func.isRequired,
   changeSearchMatchesTagName: PropTypes.func.isRequired,
+  updateListTags: PropTypes.func.isRequired,
 };
