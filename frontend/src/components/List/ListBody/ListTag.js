@@ -86,7 +86,6 @@ class ListTag extends React.Component {
 export default ListTag;
 
 ListTag.propTypes = {
-  index: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   style: PropTypes.object.isRequired,

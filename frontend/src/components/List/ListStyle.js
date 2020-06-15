@@ -4,9 +4,8 @@ import {
   getPrimaryColorFromTheme,
   getDeleteButtonColorFromTheme,
   getElevationColorFromTheme,
-  getHoveringAndFocusingColorFromTheme,
-  getHoveringColorFromTheme,
-  getFocusingColorFromTheme,
+  getBorderColorFromTheme,
+  getHoverFocusColorFromTheme,
 } from "../../Colors";
 
 export default class ListStyle {
@@ -189,7 +188,7 @@ export default class ListStyle {
       display: "flex",
       justifyContent: "center",
       maxWidth: "100%",
-      minWidth: "35px",
+      minWidth: "45px",
       margin: "6px 6px 0px 0px",
       position: "relative",
       padding: "3px 5px",
@@ -221,7 +220,7 @@ export default class ListStyle {
 
     this.listTagLabelHover = {
       ...this.listTagLabel,
-      textAlign: "center",
+      textAlign: "left",
       width: "calc(100% - 16px)",
     };
 
@@ -491,27 +490,12 @@ export default class ListStyle {
       };
     };
     this.listListedTag = (matchesSearch, hoveringTag, focusingTag) => {
-      if (hoveringTag) {
-        if (focusingTag) {
-          var backgroundColor = {
-            backgroundColor: getHoveringAndFocusingColorFromTheme(this.theme),
-          };
-        } else {
-          var backgroundColor = {
-            backgroundColor: getHoveringColorFromTheme(this.theme),
-          };
-        }
-      } else if (focusingTag) {
-        var backgroundColor = {
-          backgroundColor: getFocusingColorFromTheme(this.theme),
-        };
-      } else {
-        var backgroundColor = {
-          backgroundColor: this.defaultBackground,
-        };
-      }
       return {
-        ...backgroundColor,
+        backgroundColor: getHoverFocusColorFromTheme(
+          this.theme,
+          hoveringTag,
+          focusingTag
+        ),
         cursor: "pointer",
         display: matchesSearch ? "flex" : "none",
         alignItems: "center",
@@ -525,52 +509,39 @@ export default class ListStyle {
       display: "flex",
       textAlign: "center",
       marginLeft: "7px",
-      maxWidth: "240px",
+      maxWidth: "220px",
       paddingTop: "2px",
       verticalAlign: "top",
-      overflowX: "hidden",
       wordBreak: "break-all",
     };
-    this.listCreateTagButton = (shouldDisplay) => {
+    this.listTagDeleteIcon = (shouldDisplay) => {
       return {
+        display: shouldDisplay ? "flex" : "none",
+        marginLeft: "auto",
+      };
+    };
+    this.listCreateTagButton = (
+      shouldDisplay,
+      hoveringButton,
+      focusingButton
+    ) => {
+      return {
+        backgroundColor: getHoverFocusColorFromTheme(
+          this.theme,
+          hoveringButton,
+          focusingButton
+        ),
+        borderTop: `1px solid ${getBorderColorFromTheme(this.theme)}`,
+        outline: "none",
+        width: "100%",
+        cursor: "pointer",
         display: shouldDisplay ? "flex" : "none",
         padding: "5px",
         alignItems: "center",
       };
     };
+    this.listCreateTagLabel = {};
   }
-
-  setBorderValues = (args) => {
-    if (args.borderWidth) {
-      var borderWidth = {
-        borderTopWidth: borderWidth,
-        borderBottomWidth: borderWidth,
-        borderLeftWidth: borderWidth,
-        borderRightWidth: borderWidth,
-      };
-    }
-    if (args.borderStyle) {
-      var borderStyle = {
-        borderTopStyle: borderStyle,
-        borderBottomStyle: borderStyle,
-        borderLeftStyle: borderStyle,
-        borderRightStyle: borderStyle,
-      };
-    }
-    if (args.borderColor) {
-      var borderColor = {
-        borderTopColor: borderColor,
-        borderBottomColor: borderColor,
-        borderLeftColor: borderColor,
-        borderRightColor: borderColor,
-      };
-    }
-    return {
-      ...borderWidth,
-      ...borderStyle,
-      ...borderColor,
-    };
-  };
 
   setBorderValues = (args) => {
     if (args.borderWidth) {

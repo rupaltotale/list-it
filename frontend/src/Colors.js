@@ -73,18 +73,18 @@ export function getHoveringColorFromTheme(theme) {
   return "rgb(95, 99, 104, 0.039)";
 }
 
-export function getFocusingColorFromTheme(theme) {
-  if (theme === "D") {
-    return "rgb(154, 160, 166, 0.122)";
+export function getHoverFocusColorFromTheme(theme, hovering, focusing) {
+  let themeColor = theme === "D" ? "154, 160, 166" : "95, 99, 104";
+  if (hovering) {
+    var backgroundColor = focusing
+      ? `rgb(${themeColor}, 0.157)`
+      : `rgb(${themeColor}, 0.039)`;
+  } else if (focusing) {
+    var backgroundColor = `rgb(${themeColor}, 0.122)`;
+  } else {
+    var backgroundColor = getBackgroundColorFromTheme(theme);
   }
-  return "rgb(95, 99, 104, 0.122)";
-}
-
-export function getHoveringAndFocusingColorFromTheme(theme) {
-  if (theme === "D") {
-    return "rgb(154, 160, 166, 0.157)";
-  }
-  return "rgb(95, 99, 104, 0.157)";
+  return backgroundColor;
 }
 
 export function getElevationColorFromTheme(theme) {
@@ -92,4 +92,11 @@ export function getElevationColorFromTheme(theme) {
     return "rgb(45, 46, 48)";
   }
   return getBackgroundColorFromTheme("L");
+}
+
+export function getBorderColorFromTheme(theme) {
+  if (theme === "D") {
+    return "rgb(95, 99, 104)";
+  }
+  return "rgb(224, 224, 224)";
 }

@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import CustomButton from "../../CustomComponents/Button/CustomButton";
-import { getTags, updateTag } from "../../../API";
+import { getTags, updateTag, deleteTag } from "../../../API";
 import {
   FaPlus,
   FaSearch,
   FaRegCheckSquare,
   FaRegSquare,
+  FaRegTrashAlt,
 } from "react-icons/fa";
 
 class ListTags extends React.Component {
@@ -21,6 +22,9 @@ class ListTags extends React.Component {
       }),
       searchInput: "",
       searchMatchesTagName: false,
+      //Create Tag Button Properties
+      hoveringCreateButton: false,
+      focusingCreateButton: false,
     };
   }
 
@@ -61,6 +65,28 @@ class ListTags extends React.Component {
       ? { ...newStyle, ...newCurrentTags }
       : null;
   }
+  toggleCreateButtonHover = (bool) => {
+    if (bool && !this.state.hoveringCreateButton) {
+      this.setState({
+        hoveringCreateButton: bool,
+      });
+    } else if (!bool) {
+      this.setState({
+        hoveringCreateButton: bool,
+      });
+    }
+  };
+  toggleCreateButtonFocus = (bool) => {
+    if (bool && !this.state.focusingCreateButton) {
+      this.setState({
+        focusingCreateButton: bool,
+      });
+    } else if (!bool) {
+      this.setState({
+        focusingCreateButton: bool,
+      });
+    }
+  };
 
   changeSearchMatchesTagName = (bool) => {
     this.setState({
@@ -80,8 +106,23 @@ class ListTags extends React.Component {
     return (
       <div
         style={this.state.listStyle.listCreateTagButton(
-          !this.state.searchMatchesTagName && this.state.searchInput
+          !this.state.searchMatchesTagName && this.state.searchInput,
+          this.state.hoveringCreateButton,
+          this.state.focusingCreateButton
         )}
+        tabIndex="0"
+        onMouseOver={() => {
+          this.toggleCreateButtonHover(true);
+        }}
+        onMouseLeave={() => {
+          this.toggleCreateButtonHover(false);
+        }}
+        onFocus={() => {
+          this.toggleCreateButtonFocus(true);
+        }}
+        onBlur={() => {
+          this.toggleCreateButtonFocus(false);
+        }}
         onClick={() => {
           this.props.createNewTag(this.state.searchInput, () => {
             this.getTags();
@@ -92,7 +133,9 @@ class ListTags extends React.Component {
         }}
       >
         <FaPlus></FaPlus>
-        Create "{this.state.searchInput}"
+        <div style={this.state.listStyle.listCreateTagLabel}>
+          Create "{this.state.searchInput}"
+        </div>
       </div>
     );
   };
@@ -242,6 +285,20 @@ class ListTag extends React.Component {
     }
   };
 
+  deleteTag = () => {
+    deleteTag(
+      (response) => {
+        console.log(response);
+      },
+      (error) => {
+        console.log(error.response.data);
+      },
+      {
+        id: this.props.id,
+      }
+    );
+  };
+
   checkIfMatchesSearch = () => {
     const upperCaseName = this.props.name.toUpperCase();
     const upperCaseSearch = this.props.currentSearch.toUpperCase();
@@ -294,6 +351,10 @@ class ListTag extends React.Component {
           <FaRegSquare style={this.state.listStyle.listTagCheckbox} />
         )}
         <div style={this.state.listStyle.listTagName}>{this.props.name}</div>
+        <FaRegTrashAlt
+          style={this.state.listStyle.listTagDeleteIcon(this.state.hover)}
+          onClick={this.deleteTag}
+        ></FaRegTrashAlt>
       </div>
     );
   }

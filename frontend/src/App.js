@@ -43,6 +43,7 @@ class App extends React.Component {
 
   componentDidMount() {
     document.body.style.transition = "background-color 0.4s";
+    document.body.style.marginBottom = "50px";
     if (this.state.loggedIn) {
       console.log("JWT", localStorage.getItem("token"));
       this.getUser();

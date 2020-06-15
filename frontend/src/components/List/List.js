@@ -76,7 +76,6 @@ class List extends React.Component {
           title: this.state.title,
           color: this.state.color,
           list_items: this.state.listItems,
-          tags: this.state.tags,
         }
       );
     });
