@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development ./src/index.js --output ./static/frontend/main.js",
-    "build": "webpack --mode production ./src/index.js --output ./static/frontend/main.js"
+    "build": "webpack --mode production ./src/index.js --output ./static/frontend/main.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +33,8 @@
     "react-icons": "^3.9.0",
     "react-onclickoutside": "^6.9.0",
     "react-router-dom": "^5.1.2",
-    "react-textarea-autosize": "^7.1.2"
-  }
+    "react-textarea-autosize": "^7.1.2",
+    "snyk": "^1.377.1"
+  },
+  "snyk": true
 }
