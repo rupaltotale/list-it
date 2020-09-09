@@ -12,7 +12,7 @@ A more fullproof procedure if you get weird errors:
   - `cd leads && rm -rf django_react __pycache__`
   - `cd leads && rm -rf frontend __pycache__`
 - Rerun migrations and start server: `./reset.sh`
-- (Optional) Create super user: `python3 manage.py createsuperuser --email <rupaltotale@gmail.com> --username <username>`
+- (Optional) Create super user: `python3 manage.py createsuperuser --email <youremail> --username <username>`
 (TODO: Make script for above)
 
 ## Helpful Resources
