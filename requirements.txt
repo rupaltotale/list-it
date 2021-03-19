@@ -4,7 +4,7 @@ certifi==2019.11.28
 distlib==0.3.0
 Django==3.0.7
 django-cors-headers==3.3.0
-djangorestframework==3.9.1
+djangorestframework==3.11.2
 djangorestframework-simplejwt==3.3
 filelock==3.0.12
 PyJWT==1.7.1
