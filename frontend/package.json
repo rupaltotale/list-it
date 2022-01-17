@@ -24,7 +24,7 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.3",
     "bootstrap": "^4.4.1",
     "moment": "^2.24.0",
     "mousetrap": "^1.6.5",
@@ -34,7 +34,7 @@
     "react-onclickoutside": "^6.9.0",
     "react-router-dom": "^5.1.2",
     "react-textarea-autosize": "^7.1.2",
-    "snyk": "^1.377.1"
+    "snyk": "^1.685.0"
   },
   "snyk": true
 }
